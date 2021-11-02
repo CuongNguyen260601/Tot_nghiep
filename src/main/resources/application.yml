@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  messages:
+    basename: i18n/message
+
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    username: NTC260601
+    password: 260601
+    url: jdbc:sqlserver://localhost:1433;database=db_du_an_tot_nghiep
+  jpa:
+    hibernate:
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 20MB
