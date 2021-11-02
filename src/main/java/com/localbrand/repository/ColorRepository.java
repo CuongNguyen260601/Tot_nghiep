@@ -26,5 +26,5 @@ public interface ColorRepository extends JpaRepository<Color, Long>, JpaSpecific
                     " join Product p on pd.idProduct = p.idProduct " +
                     " where p.idProduct = :idProduct)"
     )
-    List<Color> findAllByIdProduct(Integer idProduct);
+    List<Color> findAllByIdProduct(Long idProduct);
 }

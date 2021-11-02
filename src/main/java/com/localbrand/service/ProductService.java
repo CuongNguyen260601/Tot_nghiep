@@ -35,7 +35,7 @@ public interface ProductService {
 
     ServiceResult<ProductChildResponseDTO> deleteProductChild(Optional<Long> idProductDetail);
 
-    ServiceResult<List<ProductShowUserResponseDTO>> getAllProductOnUser(Optional<Integer> page);
+    ServiceResult<List<ProductShowUserResponseDTO>> getAllProductOnUser(Optional<Integer> page, Optional<Integer> limit);
 
     ServiceResult<List<ProductShowUserResponseDTO>> getAllProductShowUser(Optional<Integer> sort,
                                                             Optional<Integer> idCategoryParent,
@@ -43,15 +43,19 @@ public interface ProductService {
                                                             Optional<Integer> idGender,
                                                             Optional<Float> minPrice,
                                                             Optional<Float> maxPrice,
-                                                            Optional<Integer> page
+                                                            Optional<Integer> page,
+                                                            Optional<Integer> limit
     );
 
-    ServiceResult<List<ProductShowUserResponseDTO>> searchByNameOnUser(String name, Optional<Integer> page);
+    ServiceResult<List<ProductShowUserResponseDTO>> searchByNameOnUser(String name, Optional<Integer> page, Optional<Integer> limit);
 
     ServiceResult<ProductShowUserResponseDTO> showProductOnUser(Optional<Long> idProduct);
 
     ServiceResult<ProductFilterColorResponseDTO> findProductUserByColor(Optional<Long> idProduct, Optional<Long> idColor);
 
-    ServiceResult<ProductDetailUserDTO> findByIdProductAndIdColorAndIdSize(Optional<Long> idProduct, Optional<Long> idColor, Optional<Long> idSize);
+    ServiceResult<ProductDetailUserDTO> findByIdProductAndIdColorAndIdSize(Optional<Long> idProduct, Optional<Integer> idColor, Optional<Integer> idSize);
 
+    ServiceResult<List<ProductShowUserResponseDTO>> getListNewProduct(Optional<Integer> limit);
+
+    ServiceResult<List<ProductShowUserResponseDTO>> getListHotProduct(Optional<Integer> limit);
 }

@@ -43,4 +43,6 @@ public class ProductDetailUserDTO extends ProductParentResponseDTO{
 
     private List<Integer> listTag;
 
+    private Integer like;
+
 }

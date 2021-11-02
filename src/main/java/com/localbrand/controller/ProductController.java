@@ -96,7 +96,8 @@ public class ProductController {
             @RequestParam Optional<Integer> idGender,
             @RequestParam Optional<Float> minPrice,
             @RequestParam Optional<Float> maxPrice,
-            @RequestParam Optional<Integer> page
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit
     ){
         ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getAllProductShowUser(
                 sort,
@@ -105,14 +106,15 @@ public class ProductController {
                 idGender,
                 minPrice,
                 maxPrice,
-                page
+                page,
+                limit
         );
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SEARCH_USER)
-    public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> searchProductOnUser(@RequestParam String name, @RequestParam Optional<Integer> page){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.searchByNameOnUser(name, page);
+    public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> searchProductOnUser(@RequestParam String name, @RequestParam Optional<Integer> page, @RequestParam Optional<Integer> limit){
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.searchByNameOnUser(name, page, limit);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
@@ -129,16 +131,33 @@ public class ProductController {
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SHOW_USER_BY_COLOR_AND_SIZE)
-    public ResponseEntity<ServiceResult<ProductDetailUserDTO>> showDetailOnUserByColorAndSize(@RequestParam Optional<Long> idProduct, @RequestParam Optional<Long> idColor, @RequestParam Optional<Long> idSize){
+    public ResponseEntity<ServiceResult<ProductDetailUserDTO>> showDetailOnUserByColorAndSize(@RequestParam Optional<Long> idProduct, @RequestParam Optional<Integer> idColor, @RequestParam Optional<Integer> idSize){
         ServiceResult<ProductDetailUserDTO> result = this.productService.findByIdProductAndIdColorAndIdSize(idProduct, idColor, idSize);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SHOW_ALL)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getAllShowUser(
-            @RequestParam Optional<Integer> page
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getAllProductOnUser(page);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getAllProductOnUser(page, limit);
+        return ResponseEntity.status(result.getStatus().value()).body(result);
+    }
+
+    @GetMapping(Interface_API.API.Product.PRODUCT_NEW)
+    public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductNew(
+            @RequestParam Optional<Integer> limit
+    ){
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListNewProduct(limit);
+        return ResponseEntity.status(result.getStatus().value()).body(result);
+    }
+
+    @GetMapping(Interface_API.API.Product.PRODUCT_HOT)
+    public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductHot(
+            @RequestParam Optional<Integer> limit
+    ){
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListHotProduct(limit);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 }

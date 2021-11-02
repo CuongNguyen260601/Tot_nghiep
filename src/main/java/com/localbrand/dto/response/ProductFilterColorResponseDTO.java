@@ -23,4 +23,6 @@ public class ProductFilterColorResponseDTO extends ProductParentResponseDTO {
     private Float maxPrice;
 
     private List<SizeAndTagInProductShowUser> sizeAndTag;
+
+    private Integer like;
 }

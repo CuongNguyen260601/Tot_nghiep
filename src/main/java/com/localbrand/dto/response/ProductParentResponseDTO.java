@@ -39,4 +39,5 @@ public class ProductParentResponseDTO {
     private CategoryChildDTO categoryChildDTO;
 
     private GenderDTO genderDTO;
+    
 }

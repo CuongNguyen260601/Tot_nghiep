@@ -130,14 +130,14 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
                     " join Product  p on p.idProduct = pd.idProduct " +
                     " where p.idProduct = :idProduct"
     )
-    Float minPrice(Integer idProduct);
+    Float minPrice(Long idProduct);
 
     @Query(
             "select max(pd.price) from ProductDetail pd " +
                     " join Product  p on p.idProduct = pd.idProduct " +
                     " where p.idProduct = :idProduct"
     )
-    Float maxPrice(Integer idProduct);
+    Float maxPrice(Long idProduct);
 
     @Query(
             "select p from Product p " +
@@ -199,5 +199,22 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Page<Product> findAllByIdGenderAndIdStatusAndIdCategoryParent(Integer idGender, Integer idStatus, Integer idCategoryParent, Pageable pageable);
 
     Page<Product> findAllByNameProductLikeAndIdStatus(String name, Integer idStatus ,Pageable pageable);
+
+    @Query(
+            "select p from Product p " +
+                    " where p.idStatus = 2 " +
+                    " order by p.dateCreate desc"
+    )
+    Page<Product> findAllProductNew(Pageable pageable);
+
+    @Query(
+            value = "select * from _Product p where "+
+            " p.idStatus = 2 "+
+            " order by (select sum(b.quantity) as total from _Bill_Product b "+
+            " join _Product_Detail pd on pd.idProductDetail = b.idProductDetail"+
+            " join _Product p1 on p1.idProduct = pd.idProduct where p1.idProduct = p.idProduct) desc",
+            nativeQuery = true
+    )
+    Page<Product> findAllProductHot(Pageable pageable);
 
 }

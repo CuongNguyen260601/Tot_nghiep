@@ -16,7 +16,7 @@ public interface TagRepository extends JpaRepository<Tag, Long>, JpaSpecificatio
                     " join Product p on pd.idProduct = p.idProduct " +
                     " where p.idProduct = :idProduct"
     )
-    List<Integer> findByIdProduct(Integer idProduct);
+    List<Integer> findByIdProduct(Long idProduct);
 
     @Query(
             "select distinct t.idTag from Tag t " +
@@ -28,7 +28,7 @@ public interface TagRepository extends JpaRepository<Tag, Long>, JpaSpecificatio
                     " and pd.idSize = :idSize " +
                     " and pd.idStatus = 2"
     )
-    List<Integer> findByIdProductAndIdColorAndIdSize(Integer idProduct, Integer idColor, Integer idSize);
+    List<Integer> findByIdProductAndIdColorAndIdSize(Long idProduct, Integer idColor, Integer idSize);
 
     @Query(
             "select distinct t.idTag from Tag t " +
@@ -36,5 +36,5 @@ public interface TagRepository extends JpaRepository<Tag, Long>, JpaSpecificatio
                     " join ProductDetail pd on pt.idProductDetail = pd.idProductDetail " +
                     " where pd.idProductDetail = :idProductDetail"
     )
-    List<Integer> findByIdProductDetail(Integer idProductDetail);
+    List<Integer> findByIdProductDetail(Long idProductDetail);
 }

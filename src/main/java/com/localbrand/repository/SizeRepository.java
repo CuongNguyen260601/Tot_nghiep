@@ -32,6 +32,6 @@ public interface SizeRepository extends JpaRepository<Size, Long>, JpaSpecificat
                     " and pd.idColor = :idColor " +
                     " and pd.idStatus = 2)"
     )
-    List<Size> findAllByIdProductAndIdColor(Integer idProduct, Integer idColor);
+    List<Size> findAllByIdProductAndIdColor(Long idProduct, Integer idColor);
 
 }

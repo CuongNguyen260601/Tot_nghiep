@@ -123,12 +123,12 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
 
 
     @Query(
-            "select distinct pd.detailPhoto from ProductDetail pd " +
+            "select pd.detailPhoto from ProductDetail pd " +
                     " join Product p on p.idProduct = pd.idProduct " +
                     " where p.idProduct = :idProduct " +
                     " and pd.idColor = :idColor"
     )
-    String findImageByColorAndIdProduct(Integer idProduct, Integer idColor);
+    List<String> findImageByColorAndIdProduct(Long idProduct, Integer idColor);
 
     @Query(
             "select sum(pd.quantity) from ProductDetail pd " +

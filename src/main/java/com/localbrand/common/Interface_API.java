@@ -90,6 +90,8 @@ public interface Interface_API {
             String PRODUCT_SHOW_USER_BY_COLOR = "/user/products/showdetailbycolor";
             String PRODUCT_SHOW_USER_BY_COLOR_AND_SIZE = "/user/products/showdetailbycolorandsize";
             String PRODUCT_SHOW_ALL = "/user/products/showall";
+            String PRODUCT_NEW = "/user/products/findproductnew";
+            String PRODUCT_HOT = "/user/products/findproducthot";
         }
 
         interface Cart {

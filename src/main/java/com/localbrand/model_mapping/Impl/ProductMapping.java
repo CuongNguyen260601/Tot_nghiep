@@ -36,6 +36,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
     private final TagRepository tagRepository;
     private final GenderRepository genderRepository;
     private final CategoryParentMapping categoryParentMapping;
+    private final LikeRepository likeRepository;
 
     public ProductMapping(TPF_Utils tpf_utils,
                           ProductRepository productRepository,
@@ -51,7 +52,8 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
                           ProductTagRepository productTagRepository,
                           TagRepository tagRepository,
                           GenderRepository genderRepository,
-                          CategoryParentMapping categoryParentMapping){
+                          CategoryParentMapping categoryParentMapping,
+                          LikeRepository likeRepository){
         this.tpf_utils = tpf_utils;
         this.productRepository = productRepository;
         this.productDetailRepository = productDetailRepository;
@@ -67,6 +69,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         this.tagRepository = tagRepository;
         this.genderRepository = genderRepository;
         this.categoryParentMapping = categoryParentMapping;
+        this.likeRepository = likeRepository;
     }
 
     @Override
@@ -328,9 +331,11 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
     public ProductShowUserResponseDTO toProductShowUser(Product product){
 
-        List<Color> listColor = this.colorRepository.findAllByIdProduct(product.getIdProduct().intValue());
+        List<Color> listColor = this.colorRepository.findAllByIdProduct(product.getIdProduct());
 
         ProductShowUserResponseDTO productShowUserResponseDTO = new ProductShowUserResponseDTO();
+
+        Integer totalLike = likeRepository.countLikeByIdProduct(product.getIdProduct().intValue());
 
         productShowUserResponseDTO.setIdProduct(product.getIdProduct());
         productShowUserResponseDTO.setNameProduct(product.getNameProduct());
@@ -341,10 +346,11 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         productShowUserResponseDTO.setCoverPhoto(product.getCoverPhoto());
         productShowUserResponseDTO.setFrontPhoto(product.getFrontPhoto());
         productShowUserResponseDTO.setBackPhoto(product.getBackPhoto());
-        productShowUserResponseDTO.setListTag(this.tagRepository.findByIdProduct(product.getIdProduct().intValue()));
-        productShowUserResponseDTO.setMinPrice(this.productRepository.minPrice(product.getIdProduct().intValue()));
-        productShowUserResponseDTO.setMaxPrice(this.productRepository.maxPrice(product.getIdProduct().intValue()));
+        productShowUserResponseDTO.setListTag(this.tagRepository.findByIdProduct(product.getIdProduct()));
+        productShowUserResponseDTO.setMinPrice(this.productRepository.minPrice(product.getIdProduct()));
+        productShowUserResponseDTO.setMaxPrice(this.productRepository.maxPrice(product.getIdProduct()));
         productShowUserResponseDTO.setListColor(listColor.stream().map(this.colorMapping::toDto).collect(Collectors.toList()));
+        productShowUserResponseDTO.setLike(totalLike);
 
         return productShowUserResponseDTO;
     }
@@ -352,6 +358,8 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
     public ProductFilterColorResponseDTO toProductFilterColorResponseDTO(Product product, Color color){
 
         ProductFilterColorResponseDTO productFilterColorResponseDTO = new ProductFilterColorResponseDTO();
+
+        Integer totalLike = likeRepository.countLikeByIdProduct(product.getIdProduct().intValue());
 
         productFilterColorResponseDTO.setIdProduct(product.getIdProduct());
         productFilterColorResponseDTO.setNameProduct(product.getNameProduct());
@@ -363,7 +371,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         productFilterColorResponseDTO.setFrontPhoto(product.getFrontPhoto());
         productFilterColorResponseDTO.setBackPhoto(product.getBackPhoto());
         productFilterColorResponseDTO.setColorDTO(this.colorMapping.toDto(color));
-        productFilterColorResponseDTO.setPhotoByColor(this.productDetailRepository.findImageByColorAndIdProduct(product.getIdProduct().intValue(), color.getIdColor().intValue()));
+        productFilterColorResponseDTO.setPhotoByColor(this.productDetailRepository.findImageByColorAndIdProduct(product.getIdProduct(), color.getIdColor().intValue()).get(0));
 
         productFilterColorResponseDTO.setAmount(this.productDetailRepository
                 .countByIdProductAndIdColor(product.getIdProduct().intValue(), color.getIdColor().intValue()));
@@ -371,7 +379,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         productFilterColorResponseDTO.setMaxPrice(this.productDetailRepository.maxPriceByIdProductAndIdColor(product.getIdProduct().intValue(), color.getIdColor().intValue()));
 
         List<Size> listSize = this.sizeRepository
-                .findAllByIdProductAndIdColor(product.getIdProduct().intValue(), color.getIdColor().intValue());
+                .findAllByIdProductAndIdColor(product.getIdProduct(), color.getIdColor().intValue());
 
         List<SizeAndTagInProductShowUser> listSizeAndTagInProductShowUsers = new ArrayList<>();
 
@@ -380,13 +388,15 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
             for (Size size: listSize) {
                 SizeDTO sizeDTO = this.sizeMapping.toDto(size);
 
-                List<Integer> listTag = this.tagRepository.findByIdProductAndIdColorAndIdSize(product.getIdProduct().intValue(), color.getIdColor().intValue(), size.getIdSize().intValue());
+                List<Integer> listTag = this.tagRepository.findByIdProductAndIdColorAndIdSize(product.getIdProduct(), color.getIdColor().intValue(), size.getIdSize().intValue());
 
                 listSizeAndTagInProductShowUsers.add(new SizeAndTagInProductShowUser(sizeDTO, listTag));
             }
 
             productFilterColorResponseDTO.setSizeAndTag(listSizeAndTagInProductShowUsers);
         }
+
+        productFilterColorResponseDTO.setLike(totalLike);
         return productFilterColorResponseDTO;
     }
 
@@ -507,9 +517,11 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
                 .build();
     }
 
-    public ProductDetailUserDTO toProductDetailUserDTO(Product product, Long idColor, Long idSize){
+    public ProductDetailUserDTO toProductDetailUserDTO(Product product, Integer idColor, Integer idSize){
 
         ProductDetailUserDTO productDetailUserDTO = new ProductDetailUserDTO();
+
+        Integer totalLike = likeRepository.countLikeByIdProduct(product.getIdProduct().intValue());
 
         productDetailUserDTO.setIdProduct(product.getIdProduct());
         productDetailUserDTO.setNameProduct(product.getNameProduct());
@@ -525,8 +537,8 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         ProductDetail productDetail = this.productDetailRepository
                 .findByIdProductAndAndIdColorAndIdSizeAndIdStatus(
                         product.getIdProduct().intValue(),
-                        idColor.intValue(),
-                        idSize.intValue(),
+                        idColor,
+                        idSize,
                         Status_Enum.EXISTS.getCode());
 
 
@@ -534,7 +546,8 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         if(!Objects.isNull(productDetail)){
             Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
 
-            productDetailUserDTO.setSaleDTO(this.saleMapping.toDto(sale));
+            if(Objects.nonNull(sale))
+                productDetailUserDTO.setSaleDTO(this.saleMapping.toDto(sale));
 
             Category category = this.categoryRepository.findById(productDetail.getIdCategory().longValue()).orElse(null);
 
@@ -556,10 +569,11 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
         }
 
-        List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail().intValue());
+        List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail());
 
         productDetailUserDTO.setListTag(listTag);
 
+        productDetailUserDTO.setLike(totalLike);
         return productDetailUserDTO;
     }
 }
