@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * $table.getTableComment()
@@ -31,5 +32,18 @@ public class CartCombo implements Serializable {
 
     @Column(name = "idCombo", nullable = false)
     private Integer idCombo;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartCombo cartCombo = (CartCombo) o;
+        return Objects.equals(idCartCombo, cartCombo.idCartCombo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idCartCombo, idCart, idCombo);
+    }
 
 }

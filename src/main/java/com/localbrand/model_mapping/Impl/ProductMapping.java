@@ -351,7 +351,16 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         productShowUserResponseDTO.setMaxPrice(this.productRepository.maxPrice(product.getIdProduct()));
         productShowUserResponseDTO.setListColor(listColor.stream().map(this.colorMapping::toDto).collect(Collectors.toList()));
         productShowUserResponseDTO.setLike(totalLike);
+        productShowUserResponseDTO.setCategoryChildDTO(this.categoryChildMapping.toDto(this.categoryRepository.findCategoryChildByIdProduct(product.getIdProduct())));
+        productShowUserResponseDTO.setCategoryParentDTO(this.categoryParentMapping.toDto(this.categoryRepository.findCategoryParentByIdProduct(product.getIdProduct())));
 
+        Gender gender = this.genderRepository.findByIdProduct(product.getIdProduct());
+        GenderDTO genderDTO = GenderDTO.builder()
+                .idGender(gender.getIdGender())
+                .nameGender(gender.getNameGender())
+                .build();
+
+        productShowUserResponseDTO.setGenderDTO(genderDTO);
         return productShowUserResponseDTO;
     }
 
@@ -419,7 +428,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
                 for(ProductColorResponseShowDTO productColorResponseShowDTO: productColorResponseShowDTOS){
 
-                    if(productColorResponseShowDTO.getIdColor().equals(productDetail.getIdColor().longValue())){
+                    if(productColorResponseShowDTO.getIdColor() == (productDetail.getIdColor().longValue())){
 
                             Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
 
@@ -431,7 +440,9 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
                                         .idSize(productDetail.getIdSize().longValue())
                                         .quantity(productDetail.getQuantity())
                                         .idSale(sale.getIdSale().intValue())
+                                        .price(productDetail.getPrice())
                                         .idStatus(productDetail.getIdStatus())
+                                        .dateCreate(productDetail.getDateCreate())
                                         .build();
 
                                 productColorResponseShowDTO.getListSizeInColor().add(productSizeResponseShowDTO);
@@ -442,7 +453,9 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
                                         .idSize(productDetail.getIdSize().longValue())
                                         .quantity(productDetail.getQuantity())
                                         .idSale(null)
+                                        .price(productDetail.getPrice())
                                         .idStatus(productDetail.getIdStatus())
+                                        .dateCreate(productDetail.getDateCreate())
                                         .build();
 
                                 productColorResponseShowDTO.getListSizeInColor().add(productSizeResponseShowDTO);

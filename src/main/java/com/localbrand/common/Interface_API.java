@@ -96,13 +96,16 @@ public interface Interface_API {
         }
 
         interface Cart {
-
+            String DELETE_ALL = "/carts/delete-all/{idUser}";
             interface Cart_Product {
-                String FIND_ALL = "/carts/products/get-all";
                 String SAVE = "/carts/products/save";
                 String DELETE = "/carts/products/delete/{idCartProduct}";
                 String FIND_BY_NAME = "/carts/products/search";
-                String DELETE_ALL = "/carts/products/delete-all";
+            }
+            interface CartCombo {
+                String SEARCH = "/carts/combos/search-name";
+                String SAVE = "/carts/combos/save";
+                String DELETE = "/carts/combos/delete/{idCartProduct}";
             }
         }
     }

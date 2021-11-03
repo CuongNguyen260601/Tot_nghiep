@@ -151,4 +151,38 @@ public interface Notification {
         String GET_LIST_PRODUCT_ON_USER_SUCCESS = "Get list product on user success";
         String SEARCH_PRODUCT_ON_USER_SUCCESS = "Search product on user success";
     }
+
+    interface Cart {
+        interface Cart_Product {
+            String SAVE_SUCCESS = "save cart product successfully";
+            String DELETE_SUCCESS = "delete cart product successfully";
+            String DELETE_ALL_SUCCESS = "delete all cart successfully";
+
+            interface Validate {
+                String QUANTITY_MIN = "quantity must be at least one";
+                String QUANTITY_OVERFLOW = "not enough quantity";
+            }
+        }
+
+        interface CartCombo {
+            String SAVE_SUCCESS = "save cart combo successfully";
+            String DELETE_SUCCESS = "delete cart combo successfully";
+            String DELETE_ALL_SUCCESS = "delete all cart successfully";
+
+            interface Validate {
+                String QUANTITY_MIN = "quantity must be at least one";
+                String QUANTITY_OVERFLOW = "not enough quantity";
+            }
+        }
+        interface Validate_Cart {
+            String NOT_FOUND_ID = "not found cart";
+        }
+
+    }
+
+    interface User {
+        interface Validate_User {
+            String NOT_FOUND_ID = "not found user";
+        }
+    }
 }
