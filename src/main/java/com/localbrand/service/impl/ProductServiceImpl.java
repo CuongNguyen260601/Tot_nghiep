@@ -446,4 +446,11 @@ public class ProductServiceImpl implements ProductService {
         return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
     }
 
+    @Override
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductByCategory(Optional<Integer> idCategory, Optional<Integer> page, Optional<Integer> limit) {
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
+        List<Product> listProduct = this.productRepository.findAllByIdCategoryParentAndIdStatus(Status_Enum.EXISTS.getCode(), idCategory.get(), pageable).toList();
+        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
+    }
+
 }

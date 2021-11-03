@@ -92,6 +92,7 @@ public interface Interface_API {
             String PRODUCT_SHOW_ALL = "/user/products/showall";
             String PRODUCT_NEW = "/user/products/findproductnew";
             String PRODUCT_HOT = "/user/products/findproducthot";
+            String PRODUCT_RELATED = "/user/products/findproductrelated";
         }
 
         interface Cart {

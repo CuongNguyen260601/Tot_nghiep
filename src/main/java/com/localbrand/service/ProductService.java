@@ -58,4 +58,6 @@ public interface ProductService {
     ServiceResult<List<ProductShowUserResponseDTO>> getListNewProduct(Optional<Integer> limit);
 
     ServiceResult<List<ProductShowUserResponseDTO>> getListHotProduct(Optional<Integer> limit);
+
+    ServiceResult<List<ProductShowUserResponseDTO>> getListProductByCategory(Optional<Integer> idCategory, Optional<Integer> page, Optional<Integer> limit);
 }
