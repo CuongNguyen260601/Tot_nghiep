@@ -27,7 +27,7 @@ public class ProductDetailDTO {
 
     private SizeDTO sizeDTO;
 
-    private BigDecimal price;
+    private Float price;
 
     private Integer quantity;
 
@@ -37,6 +37,6 @@ public class ProductDetailDTO {
 
     private String detailPhoto;
 
-    private List<ProductTagDTO> listTagDTO;
+    private List<Integer> listTagDTO;
 
 }

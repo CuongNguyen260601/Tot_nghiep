@@ -1,12 +1,28 @@
 package com.localbrand.model_mapping.Impl;
 
-import com.localbrand.dto.CartProductDTO;
-import com.localbrand.entity.CartProduct;
+import com.localbrand.dto.*;
+import com.localbrand.entity.*;
 import com.localbrand.model_mapping.Mapping;
+import com.localbrand.repository.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
+@RequiredArgsConstructor
 public class CartProductMapping implements Mapping<CartProductDTO, CartProduct> {
+
+    private final CategoryChildMapping categoryChildMapping;
+    private final CategoryRepository categoryRepository;
+    private final ColorRepository colorRepository;
+    private final ColorMapping colorMapping;
+    private final SizeRepository sizeRepository;
+    private final SizeMapping sizeMapping;
+    private final SaleRepository saleRepository;
+    private final SaleMapping saleMapping;
+    private final TagRepository tagRepository;
+
     @Override
     public CartProductDTO toDto(CartProduct cartProduct) {
 
@@ -15,7 +31,6 @@ public class CartProductMapping implements Mapping<CartProductDTO, CartProduct> 
                 .idCart(cartProduct.getIdCart())
                 .idCartProduct(cartProduct.getIdCartProduct())
                 .quantity(cartProduct.getQuantity())
-                .idProductDetail(cartProduct.getIdProductDetail())
                 .build();
 
     }
@@ -27,7 +42,54 @@ public class CartProductMapping implements Mapping<CartProductDTO, CartProduct> 
                 .idCart(cartProductDTO.getIdCart())
                 .idCartProduct(cartProductDTO.getIdCartProduct())
                 .quantity(cartProductDTO.getQuantity())
-                .idProductDetail(cartProductDTO.getIdProductDetail())
+                .idProductDetail(cartProductDTO.getProductDetailDTO().getIdProductDetail().intValue())
                 .build();
+    }
+
+    public CartProductDTO toDtoCartProduct(CartProduct cartProduct, ProductDetail productDetail){
+        CartProductDTO cartProductDTO = this.toDto(cartProduct);
+
+        ProductDetailDTO productDetailDTO = ProductDetailDTO
+                .builder()
+                .idProductDetail(productDetail.getIdProductDetail())
+                .idProduct(productDetail.getIdProduct())
+                .idGender(productDetail.getIdGender())
+                .price(productDetail.getPrice())
+                .quantity(productDetail.getQuantity())
+                .dateCreate(productDetail.getDateCreate())
+                .detailPhoto(productDetail.getDetailPhoto())
+                .build();
+
+        Category category = this.categoryRepository.findById(productDetail.getIdCategory().longValue()).orElse(null);
+
+        CategoryChildDTO categoryChildDTO = this.categoryChildMapping.toDto(category);
+
+        Color color = this.colorRepository.findById(productDetail.getIdColor().longValue()).orElse(null);
+
+        ColorDTO colorDTO  = this.colorMapping.toDto(color);
+
+        Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue()).orElse(null);
+
+        SizeDTO sizeDTO = this.sizeMapping.toDto(size);
+
+        Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
+
+        SaleDTO saleDTO = this.saleMapping.toDto(sale);
+
+        List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail());
+
+        productDetailDTO.setCategoryDTO(categoryChildDTO);
+
+        productDetailDTO.setColorDTO(colorDTO);
+
+        productDetailDTO.setSizeDTO(sizeDTO);
+
+        productDetailDTO.setSaleDTO(saleDTO);
+
+        productDetailDTO.setListTagDTO(listTag);
+
+        cartProductDTO.setProductDetailDTO(productDetailDTO);
+
+        return cartProductDTO;
     }
 }

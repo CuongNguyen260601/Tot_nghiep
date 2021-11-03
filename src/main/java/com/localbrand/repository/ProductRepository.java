@@ -61,11 +61,11 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     @Query(
             "select p from Product p " +
-                    " where p.idStatus = :idStatus " +
-                    " and p.idProduct = ( " +
+                    " where p.idProduct in ( " +
                     " select distinct(p1.idProduct) from Product p1 " +
                     " join ProductDetail pd on pd.idProduct = p1.idProduct " +
-                    " where pd.price between :minPrice and :maxPrice" +
+                    " where p1.idStatus = :idStatus " +
+                    " and pd.price between :minPrice and :maxPrice" +
                     " )"
     )
     Page<Product> findAllByIdStatus(Integer idStatus, Float minPrice, Float maxPrice,Pageable pageable);
