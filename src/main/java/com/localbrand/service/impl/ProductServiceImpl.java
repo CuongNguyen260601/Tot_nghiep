@@ -337,7 +337,7 @@ public class ProductServiceImpl implements ProductService {
                 if(idGender.isEmpty() || idGender.get() < 1 ){
                     listProduct = this.productRepository.findAllByIdCategoryAndIdStatus(idCategoryChild.get(), Status_Enum.EXISTS.getCode(), minPrice.get(), maxPrice.get(),  pageable).toList();
                 }else{
-                    listProduct = this.productRepository.findAllByIdCategoryAndIdStatusAndIdGender(idGender.get(), Status_Enum.EXISTS.getCode(), idGender.get(), minPrice.get(), maxPrice.get(),pageable).toList();
+                    listProduct = this.productRepository.findAllByIdCategoryAndIdStatusAndIdGender(idCategoryChild.get(), Status_Enum.EXISTS.getCode(), idGender.get(), minPrice.get(), maxPrice.get(),pageable).toList();
                 }
             }
         }
@@ -345,7 +345,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductShowUserResponseDTO> listProductShowUserResponseDTOS = listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList());
 
         if(sort.get().equals(0)){
-            listProductShowUserResponseDTOS.stream().sorted(new Comparator<ProductShowUserResponseDTO>() {
+            listProductShowUserResponseDTOS.sort(new Comparator<ProductShowUserResponseDTO>() {
                 @Override
                 public int compare(ProductShowUserResponseDTO o1, ProductShowUserResponseDTO o2) {
                     if(o1.getMaxPrice()<o2.getMaxPrice()) return -1;
@@ -357,7 +357,7 @@ public class ProductServiceImpl implements ProductService {
             });
         }
         if(sort.get().equals(1)){
-            listProductShowUserResponseDTOS.stream().sorted(new Comparator<ProductShowUserResponseDTO>() {
+            listProductShowUserResponseDTOS.sort(new Comparator<ProductShowUserResponseDTO>() {
                 @Override
                 public int compare(ProductShowUserResponseDTO o1, ProductShowUserResponseDTO o2) {
                     if(o1.getMaxPrice()<o2.getMaxPrice()) return 1;

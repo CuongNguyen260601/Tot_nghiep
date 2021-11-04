@@ -3,7 +3,9 @@ package com.localbrand.model_mapping.Impl;
 import com.localbrand.dto.CartDTO;
 import com.localbrand.entity.Cart;
 import com.localbrand.model_mapping.Mapping;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CartMapping implements Mapping<CartDTO, Cart> {
     @Override
     public CartDTO toDto(Cart cart) {

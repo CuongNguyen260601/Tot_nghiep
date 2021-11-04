@@ -153,6 +153,15 @@ public interface Notification {
     }
 
     interface Cart{
+
+        String SAVE_CART_SUCCESS = "Save cart is success";
+        String SAVE_CART_FALSE = "Save cart is false";
+        String GET_CART_BY_USER_SUCCESS = "Get cart by user is success";
+        String GET_LIST_CART_PRODUCT_BY_USER_SUCCESS = "Get list cart product by user is success";
+        String DELETE_CART_PRODUCT_SUCCESS = "Delete cart product is success";
+        String UPDATE_CART_PRODUCT_NOT_ENOUGH = "Amount product is not enough";
+        String UPDATE_CART_PRODUCT_SUCCESS = "Update quantity product success";
+        String ADD_CART_PRODUCT_SUCCESS = "Add quantity product success";
         interface Validate_Cart{
             String VALIDATE_ID_CART = "Invalid id cart";
             String VALIDATE_ID_USER = "Invalid id user";
@@ -160,7 +169,8 @@ public interface Notification {
         }
         interface Validate_Cart_Product{
             String VALIDATE_ID_CART_PRODUCT = "Invalid id cart product";
-
+            String VALIDATE_PRODUCT_DETAIL = "Invalid product detail";
+            String VALIDATE_QUANTITY = "Invalid quantity";
         }
     }
 }
