@@ -185,4 +185,23 @@ public interface Notification {
             String NOT_FOUND_ID = "not found user";
         }
     }
+
+    interface News {
+        String GET_LIST_NEWS_SUCCESS = "Get list news success";
+        String GET_NEWS_BY_ID_SUCCESS = "Get news by id success";
+        String GET_NEWS_BY_ID_FALSE = "Voucher does not exists";
+        String GET_NEWS_AND_SORT_SUCESS = "Get news and sort is success";
+        String GET_NEWS_AND_SORT_FALSE = "Invalid sort";
+        String SAVE_NEWS_SUCCESS = "Save news is success";
+        String SAVE_NEWS_FALSE = "Save news is false";
+        String DELETE_NEWS_SUCCESS = "Delete news is success";
+        String DELETE_NEWS_FALSE = "Delete news is false";
+        String SEARCH_NEWS_SUCCESS = "Search news is success";
+        String FIND_NEWS_BY_STATUS_SUCCESS = "Find news by status is success";
+        String SEARCH_NEWS_BY_TITLE_SUCCESS = "Search news is success";
+        interface Validate_News {
+            String VALIDATE_ID = "Invalid id news";
+
+        }
+    }
 }

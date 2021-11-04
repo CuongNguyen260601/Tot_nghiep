@@ -108,5 +108,16 @@ public interface Interface_API {
                 String DELETE = "/carts/combos/delete/{idCartProduct}";
             }
         }
+
+        interface News {
+            String NEWS_FIND_ALL = "/admin/news/getall";
+            String NEWS_FIND_SORT = "/admin/news/getallsort";
+            String NEWS_FIND_BY_ID = "/admin/news/findbyid/{idNews}";
+            String NEWS_SAVE = "/admin/news/save";
+            String NEWS_DELETE = "/admin/news/delete";
+            String NEWS_SEARCH = "/admin/news/search";
+            String NEWS_FIND_BY_STATUS = "/admin/news/findbystatus";
+            String NEWS_FIND_EXISTS = "/admin/news/findexists";
+        }
     }
 }

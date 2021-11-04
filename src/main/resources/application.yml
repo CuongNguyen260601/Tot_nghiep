@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8888
 
 spring:
   messages:
@@ -7,8 +7,8 @@ spring:
 
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    username: NTC260601
-    password: 260601
+    username: sa
+    password: 123
     url: jdbc:sqlserver://localhost:1433;database=db_du_an_tot_nghiep
   jpa:
     hibernate:
