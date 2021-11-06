@@ -1,14 +1,9 @@
 package com.localbrand.model_mapping.Impl;
 
 import com.localbrand.dto.NewDetailDTO;
-import com.localbrand.dto.NewsDTO;
 import com.localbrand.entity.NewDetail;
-import com.localbrand.entity.News;
 import com.localbrand.model_mapping.Mapping;
-import com.localbrand.repository.UserRepository;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class NewDetailMapping implements Mapping<NewDetailDTO, NewDetail> {

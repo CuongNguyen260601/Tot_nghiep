@@ -201,7 +201,11 @@ public interface Notification {
         String SEARCH_NEWS_BY_TITLE_SUCCESS = "Search news is success";
         interface Validate_News {
             String VALIDATE_ID = "Invalid id news";
-
+            String VALIDATE_ID_USER = "Invalid id user";
+            String VALIDATE_TITLE = "Invalid title";
+            String VALIDATE_SHORT_CONTENT = "Invalid short content";
+            String VALIDATE_STATUS = "Invalid status news";
+            String VALIDATE_IMAGE_NEW = "Invalid image news";
         }
     }
 }

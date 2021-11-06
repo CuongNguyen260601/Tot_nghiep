@@ -10,4 +10,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface NewsRepository extends JpaRepository<News, Long>, JpaSpecificationExecutor<News> {
 
     Page<News> findAllByTitleLike(String name, Pageable pageable);
+
+    Page<News> findAllByIdStatus(Integer idStatus, Pageable pageable);
 }

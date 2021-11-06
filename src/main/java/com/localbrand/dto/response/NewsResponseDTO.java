@@ -1,12 +1,14 @@
-package com.localbrand.dto;
+package com.localbrand.dto.response;
 
+import com.localbrand.dto.NewDetailDTO;
 import com.localbrand.entity.User;
+import com.localbrand.exception.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
+import javax.validation.constraints.Min;
 import java.sql.Date;
 import java.util.List;
 
@@ -15,8 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NewsDTO {
+public class NewsResponseDTO {
 
+    @Min(value = 1, message = Notification.News.Validate_News.VALIDATE_ID)
     private Long idNew;
 
     private String title;
@@ -27,7 +30,7 @@ public class NewsDTO {
 
     private Integer viewNews;
 
-    private User user;
+    private String author;
 
     private Integer idStatus;
 
