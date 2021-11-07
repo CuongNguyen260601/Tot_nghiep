@@ -6,6 +6,7 @@ import com.localbrand.dto.CartComboDTO;
 import com.localbrand.dto.CartDTO;
 import com.localbrand.dto.CartProductDTO;
 import com.localbrand.dto.ProductDetailDTO;
+import com.localbrand.dto.response.CartProductResponseDTO;
 import com.localbrand.entity.Cart;
 import com.localbrand.entity.CartProduct;
 import com.localbrand.entity.ProductDetail;
@@ -70,7 +71,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public ServiceResult<List<CartProductDTO>> getListCartProduct(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit) {
+    public ServiceResult<List<CartProductResponseDTO>> getListCartProduct(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit) {
         log.info("Get list cart product");
 
         if(Objects.isNull(idCart) || !idCart.isPresent() || idCart.get() < 1){
@@ -86,13 +87,13 @@ public class CartServiceImpl implements CartService {
 
         List<CartProduct> listCart = this.cartProductRepository.findAllByIdCart(idCart.get(), pageable).toList();
 
-        List<CartProductDTO> listCartProduct = listCart.stream().map(
+        List<CartProductResponseDTO> listCartProduct = listCart.stream().map(
                 cartProduct -> {
                     ProductDetail productDetail = this.productDetailRepository.findById(cartProduct.getIdProductDetail().longValue()).orElse(null);
                     if(Objects.nonNull(productDetail)) {
-                        return this.cartProductMapping.toDtoCartProduct(cartProduct, productDetail);
+                        return this.cartProductMapping.toCartUserDTO(cartProduct, productDetail);
                     }else{
-                        return this.cartProductMapping.toDto(cartProduct);
+                        return null;
                     }
                 }
         ).collect(Collectors.toList());

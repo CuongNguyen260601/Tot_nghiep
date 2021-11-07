@@ -4,6 +4,7 @@ import com.localbrand.common.Interface_API;
 import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.CartDTO;
 import com.localbrand.dto.CartProductDTO;
+import com.localbrand.dto.response.CartProductResponseDTO;
 import com.localbrand.service.CartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,12 +40,12 @@ public class CartController {
     }
 
     @GetMapping(Interface_API.API.Cart.Cart_Product.CART_PRODUCT_GET_LIST)
-    public ResponseEntity<ServiceResult<List<CartProductDTO>>> getListCartProduct(
+    public ResponseEntity<ServiceResult<List<CartProductResponseDTO>>> getListCartProduct(
             @RequestParam Optional<Integer> idCart,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
             ){
-        ServiceResult<List<CartProductDTO>> result = this.cartService.getListCartProduct(idCart,page,limit);
+        ServiceResult<List<CartProductResponseDTO>> result = this.cartService.getListCartProduct(idCart,page,limit);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);

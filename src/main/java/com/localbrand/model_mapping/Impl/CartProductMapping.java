@@ -1,6 +1,7 @@
 package com.localbrand.model_mapping.Impl;
 
 import com.localbrand.dto.*;
+import com.localbrand.dto.response.CartProductResponseDTO;
 import com.localbrand.entity.*;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.*;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class CartProductMapping implements Mapping<CartProductDTO, CartProduct> 
     private final SaleRepository saleRepository;
     private final SaleMapping saleMapping;
     private final TagRepository tagRepository;
+    private final ProductMapping productMapping;
 
     @Override
     public CartProductDTO toDto(CartProduct cartProduct) {
@@ -74,7 +77,7 @@ public class CartProductMapping implements Mapping<CartProductDTO, CartProduct> 
 
         Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
 
-        SaleDTO saleDTO = this.saleMapping.toDto(sale);
+
 
         List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail());
 
@@ -84,12 +87,27 @@ public class CartProductMapping implements Mapping<CartProductDTO, CartProduct> 
 
         productDetailDTO.setSizeDTO(sizeDTO);
 
-        productDetailDTO.setSaleDTO(saleDTO);
+        if(Objects.nonNull(sale)){
+            SaleDTO saleDTO = this.saleMapping.toDto(sale);
+
+            productDetailDTO.setSaleDTO(saleDTO);
+
+        }
 
         productDetailDTO.setListTagDTO(listTag);
 
         cartProductDTO.setProductDetailDTO(productDetailDTO);
 
         return cartProductDTO;
+    }
+
+    public CartProductResponseDTO toCartUserDTO(CartProduct cartProduct, ProductDetail productDetail){
+        return CartProductResponseDTO
+                .builder()
+                .idCart(cartProduct.getIdCart())
+                .idCartProduct(cartProduct.getIdCartProduct())
+                .productDetailDTO(this.productMapping.toProductDetailUserDTOByProductDetail(productDetail))
+                .quantity(cartProduct.getQuantity())
+                .build();
     }
 }

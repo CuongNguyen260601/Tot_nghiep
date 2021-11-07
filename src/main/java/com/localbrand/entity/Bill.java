@@ -50,16 +50,16 @@ public class Bill implements Serializable {
     private String descriptionBill;
 
     @Column(name = "total", nullable = false)
-    private BigDecimal total;
+    private Float total;
 
     @Column(name = "deposit", nullable = false)
-    private BigDecimal deposit;
+    private Float deposit;
 
     @Column(name = "payment", nullable = false)
-    private BigDecimal payment;
+    private Float payment;
 
     @Column(name = "transportFee", nullable = false)
-    private BigDecimal transportFee;
+    private Float transportFee;
 
     @Column(name = "idVoucher")
     private Integer idVoucher;

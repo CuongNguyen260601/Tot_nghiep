@@ -4,7 +4,7 @@ import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.CartComboDTO;
 import com.localbrand.dto.CartDTO;
 import com.localbrand.dto.CartProductDTO;
-import com.localbrand.dto.ProductDetailDTO;
+import com.localbrand.dto.response.CartProductResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +17,7 @@ public interface CartService {
 
     ServiceResult<List<CartComboDTO>> getListCartCombo(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit);
 
-    ServiceResult<List<CartProductDTO>> getListCartProduct(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit);
+    ServiceResult<List<CartProductResponseDTO>> getListCartProduct(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit);
 
     ServiceResult<CartProductDTO> deleteCartProduct(Optional<Long> idCartProduct);
 

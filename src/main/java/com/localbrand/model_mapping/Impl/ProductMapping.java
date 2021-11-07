@@ -576,17 +576,77 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
                 productDetailUserDTO.setSizeDTO(this.sizeMapping.toDto(size));
 
             productDetailUserDTO.setPrice(productDetail.getPrice());
-            productDetailUserDTO.setQuantity(productDetail.getQuantity());
+            productDetailUserDTO.setAmount(productDetail.getQuantity());
             productDetailUserDTO.setDateCreate(productDetail.getDateCreate());
             productDetailUserDTO.setDetailPhoto(productDetail.getDetailPhoto());
 
         }
 
+        Color color = this.colorRepository.findById(productDetail.getIdColor().longValue()).orElse(null);
+
         List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail());
 
-        productDetailUserDTO.setListTag(listTag);
+        if(!listTag.isEmpty()){
+            productDetailUserDTO.setListTag(listTag);
+        }
+
+        productDetailUserDTO.setColorDTO(this.colorMapping.toDto(color));
 
         productDetailUserDTO.setLike(totalLike);
         return productDetailUserDTO;
+    }
+
+    public ProductDetailUserDTO toProductDetailUserDTOByProductDetail(ProductDetail productDetail){
+
+        Product product = this.productRepository.findById(productDetail.getIdProduct().longValue()).orElse(null);
+
+        ProductDetailUserDTO productDetailUserDTO = new ProductDetailUserDTO();
+
+        Integer totalLike = likeRepository.countLikeByIdProduct(product.getIdProduct().intValue());
+
+        productDetailUserDTO.setIdProduct(product.getIdProduct());
+        productDetailUserDTO.setNameProduct(product.getNameProduct());
+        productDetailUserDTO.setDateCreate(product.getDateCreate());
+        productDetailUserDTO.setTotalProduct(product.getTotalProduct());
+        productDetailUserDTO.setIdStatus(product.getIdStatus());
+        productDetailUserDTO.setDescriptionProduct(product.getDescriptionProduct());
+        productDetailUserDTO.setCoverPhoto(product.getCoverPhoto());
+        productDetailUserDTO.setFrontPhoto(product.getFrontPhoto());
+        productDetailUserDTO.setBackPhoto(product.getBackPhoto());
+
+            Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
+
+            if(Objects.nonNull(sale))
+                productDetailUserDTO.setSaleDTO(this.saleMapping.toDto(sale));
+
+            Category category = this.categoryRepository.findById(productDetail.getIdCategory().longValue()).orElse(null);
+
+            if(!Objects.isNull(category))
+                productDetailUserDTO.setCategoryDTO(this.categoryChildMapping.toDto(category));
+
+            productDetailUserDTO.setIdProductDetail(productDetail.getIdProductDetail());
+            productDetailUserDTO.setIdGender(productDetail.getIdGender());
+
+            Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue()).orElse(null);
+
+            if(!Objects.isNull(size))
+                productDetailUserDTO.setSizeDTO(this.sizeMapping.toDto(size));
+
+            productDetailUserDTO.setPrice(productDetail.getPrice());
+            productDetailUserDTO.setAmount(productDetail.getQuantity());
+            productDetailUserDTO.setDateCreate(productDetail.getDateCreate());
+            productDetailUserDTO.setDetailPhoto(productDetail.getDetailPhoto());
+
+        List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail());
+
+        Color color = this.colorRepository.findById(productDetail.getIdColor().longValue()).orElse(null);
+
+        productDetailUserDTO.setListTag(listTag);
+
+        productDetailUserDTO.setColorDTO(this.colorMapping.toDto(color));
+
+        productDetailUserDTO.setLike(totalLike);
+        return productDetailUserDTO;
+
     }
 }

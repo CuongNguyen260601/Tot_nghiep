@@ -1,0 +1,47 @@
+package com.localbrand.model_mapping.Impl;
+
+import com.localbrand.dto.AddressDTO;
+import com.localbrand.dto.CommuneDTO;
+import com.localbrand.entity.Address;
+import com.localbrand.entity.Commune;
+import com.localbrand.model_mapping.Mapping;
+import com.localbrand.repository.CommuneRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class AddressMapping implements Mapping<AddressDTO, Address> {
+
+    private final CommuneRepository communeRepository;
+    private final CommuneMapping communeMapping;
+
+    @Override
+    public AddressDTO toDto(Address address) {
+
+        Commune commune = this.communeRepository.findById(address.getIdCommune()).orElse(null);
+
+        CommuneDTO communeDTO = this.communeMapping.toDto(commune);
+
+        return AddressDTO
+                .builder()
+                .idAddress(address.getIdAddress())
+                .province(communeDTO.getProvince())
+                .commune(communeDTO)
+                .district(communeDTO.getDistrict())
+                .detailAddress(address.getDetailAddress())
+                .build();
+    }
+
+    @Override
+    public Address toEntity(AddressDTO addressDTO) {
+        return Address
+                .builder()
+                .idAddress(addressDTO.getIdAddress())
+                .idProvince(addressDTO.getProvince().getIdProvince())
+                .idDistrict(addressDTO.getDistrict().getIdDistrict())
+                .idCommune(addressDTO.getCommune().getIdCommune())
+                .detailAddress(addressDTO.getDetailAddress())
+                .build();
+    }
+}

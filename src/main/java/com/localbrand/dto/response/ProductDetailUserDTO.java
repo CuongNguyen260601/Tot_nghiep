@@ -33,7 +33,7 @@ public class ProductDetailUserDTO extends ProductParentResponseDTO{
 
     private Float price;
 
-    private Integer quantity;
+    private Integer amount;
 
     private Date dateCreate;
 
