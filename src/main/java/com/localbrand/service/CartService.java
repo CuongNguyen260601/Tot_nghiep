@@ -31,4 +31,5 @@ public interface CartService {
 
     ServiceResult<CartComboDTO> addComboToCart(Optional<Long> idCombo);
 
+    ServiceResult<Integer> totalProductByIdCart(Optional<Integer> idCart);
 }

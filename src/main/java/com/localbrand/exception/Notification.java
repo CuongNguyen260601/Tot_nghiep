@@ -162,6 +162,7 @@ public interface Notification {
         String UPDATE_CART_PRODUCT_NOT_ENOUGH = "Amount product is not enough";
         String UPDATE_CART_PRODUCT_SUCCESS = "Update quantity product success";
         String ADD_CART_PRODUCT_SUCCESS = "Add quantity product success";
+        String COUNT_TOTAL_CART_PRODUCT = "Count cart product success";
         interface Validate_Cart{
             String VALIDATE_ID_CART = "Invalid id cart";
             String VALIDATE_ID_USER = "Invalid id user";

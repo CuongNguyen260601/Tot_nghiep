@@ -61,7 +61,7 @@ public class CartServiceImpl implements CartService {
     public ServiceResult<CartDTO> getCartByUser(Optional<Integer> idUser) {
         log.info("Get cart by user: "+idUser);
 
-        if(Objects.isNull(idUser) || !idUser.isPresent() || idUser.get() < 1){
+        if(Objects.isNull(idUser) || !idUser.isEmpty() || idUser.get() < 1){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart.VALIDATE_ID_USER, null);
         }
 
@@ -74,12 +74,12 @@ public class CartServiceImpl implements CartService {
     public ServiceResult<List<CartProductResponseDTO>> getListCartProduct(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit) {
         log.info("Get list cart product");
 
-        if(Objects.isNull(idCart) || !idCart.isPresent() || idCart.get() < 1){
+        if(Objects.isNull(idCart) || idCart.isEmpty() || idCart.get() < 1){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart.VALIDATE_ID_CART, null);
         }
 
-        if(Objects.isNull(page) || !page.isPresent() || page.get() < 1 ||
-        Objects.isNull(limit) || !limit.isPresent() || limit.get() < 1){
+        if(Objects.isNull(page) || page.isEmpty() || page.get() < 1 ||
+        Objects.isNull(limit) || limit.isEmpty() || limit.get() < 1){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
         }
 
@@ -111,7 +111,7 @@ public class CartServiceImpl implements CartService {
 
         log.info("Delete cart product");
 
-        if(!idCartProduct.isPresent()|| idCartProduct.get() < 1){
+        if(idCartProduct.isEmpty()|| idCartProduct.get() < 1){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart_Product.VALIDATE_ID_CART_PRODUCT, null);
         }
 
@@ -156,11 +156,11 @@ public class CartServiceImpl implements CartService {
     public ServiceResult<CartProductDTO> addProductToCart(Optional<Long> idProductDetail, Optional<Long> idCart) {
         log.info("Add product to cart: "+idProductDetail);
 
-        if(!idCart.isPresent() || idCart.get() < 1){
+        if(idCart.isEmpty() || idCart.get() < 1){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart.VALIDATE_ID_CART, null);
         }
 
-        if(!idProductDetail.isPresent() || idProductDetail.get() < 1){
+        if(idProductDetail.isEmpty() || idProductDetail.get() < 1){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart_Product.VALIDATE_PRODUCT_DETAIL, null);
         }
 
@@ -195,5 +195,16 @@ public class CartServiceImpl implements CartService {
     @Override
     public ServiceResult<CartComboDTO> addComboToCart(Optional<Long> idCombo) {
         return null;
+    }
+
+    @Override
+    public ServiceResult<Integer> totalProductByIdCart(Optional<Integer> idCart) {
+        if(idCart.isEmpty() || idCart.get() < 1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart.VALIDATE_ID_CART, null);
+        }
+
+        Integer totalProduct = this.cartProductRepository.countAllByIdCart(idCart.get());
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.COUNT_TOTAL_CART_PRODUCT, totalProduct);
     }
 }

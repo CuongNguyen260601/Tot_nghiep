@@ -77,4 +77,12 @@ public class CartController {
                 .status(result.getStatus().value())
                 .body(result);
     }
+
+    @GetMapping(Interface_API.API.Cart.Cart_Product.CART_COUNT_PRODUCT_ADD)
+    public ResponseEntity<ServiceResult<Integer>> getTotalCartProduct(@RequestParam Optional<Integer> idCart){
+        ServiceResult<Integer> result = this.cartService.totalProductByIdCart(idCart);
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
 }

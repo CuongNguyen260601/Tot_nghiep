@@ -103,6 +103,7 @@ public interface Interface_API {
                 String CART_PRODUCT_DELETE = "/user/carts/deletecartproduct";
                 String CART_PRODUCT_UPDATE_QUANTITY = "/user/carts/updatecartproduct";
                 String CART_PRODUCT_ADD = "/user/carts/addcartproduct";
+                String CART_COUNT_PRODUCT_ADD = "/user/carts/counttotal";
             }
         }
 
