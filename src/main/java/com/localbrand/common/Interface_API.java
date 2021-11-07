@@ -118,5 +118,11 @@ public interface Interface_API {
             String BILL_GET_ALL_LIST_PRODUCT_BILL_USER = "/user/bills/getalllistbillproduct";
             String BILL_GET_ALL_LIST_PRODUCT_BILL_ADMIN = "/admin/bills/getalllistbillproduct";
         }
+
+        interface Address{
+            String ADDRESS_FIND_ALL_PROVINCE = "/getallprovince";
+            String ADDRESS_FIND_ALL_DISTRICT = "/getalldistrict";
+            String ADDRESS_FIND_ALL_COMMUNE = "/getallcommune";
+        }
     }
 }
