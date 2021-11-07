@@ -8,6 +8,7 @@ import com.localbrand.dto.response.BillResponseDTO;
 import com.localbrand.entity.Address;
 import com.localbrand.entity.Bill;
 import com.localbrand.entity.BillProduct;
+import com.localbrand.entity.CartProduct;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.AddressMapping;
 import com.localbrand.model_mapping.Impl.BillMapping;
@@ -15,6 +16,7 @@ import com.localbrand.model_mapping.Impl.BillProductMapping;
 import com.localbrand.repository.AddressRepository;
 import com.localbrand.repository.BillProductRepository;
 import com.localbrand.repository.BillRepository;
+import com.localbrand.repository.CartProductRepository;
 import com.localbrand.service.BillService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +45,7 @@ public class BillServiceImpl implements BillService {
     private final BillProductMapping billProductMapping;
     private final AddressRepository addressRepository;
     private final AddressMapping addressMapping;
+    private final CartProductRepository cartProductRepository;
 
     @Transactional(rollbackOn = Exception.class)
     @Override
@@ -54,14 +57,17 @@ public class BillServiceImpl implements BillService {
 
         log.info("Save bill");
 
-        Address address = this.addressMapping.toEntitySave(billRequestDTO.getAddressRequestDTO());
-
-        address = this.addressRepository.save(address);
-
         Bill bill = this.billMapping.toEntitySave(billRequestDTO);
 
-        bill.setIdAddress(address.getIdAddress().intValue());
+        if(Objects.nonNull(billRequestDTO.getIdAddress())){
+            bill.setIdAddress(billRequestDTO.getIdAddress());
+        }else {
+            Address address = this.addressMapping.toEntitySave(billRequestDTO.getAddressRequestDTO());
 
+            address = this.addressRepository.save(address);
+
+            bill.setIdAddress(address.getIdAddress().intValue());
+        }
 
         bill = this.billRepository.save(bill);
 
@@ -73,6 +79,10 @@ public class BillServiceImpl implements BillService {
             if(billProduct.getIdStatus().equals(Status_Enum.EXISTS.getCode())){
                 total += billProduct.getQuantity();
             }
+
+            CartProduct cartProduct = this.cartProductRepository.findFirstByIdProductDetailAndIdUser(billProduct.getIdProductDetail(), bill.getIdUser());
+
+            this.cartProductRepository.delete(cartProduct);
         }
 
         bill.setTotal(total);
@@ -84,6 +94,7 @@ public class BillServiceImpl implements BillService {
         return new ServiceResult<>(HttpStatus.OK, Notification.Bill.SAVE_BILL_SUCCESS, this.billMapping.toDto(bill));
     }
 
+    @Transactional(rollbackOn = Exception.class)
     @Override
     public ServiceResult<BillResponseDTO> saveBillAdmin(BillRequestDTO billRequestDTO) {
         log.info("Save bill");

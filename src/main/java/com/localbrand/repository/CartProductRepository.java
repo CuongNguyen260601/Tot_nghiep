@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
@@ -17,4 +18,12 @@ public interface CartProductRepository extends JpaRepository<CartProduct, Long>,
     CartProduct findFirstByIdCartAndIdProductDetail(Integer idCart, Integer idProductDetail);
 
     Integer countAllByIdCart(Integer idCart);
+
+    @Query(
+            " select cp from CartProduct cp " +
+                    " join Cart c on c.idCart = cp.idCart " +
+                    " where c.idUser = :idUser " +
+                    " and cp.idProductDetail = :idProductDetail"
+    )
+    CartProduct findFirstByIdProductDetailAndIdUser(Integer idProductDetail, Integer idUser);
 }

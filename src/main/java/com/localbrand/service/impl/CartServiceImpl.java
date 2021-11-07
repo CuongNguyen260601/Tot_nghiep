@@ -78,7 +78,7 @@ public class CartServiceImpl implements CartService {
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart.VALIDATE_ID_CART, null);
         }
 
-        if(Objects.isNull(page) || page.isEmpty() || page.get() < 1 ||
+        if(Objects.isNull(page) || page.isEmpty() || page.get() < 0 ||
         Objects.isNull(limit) || limit.isEmpty() || limit.get() < 1){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
         }
