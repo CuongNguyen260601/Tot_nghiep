@@ -2,6 +2,7 @@ package com.localbrand.model_mapping.Impl;
 
 import com.localbrand.dto.AddressDTO;
 import com.localbrand.dto.CommuneDTO;
+import com.localbrand.dto.request.AddressRequestDTO;
 import com.localbrand.entity.Address;
 import com.localbrand.entity.Commune;
 import com.localbrand.model_mapping.Mapping;
@@ -42,6 +43,16 @@ public class AddressMapping implements Mapping<AddressDTO, Address> {
                 .idDistrict(addressDTO.getDistrict().getIdDistrict())
                 .idCommune(addressDTO.getCommune().getIdCommune())
                 .detailAddress(addressDTO.getDetailAddress())
+                .build();
+    }
+
+    public Address toEntitySave(AddressRequestDTO addressRequestDTO){
+        return Address
+                .builder()
+                .idAddress(addressRequestDTO.getIdAddress())
+                .idProvince(addressRequestDTO.getIdProvince())
+                .idCommune(addressRequestDTO.getIdCommune())
+                .detailAddress(addressRequestDTO.getDetailAddress())
                 .build();
     }
 }

@@ -31,7 +31,7 @@ public class BillResponseDTO {
 
     private String descriptionBill;
 
-    private Float total;
+    private Integer total;
 
     private Float deposit;
 

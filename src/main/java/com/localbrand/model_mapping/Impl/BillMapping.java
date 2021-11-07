@@ -71,7 +71,6 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
                 .builder()
                 .idBill(billRequestDTO.getIdBill())
                 .idUser(billRequestDTO.getIdUser())
-                .idAddress(billRequestDTO.getIdAddress())
                 .phoneUser(billRequestDTO.getPhoneUser())
                 .emailUser(billRequestDTO.getEmailUser())
                 .dateCreate(billRequestDTO.getDateCreate())

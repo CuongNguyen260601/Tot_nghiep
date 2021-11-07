@@ -13,4 +13,5 @@ public class ProductDetailBillRequestDTO {
 
     private Long idProductDetail;
     private Integer quantity;
+    private Integer idStatus;
 }

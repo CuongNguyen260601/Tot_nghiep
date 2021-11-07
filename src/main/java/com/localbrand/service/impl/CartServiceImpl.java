@@ -115,7 +115,7 @@ public class CartServiceImpl implements CartService {
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart_Product.VALIDATE_ID_CART_PRODUCT, null);
         }
 
-        this.cartProductRepository.deleteCartProductByIdCartProduct(idCartProduct.get());
+        this.cartProductRepository.deleteByIdCartProduct(idCartProduct.get().intValue()).orElse(null);
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Cart.DELETE_CART_PRODUCT_SUCCESS, null);
     }

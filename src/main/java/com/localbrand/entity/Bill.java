@@ -50,7 +50,7 @@ public class Bill implements Serializable {
     private String descriptionBill;
 
     @Column(name = "total", nullable = false)
-    private Float total;
+    private Integer total;
 
     @Column(name = "deposit", nullable = false)
     private Float deposit;

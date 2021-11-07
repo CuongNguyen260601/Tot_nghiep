@@ -105,5 +105,17 @@ public interface Interface_API {
                 String CART_PRODUCT_ADD = "/user/carts/addcartproduct";
             }
         }
+
+        interface Bill {
+            String BILL_SAVE_USER = "/user/bills/save";
+            String BILL_SAVE_ADMIN = "/admin/bills/save";
+            String BILL_CANCEL_USER = "/user/bills/cancel";
+            String BILL_GET_ALL_LIST_USER = "/user/bills/getalllist";
+            String BILL_GET_ALL_LIST_ADMIN = "/admin/bills/getalllist";
+            String BILL_GET_ALL_LIST_AND_FILTER_USER = "/user/bills/getalllistandfilter";
+            String BILL_GET_ALL_LIST_AND_FILTER_ADMIN = "/admin/bills/getalllistandfilter";
+            String BILL_GET_ALL_LIST_PRODUCT_BILL_USER = "/user/bills/getalllistbillproduct";
+            String BILL_GET_ALL_LIST_PRODUCT_BILL_ADMIN = "/admin/bills/getalllistbillproduct";
+        }
     }
 }

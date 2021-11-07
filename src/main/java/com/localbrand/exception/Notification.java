@@ -173,4 +173,18 @@ public interface Notification {
             String VALIDATE_QUANTITY = "Invalid quantity";
         }
     }
+
+    interface Bill{
+        String SAVE_BILL_SUCCESS = "Save bill is success";
+        String SAVE_BILL_FALSE = "Save bill is false";
+        String CANCEL_BILL_FALSE = "Cancel bill is false";
+        String CANCEL_BILL_SUCCESS = "Cancel bill is success";
+        String GET_LIST_BILL_IS_FALSE = "Get list bill is false";
+        String GET_LIST_BILL_IS_SUCCESS = "Get list bill is success";
+
+        interface Bill_Product{
+            String GET_LIST_BILL_PRODUCT_FALSE ="Get list bill product false";
+            String GET_LIST_BILL_PRODUCT_SUCCESS ="Get list bill product success";
+        }
+    }
 }

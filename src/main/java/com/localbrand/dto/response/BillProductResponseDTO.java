@@ -1,12 +1,10 @@
 package com.localbrand.dto.response;
 
-import com.localbrand.dto.ProductDetailDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
