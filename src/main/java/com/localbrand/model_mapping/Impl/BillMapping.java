@@ -11,6 +11,8 @@ import com.localbrand.repository.VoucherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 @RequiredArgsConstructor
 public class BillMapping implements Mapping<BillResponseDTO, Bill> {
@@ -22,12 +24,9 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
 
     @Override
     public BillResponseDTO toDto(Bill bill) {
+        Address address = this.addressRepository.findById(bill.getIdAddress().longValue()).orElse(null);
 
-        Address address = this.addressRepository.findById(bill.getIdBill()).orElse(null);
-
-        Voucher voucher = this.voucherRepository.findById(bill.getIdVoucher().longValue()).orElse(null);
-
-        return BillResponseDTO
+        BillResponseDTO billResponseDTO = BillResponseDTO
                 .builder()
                 .idBill(bill.getIdBill())
                 .idUser(bill.getIdUser())
@@ -41,8 +40,17 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
                 .deposit(bill.getDeposit())
                 .payment(bill.getPayment())
                 .transportFee(bill.getTransportFee())
-                .voucher(this.voucherMapping.toDto(voucher))
                 .build();
+
+        if(Objects.nonNull(bill.getIdVoucher())){
+            Voucher voucher = this.voucherRepository.findById(bill.getIdVoucher().longValue()).orElse(null);
+
+            if(Objects.nonNull(voucher)){
+                billResponseDTO.setVoucher(this.voucherMapping.toDto(voucher));
+            }
+        }
+
+        return billResponseDTO;
     }
 
     @Override
@@ -81,6 +89,7 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
                 .transportFee(billRequestDTO.getTransportFee())
                 .idVoucher(billRequestDTO.getIdVoucher())
                 .idStatus(billRequestDTO.getIdStatus())
+                .total(0)
                 .build();
     }
 }

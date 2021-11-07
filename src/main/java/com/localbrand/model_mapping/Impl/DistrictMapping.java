@@ -21,6 +21,7 @@ public class DistrictMapping implements Mapping<DistrictDTO, District> {
 
         return DistrictDTO
                 .builder()
+                .nameDistrict(district.getNameDistrict())
                 .idDistrict(district.getIdDistrict())
                 .prefixDistrict(district.getPrefixDistrict())
                 .provinceDTO(this.provinceMapping.toDto(province))

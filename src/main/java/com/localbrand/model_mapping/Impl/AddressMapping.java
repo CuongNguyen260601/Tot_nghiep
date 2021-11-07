@@ -52,6 +52,7 @@ public class AddressMapping implements Mapping<AddressDTO, Address> {
                 .idAddress(addressRequestDTO.getIdAddress())
                 .idProvince(addressRequestDTO.getIdProvince())
                 .idCommune(addressRequestDTO.getIdCommune())
+                .idDistrict(addressRequestDTO.getIdDistrict())
                 .detailAddress(addressRequestDTO.getDetailAddress())
                 .build();
     }
