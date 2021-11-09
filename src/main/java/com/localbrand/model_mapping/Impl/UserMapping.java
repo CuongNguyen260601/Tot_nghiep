@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class UserMapping implements Mapping<UserResponseDTO, User> {
     @Override
     public UserResponseDTO toDto(User user) {
-        return UserResponseDTO
+        return null;
     }
 
     @Override
