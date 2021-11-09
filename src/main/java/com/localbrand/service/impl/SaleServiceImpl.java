@@ -9,6 +9,7 @@ import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.SaleMapping;
 import com.localbrand.repository.SaleRepository;
 import com.localbrand.service.SaleService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -24,17 +25,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SaleServiceImpl implements SaleService{
 
     private final Logger log = LoggerFactory.getLogger(SizeServiceImpl.class);
 
     private final SaleRepository saleRepository;
     private final SaleMapping saleMapping;
-
-    public SaleServiceImpl(SaleRepository saleRepository, SaleMapping saleMapping) {
-        this.saleRepository = saleRepository;
-        this.saleMapping = saleMapping;
-    }
 
     @Override
     public ServiceResult<List<SaleDTO>> findAll(Optional<Integer> page) {
@@ -62,7 +59,7 @@ public class SaleServiceImpl implements SaleService{
 
         if (sort.get().equals(0))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.ASC, "discount"));
-        if (sort.get().equals(1))
+        else if (sort.get().equals(1))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.DESC, "discount"));
         else
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());

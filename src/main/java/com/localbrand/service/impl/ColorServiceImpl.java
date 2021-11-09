@@ -9,6 +9,7 @@ import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.ColorMapping;
 import com.localbrand.repository.ColorRepository;
 import com.localbrand.service.ColorService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -24,16 +25,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ColorServiceImpl implements ColorService{
     private final Logger log = LoggerFactory.getLogger(SizeServiceImpl.class);
 
     private final ColorRepository colorRepository;
     private final ColorMapping colorMapping;
-
-    public ColorServiceImpl(ColorRepository colorRepository, ColorMapping colorMapping) {
-        this.colorRepository = colorRepository;
-        this.colorMapping = colorMapping;
-    }
 
     @Override
     public ServiceResult<List<ColorDTO>> findAll(Optional<Integer> page) {
@@ -61,7 +58,7 @@ public class ColorServiceImpl implements ColorService{
 
         if (sort.get().equals(0))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.ASC, "nameColor"));
-        if (sort.get().equals(1))
+        else if (sort.get().equals(1))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.DESC, "nameColor"));
         else
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());

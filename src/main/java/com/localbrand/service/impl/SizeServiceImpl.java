@@ -10,6 +10,7 @@ import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.SizeMapping;
 import com.localbrand.repository.SizeRepository;
 import com.localbrand.service.SizeService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -25,17 +26,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class  SizeServiceImpl implements SizeService {
 
     private final Logger log = LoggerFactory.getLogger(SizeServiceImpl.class);
 
     private final SizeRepository sizeRepository;
     private final SizeMapping sizeMapping;
-
-    public SizeServiceImpl(SizeRepository sizeRepository, SizeMapping sizeMapping) {
-        this.sizeRepository = sizeRepository;
-        this.sizeMapping = sizeMapping;
-    }
 
     @Override
     public ServiceResult<List<SizeResponseDTO>> findAll(Optional<Integer> page) {
@@ -63,7 +60,7 @@ public class  SizeServiceImpl implements SizeService {
 
         if (sort.get().equals(0))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.ASC, "nameSize"));
-        if (sort.get().equals(1))
+        else if (sort.get().equals(1))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.DESC, "nameSize"));
         else
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());

@@ -14,6 +14,7 @@ import com.localbrand.repository.ColorRepository;
 import com.localbrand.repository.ProductDetailRepository;
 import com.localbrand.repository.ProductRepository;
 import com.localbrand.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,19 +26,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductMapping productMapping;
     private final ProductRepository productRepository;
     private final ProductDetailRepository productDetailRepository;
     private final ColorRepository colorRepository;
-
-    public ProductServiceImpl(ProductMapping productMapping, ProductRepository productRepository, ProductDetailRepository productDetailRepository, ColorRepository colorRepository){
-        this.productMapping = productMapping;
-        this.productRepository = productRepository;
-        this.productDetailRepository = productDetailRepository;
-        this.colorRepository = colorRepository;
-    }
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
@@ -72,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
 
         if(sort.get().equals(0))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.ASC, "nameProduct"));
-        if(sort.get().equals(1))
+        else if(sort.get().equals(1))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.DESC, "nameProduct"));
         else
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());
@@ -163,7 +158,7 @@ public class ProductServiceImpl implements ProductService {
 
         if(sort.get().equals(0))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.ASC, "price"));
-        if(sort.get().equals(1))
+        else if(sort.get().equals(1))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.DESC, "price"));
         else
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());
@@ -355,8 +350,7 @@ public class ProductServiceImpl implements ProductService {
                     return 0;
                 }
             });
-        }
-        if(sort.get().equals(1)){
+        }else if(sort.get().equals(1)){
             listProductShowUserResponseDTOS.sort(new Comparator<ProductShowUserResponseDTO>() {
                 @Override
                 public int compare(ProductShowUserResponseDTO o1, ProductShowUserResponseDTO o2) {

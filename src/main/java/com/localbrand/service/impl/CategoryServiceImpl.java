@@ -11,6 +11,7 @@ import com.localbrand.model_mapping.Impl.CategoryChildMapping;
 import com.localbrand.model_mapping.Impl.CategoryParentMapping;
 import com.localbrand.repository.CategoryRepository;
 import com.localbrand.service.CategoryService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl  implements CategoryService{
 
     private final Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
@@ -34,12 +36,6 @@ public class CategoryServiceImpl  implements CategoryService{
     private final CategoryRepository categoryRepository;
     private final CategoryParentMapping categoryParentMapping;
     private final CategoryChildMapping categoryChildMapping;
-
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryParentMapping categoryParentMapping, CategoryChildMapping categoryChildMapping) {
-        this.categoryRepository = categoryRepository;
-        this.categoryParentMapping = categoryParentMapping;
-        this.categoryChildMapping = categoryChildMapping;
-    }
 
     @Override
     public ServiceResult<List<CategoryChildDTO>> findAllCategoryParent() {
@@ -83,7 +79,7 @@ public class CategoryServiceImpl  implements CategoryService{
 
         if (sort.get().equals(0))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.ASC, "nameCategory"));
-        if (sort.get().equals(1))
+        else if (sort.get().equals(1))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.DESC, "nameCategory"));
         else
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());
@@ -272,7 +268,7 @@ public class CategoryServiceImpl  implements CategoryService{
 
         if (sort.get().equals(0))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.ASC, "nameCategory"));
-        if (sort.get().equals(1))
+        else if (sort.get().equals(1))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.DESC, "nameCategory"));
         else
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());

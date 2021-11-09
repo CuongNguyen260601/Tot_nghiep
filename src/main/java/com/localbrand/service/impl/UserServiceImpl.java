@@ -1,2 +1,4 @@
-package com.localbrand.service.impl;public class UserServiceImpl {
+package com.localbrand.service.impl;
+
+public class UserServiceImpl {
 }

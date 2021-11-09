@@ -1,2 +1,4 @@
-package com.localbrand.service;public interface UserService {
+package com.localbrand.service;
+
+public interface UserService {
 }

@@ -6,18 +6,15 @@ import com.localbrand.entity.Category;
 import com.localbrand.entity.Size;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.CategoryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class SizeMapping implements Mapping<SizeDTO, Size> {
 
     private final CategoryRepository categoryRepository;
     private final CategoryParentMapping categoryParentMapping;
-
-    public SizeMapping(CategoryRepository categoryRepository, CategoryParentMapping categoryParentMapping){
-        this.categoryRepository = categoryRepository;
-        this.categoryParentMapping = categoryParentMapping;
-    }
 
     @Override
     public SizeDTO toDto(Size size) {

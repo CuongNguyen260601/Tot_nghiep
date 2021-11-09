@@ -9,6 +9,7 @@ import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.VoucherMapping;
 import com.localbrand.repository.VoucherRepository;
 import com.localbrand.service.VoucherService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -24,16 +25,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class VoucherServiceImpl implements VoucherService{
     private final Logger log = LoggerFactory.getLogger(SizeServiceImpl.class);
 
     private final VoucherRepository voucherRepository;
     private final VoucherMapping voucherMapping;
-
-    public VoucherServiceImpl(VoucherRepository voucherRepository, VoucherMapping voucherMapping) {
-        this.voucherRepository = voucherRepository;
-        this.voucherMapping = voucherMapping;
-    }
 
     @Override
     public ServiceResult<List<VoucherDTO>> findAll(Optional<Integer> page) {
@@ -63,7 +60,7 @@ public class VoucherServiceImpl implements VoucherService{
 
         if (sort.get().equals(0))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.ASC, "discount"));
-        if (sort.get().equals(1))
+        else if (sort.get().equals(1))
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.DESC, "discount"));
         else
             pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());

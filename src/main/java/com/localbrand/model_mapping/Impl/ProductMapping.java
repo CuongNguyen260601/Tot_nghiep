@@ -12,12 +12,14 @@ import com.localbrand.entity.*;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.*;
 import com.localbrand.utils.TPF_Utils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
     private final TPF_Utils tpf_utils;
@@ -37,40 +39,6 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
     private final GenderRepository genderRepository;
     private final CategoryParentMapping categoryParentMapping;
     private final LikeRepository likeRepository;
-
-    public ProductMapping(TPF_Utils tpf_utils,
-                          ProductRepository productRepository,
-                          ProductDetailRepository productDetailRepository,
-                          ColorRepository colorRepository,
-                          ColorMapping colorMapping,
-                          SizeRepository sizeRepository,
-                          SizeMapping sizeMapping,
-                          CategoryRepository categoryRepository,
-                          CategoryChildMapping categoryChildMapping,
-                          SaleRepository saleRepository,
-                          SaleMapping saleMapping,
-                          ProductTagRepository productTagRepository,
-                          TagRepository tagRepository,
-                          GenderRepository genderRepository,
-                          CategoryParentMapping categoryParentMapping,
-                          LikeRepository likeRepository){
-        this.tpf_utils = tpf_utils;
-        this.productRepository = productRepository;
-        this.productDetailRepository = productDetailRepository;
-        this.colorRepository = colorRepository;
-        this.colorMapping = colorMapping;
-        this.sizeRepository = sizeRepository;
-        this.sizeMapping = sizeMapping;
-        this.categoryRepository = categoryRepository;
-        this.categoryChildMapping = categoryChildMapping;
-        this.saleRepository = saleRepository;
-        this.saleMapping = saleMapping;
-        this.productTagRepository = productTagRepository;
-        this.tagRepository = tagRepository;
-        this.genderRepository = genderRepository;
-        this.categoryParentMapping = categoryParentMapping;
-        this.likeRepository = likeRepository;
-    }
 
     @Override
     public ProductRequestDTO toDto(Product product) {

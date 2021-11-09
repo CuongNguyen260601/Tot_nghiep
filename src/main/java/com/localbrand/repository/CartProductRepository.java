@@ -13,7 +13,7 @@ public interface CartProductRepository extends JpaRepository<CartProduct, Long>,
 
     Page<CartProduct> findAllByIdCart(Integer idCart, Pageable pageable);
 
-    Optional<CartProduct> deleteByIdCartProduct(Integer idCartProduct);
+    Optional<CartProduct> deleteByIdCartProduct(Long idCartProduct);
 
     CartProduct findFirstByIdCartAndIdProductDetail(Integer idCart, Integer idProductDetail);
 
