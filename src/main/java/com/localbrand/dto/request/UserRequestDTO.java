@@ -1,8 +1,5 @@
-package com.localbrand.dto.response;
+package com.localbrand.dto.request;
 
-import com.localbrand.dto.AddressDTO;
-import com.localbrand.dto.GenderDTO;
-import com.localbrand.dto.request.AddressRequestDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,30 +11,20 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserResponseDTO {
+public class UserRequestDTO {
 
     private Long idUser;
-
     private String idChat;
-
     private String firstName;
-
     private String lastName;
-
     private Date dateOfBirth;
-
     private String email;
-
     private String phoneNumber;
-
-    private GenderDTO genderDTO;
-
-    private AddressRequestDTO addressDTO;
-
+    private String passwordUser;
+    private Integer idRole;
+    private Integer idGender;
+    private AddressRequestDTO addressRequestDTO;
     private Integer idStatus;
-
     private String imageUser;
-
-    private Integer idCart;
 
 }

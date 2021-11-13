@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.aspectj.bridge.Message;
 import org.springframework.http.HttpStatus;
 
 @Setter
@@ -16,7 +17,10 @@ public class ServiceResult<T> {
     private String message;
     private T data;
 
-    public ServiceResult(HttpStatus httpStatus, String message) {
-        this(httpStatus, message, null);
+    public ServiceResult(HttpStatus httpStatus, String message){
+        this.status = httpStatus;
+        this.message = message;
+        this.data = null;
     }
+
 }

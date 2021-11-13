@@ -20,3 +20,4 @@ spring:
     multipart:
       enabled: true
       file-size-threshold: 20MB
+      max-file-size: 10MB

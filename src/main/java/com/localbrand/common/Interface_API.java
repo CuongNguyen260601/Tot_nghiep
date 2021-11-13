@@ -7,7 +7,14 @@ public interface Interface_API {
     interface Cors {
         String CORS = "*";
     }
+
     interface API {
+        interface Auth {
+            String LOGIN = "/login";
+            String SIGN_UP = "/signup";
+            String LOG_OUT = "/logout";
+            String REFRESH_TOKEN = "/refreshtoken";
+        }
         interface Color {
             String COLOR_FIND_ALL = "/admin/colors/getall";
             String COLOR_FIND_SORT = "/admin/colors/getallsort";
