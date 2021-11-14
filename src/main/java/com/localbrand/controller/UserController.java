@@ -3,7 +3,9 @@ package com.localbrand.controller;
 import com.localbrand.common.Interface_API;
 import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.request.UserRequestDTO;
+import com.localbrand.dto.request.UserUpdateRequestDTO;
 import com.localbrand.dto.response.RefreshTokenDTO;
+import com.localbrand.dto.response.UserResponseDTO;
 import com.localbrand.dto.response.UserResponseSignupDTO;
 import com.localbrand.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,12 @@ public class UserController {
     @PostMapping(Interface_API.API.Auth.LOG_OUT)
     public ResponseEntity<ServiceResult<?>> logout(HttpServletRequest request){
         ServiceResult<?> result = this.userService.logout(request);
+        return ResponseEntity.status(result.getStatus()).body(result);
+    }
+
+    @PutMapping(Interface_API.API.Auth.UPDATE_PROFILE)
+    public ResponseEntity<ServiceResult<UserResponseDTO>> updateProfile(HttpServletRequest request, UserUpdateRequestDTO userUpdateRequestDTO){
+        ServiceResult<UserResponseDTO> result = this.userService.updateProfile(request, userUpdateRequestDTO);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 

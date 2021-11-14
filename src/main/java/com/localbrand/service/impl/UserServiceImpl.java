@@ -9,17 +9,14 @@ import com.localbrand.common.Security_Enum;
 import com.localbrand.common.ServiceResult;
 import com.localbrand.common.Status_Enum;
 import com.localbrand.dto.request.UserRequestDTO;
+import com.localbrand.dto.request.UserUpdateRequestDTO;
 import com.localbrand.dto.response.RefreshTokenDTO;
+import com.localbrand.dto.response.UserResponseDTO;
 import com.localbrand.dto.response.UserResponseSignupDTO;
-import com.localbrand.entity.Cart;
-import com.localbrand.entity.Jwt;
-import com.localbrand.entity.Role;
-import com.localbrand.entity.User;
+import com.localbrand.entity.*;
+import com.localbrand.model_mapping.Impl.AddressMapping;
 import com.localbrand.model_mapping.Impl.UserMapping;
-import com.localbrand.repository.CartRepository;
-import com.localbrand.repository.JwtRepository;
-import com.localbrand.repository.RoleRepository;
-import com.localbrand.repository.UserRepository;
+import com.localbrand.repository.*;
 import com.localbrand.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +26,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +47,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserMapping userMapping;
     private final JwtRepository jwtRepository;
     private final CartRepository cartRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AddressRepository addressRepository;
+    private final AddressMapping addressMapping;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -110,6 +111,36 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.cartRepository.save(cart);
 
         return new ServiceResult<>(HttpStatus.OK, "Signup is success", this.userMapping.toDtoSignup(user, access_token, refresh_token));
+    }
+
+    @Override
+    public ServiceResult<UserResponseDTO> updateProfile(HttpServletRequest request, UserUpdateRequestDTO userUpdateRequestDTO) {
+        User user = this.userRepository.findById(userUpdateRequestDTO.getIdUser()).orElse(null);
+
+        if(Objects.isNull(user)){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, "User is not found", null);
+        }
+
+
+        user.setFirstName(userUpdateRequestDTO.getFirstName());
+        user.setLastName(userUpdateRequestDTO.getLastName());
+        user.setDateOfBirth(userUpdateRequestDTO.getDateOfBirth());
+        user.setPhoneNumber(userUpdateRequestDTO.getPhoneNumber());
+        user.setPasswordUser(passwordEncoder.encode(userUpdateRequestDTO.getPasswordUser()));
+        user.setIdGender(userUpdateRequestDTO.getIdGender());
+        user.setImageUser(userUpdateRequestDTO.getImageUser());
+
+        if(Objects.isNull(userUpdateRequestDTO.getIdUser())){
+            Address address = this.addressMapping.toEntitySave(userUpdateRequestDTO.getAddressRequestDTO());
+            address = this.addressRepository.save(address);
+            user.setIdAddress(address.getIdAddress().intValue());
+        }else{
+            user.setIdAddress(userUpdateRequestDTO.getIdAddress());
+        }
+
+        user = this.userRepository.save(user);
+
+        return new ServiceResult<>(HttpStatus.OK, "Update is success", this.userMapping.toDto(user));
     }
 
     @Override

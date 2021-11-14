@@ -13,6 +13,7 @@ public interface Interface_API {
             String LOGIN = "/login";
             String SIGN_UP = "/signup";
             String LOG_OUT = "/logout";
+            String UPDATE_PROFILE = "/updateprofile";
             String REFRESH_TOKEN = "/refreshtoken";
         }
         interface Color {
