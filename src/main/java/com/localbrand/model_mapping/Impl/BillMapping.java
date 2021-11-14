@@ -40,6 +40,7 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
                 .deposit(bill.getDeposit())
                 .payment(bill.getPayment())
                 .transportFee(bill.getTransportFee())
+                .billType(bill.getBillType())
                 .build();
 
         if(Objects.nonNull(bill.getIdVoucher())){
@@ -89,7 +90,8 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
                 .transportFee(billRequestDTO.getTransportFee())
                 .idVoucher(billRequestDTO.getIdVoucher())
                 .idStatus(billRequestDTO.getIdStatus())
-                .total(0)
+                .total(0F)
+                .billType(billRequestDTO.getBillType())
                 .build();
     }
 }

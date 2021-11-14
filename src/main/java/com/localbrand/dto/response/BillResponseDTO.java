@@ -31,7 +31,7 @@ public class BillResponseDTO {
 
     private String descriptionBill;
 
-    private Integer total;
+    private Float total;
 
     private Float deposit;
 
@@ -42,4 +42,6 @@ public class BillResponseDTO {
     private VoucherDTO voucher;
 
     private Integer idStatus;
+
+    private Integer billType;
 }

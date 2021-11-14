@@ -35,4 +35,6 @@ public class VoucherDTO {
     private Integer idStatus;
 
     private String descriptionVoucher;
+
+    private String codeVoucher;
 }

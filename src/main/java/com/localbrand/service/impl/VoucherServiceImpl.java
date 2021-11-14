@@ -99,7 +99,14 @@ public class VoucherServiceImpl implements VoucherService{
         this.log.info("Save voucher: "+ voucherDTO);
 
         try {
+
+            int randomCodeVoucher =(int) (Math.random()*100000+1);
+
+            String codeVoucher = "VC"+randomCodeVoucher;
+
             Voucher voucher = this.voucherMapping.toEntity(voucherDTO);
+
+            voucher.setCodeVoucher(codeVoucher);
 
             Voucher voucherSaved = this.voucherRepository.save(voucher);
 

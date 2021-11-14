@@ -33,6 +33,9 @@ public class Combo implements Serializable {
     @Column(name = "price", nullable = false)
     private Float price;
 
+    @Column(name = "createAt", nullable = false)
+    private Date createAt;
+
     @Column(name = "idStatus", nullable = false)
     private Integer idStatus;
 
@@ -47,8 +50,5 @@ public class Combo implements Serializable {
 
     @Column(name = "backPhoto", nullable = false)
     private String backPhoto;
-
-    @Column(name = "createAt", nullable = false)
-    private Date createAt;
 
 }

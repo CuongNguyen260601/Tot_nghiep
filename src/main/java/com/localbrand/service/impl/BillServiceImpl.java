@@ -5,21 +5,16 @@ import com.localbrand.common.Status_Enum;
 import com.localbrand.dto.request.BillRequestDTO;
 import com.localbrand.dto.response.BillProductResponseDTO;
 import com.localbrand.dto.response.BillResponseDTO;
-import com.localbrand.entity.Address;
-import com.localbrand.entity.Bill;
-import com.localbrand.entity.BillProduct;
-import com.localbrand.entity.CartProduct;
+import com.localbrand.entity.*;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.AddressMapping;
 import com.localbrand.model_mapping.Impl.BillMapping;
 import com.localbrand.model_mapping.Impl.BillProductMapping;
-import com.localbrand.repository.AddressRepository;
-import com.localbrand.repository.BillProductRepository;
-import com.localbrand.repository.BillRepository;
-import com.localbrand.repository.CartProductRepository;
+import com.localbrand.repository.*;
 import com.localbrand.service.BillService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -46,6 +41,8 @@ public class BillServiceImpl implements BillService {
     private final AddressRepository addressRepository;
     private final AddressMapping addressMapping;
     private final CartProductRepository cartProductRepository;
+    private final VoucherRepository voucherRepository;
+    private final VoucherUserRepository voucherUserRepository;
 
     @Transactional(rollbackOn = Exception.class)
     @Override
@@ -57,8 +54,35 @@ public class BillServiceImpl implements BillService {
 
         log.info("Save bill");
 
+        Voucher voucher;
+        if(Objects.isNull(billRequestDTO.getIdVoucher())){
+            if(StringUtils.isNotBlank(billRequestDTO.getCodeVoucher())){
+                voucher = this.voucherRepository.findByCodeVoucher(billRequestDTO.getCodeVoucher().trim()).orElse(null);
+            }else{
+                voucher = null;
+            }
+        }else{
+            voucher = this.voucherRepository.findById(billRequestDTO.getIdVoucher().longValue()).orElse(null);
+            if(Objects.isNull(voucher)){
+                if(StringUtils.isNotBlank(billRequestDTO.getCodeVoucher())){
+                    voucher = this.voucherRepository.findByCodeVoucher(billRequestDTO.getCodeVoucher().trim()).orElse(null);
+                }else{
+                    voucher = null;
+                }
+            }
+        }
+
         Bill bill = this.billMapping.toEntitySave(billRequestDTO);
 
+        if(Objects.nonNull(voucher)){
+            VoucherUser voucherUser = this.voucherUserRepository.findByIdVoucherAndAndIdUser(voucher.getIdVoucher().intValue(), bill.getIdUser()).orElse(null);
+
+            if(Objects.isNull(voucherUser)){
+                return new ServiceResult<>(HttpStatus.BAD_REQUEST, "Voucher is not applicable", null);
+            }
+
+            bill.setIdVoucher(voucher.getIdVoucher().intValue());
+        }
         if(Objects.nonNull(billRequestDTO.getIdAddress())){
             bill.setIdAddress(billRequestDTO.getIdAddress());
         }else {
@@ -73,11 +97,11 @@ public class BillServiceImpl implements BillService {
 
         List<BillProduct> lstBillProduct = this.billProductMapping.toListProduct(bill, billRequestDTO);
 
-        Integer total = 0;
+        Float total = 0F;
 
         for (BillProduct billProduct:lstBillProduct) {
             if(billProduct.getIdStatus().equals(Status_Enum.EXISTS.getCode())){
-                total += billProduct.getQuantity();
+                total += billProduct.getPrice()* billProduct.getQuantity();
             }
 
             CartProduct cartProduct = this.cartProductRepository.findFirstByIdProductDetailAndIdUser(billProduct.getIdProductDetail(), bill.getIdUser());
@@ -85,7 +109,14 @@ public class BillServiceImpl implements BillService {
             this.cartProductRepository.delete(cartProduct);
         }
 
+        if(Objects.nonNull(voucher))
+        {
+            total = total/100 * (100 - voucher.getDiscount());
+        }
+
         bill.setTotal(total);
+
+        bill.setPayment(total-bill.getDeposit());
 
         bill = this.billRepository.save(bill);
 
@@ -112,15 +143,24 @@ public class BillServiceImpl implements BillService {
 
         List<BillProduct> lstBillProduct = this.billProductMapping.toListProduct(bill, billRequestDTO);
 
-        Integer total = 0;
+        Float total = 0F;
 
         for (BillProduct billProduct:lstBillProduct) {
             if(billProduct.getIdStatus().equals(Status_Enum.EXISTS.getCode())){
-                total += billProduct.getQuantity();
+                total += billProduct.getPrice()*billProduct.getQuantity();
             }
         }
 
+        if(Objects.nonNull(bill.getIdVoucher()))
+        {
+            Voucher voucher = this.voucherRepository.findById(bill.getIdVoucher().longValue()).orElse(null);
+
+            total = total/100 * (100 - voucher.getDiscount());
+        }
+
         bill.setTotal(total);
+
+        bill.setPayment(total-bill.getDeposit());
 
         bill = this.billRepository.save(bill);
 

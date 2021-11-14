@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -35,7 +34,7 @@ public class Jwt implements Serializable {
     private String jwtToken;
 
     @Column(name = "endTime", nullable = false)
-    private Timestamp endTime;
+    private Date endTime;
 
     @Column(name = "isActive", nullable = false)
     private Boolean isActive;

@@ -51,10 +51,10 @@ public class ProductDetail implements Serializable {
     @Column(name = "dateCreate", nullable = false)
     private Date dateCreate;
 
-    @Column(name = "detailPhoto", nullable = false)
-    private String detailPhoto;
-
     @Column(name = "idStatus", nullable = false)
     private Integer idStatus;
+
+    @Column(name = "detailPhoto", nullable = false)
+    private String detailPhoto;
 
 }

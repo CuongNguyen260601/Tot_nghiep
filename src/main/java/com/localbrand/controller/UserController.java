@@ -39,9 +39,4 @@ public class UserController {
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
-    @GetMapping("/admin/helu")
-    public ResponseEntity<String> test(HttpServletRequest request){
-        return ResponseEntity.ok().body(request.getAttribute("USER_NAME").toString());
-    }
-
 }

@@ -18,6 +18,7 @@ public class VoucherMapping  implements Mapping<VoucherDTO, Voucher> {
                 .dateEnd(voucher.getDateEnd())
                 .idStatus(voucher.getIdStatus())
                 .descriptionVoucher(voucher.getDescriptionVoucher())
+                .codeVoucher(voucher.getCodeVoucher())
                 .build();
     }
 

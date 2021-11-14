@@ -45,4 +45,8 @@ public class BillRequestDTO {
     private List<ProductDetailBillRequestDTO> listProductDetail;
 
     private AddressRequestDTO addressRequestDTO;
+
+    private Integer billType;
+
+    private String codeVoucher;
 }

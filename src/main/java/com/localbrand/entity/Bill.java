@@ -37,20 +37,17 @@ public class Bill implements Serializable {
     @Column(name = "phoneUser", nullable = false)
     private String phoneUser;
 
-    @Column(name = "emailUser", nullable = false)
+    @Column(name = "emailUser")
     private String emailUser;
 
     @Column(name = "dateCreate", nullable = false)
     private Date dateCreate;
 
-    @Column(name = "dateSuccess", nullable = false)
+    @Column(name = "dateSuccess")
     private Date dateSuccess;
 
-    @Column(name = "descriptionBill", nullable = false)
-    private String descriptionBill;
-
     @Column(name = "total", nullable = false)
-    private Integer total;
+    private Float total;
 
     @Column(name = "deposit", nullable = false)
     private Float deposit;
@@ -66,5 +63,11 @@ public class Bill implements Serializable {
 
     @Column(name = "idStatus", nullable = false)
     private Integer idStatus;
+
+    @Column(name = "billType", nullable = false)
+    private Integer billType;
+
+    @Column(name = "descriptionBill")
+    private String descriptionBill;
 
 }

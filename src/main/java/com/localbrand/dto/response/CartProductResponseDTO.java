@@ -18,4 +18,6 @@ public class CartProductResponseDTO {
     private ProductDetailUserDTO productDetailDTO;
 
     private Integer quantity;
+
+    private Boolean nextPage;
 }
