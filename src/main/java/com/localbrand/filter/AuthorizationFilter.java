@@ -9,8 +9,6 @@ import com.localbrand.common.Interface_API;
 import com.localbrand.common.Security_Enum;
 import com.localbrand.entity.Jwt;
 import com.localbrand.repository.JwtRepository;
-import com.localbrand.repository.RoleRepository;
-import com.localbrand.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class AuthorizationFilter extends OncePerRequestFilter {
 
 
-    private JwtRepository jwtRepository;
+    private final JwtRepository jwtRepository;
 
     public AuthorizationFilter(JwtRepository jwtRepository){
         this.jwtRepository = jwtRepository;
@@ -42,6 +40,27 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
         if(request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Auth.LOGIN)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Auth.SIGN_UP)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Auth.LOG_OUT)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Auth.REFRESH_TOKEN)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_GET_ALL_USER)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SEARCH_USER)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SHOW_USER)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SHOW_USER_BY_COLOR)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SHOW_USER_BY_COLOR_AND_SIZE)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SHOW_ALL)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_NEW)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_HOT)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_RELATED)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Address.ADDRESS_FIND_ALL_COMMUNE)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Address.ADDRESS_FIND_ALL_DISTRICT)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Address.ADDRESS_FIND_ALL_PROVINCE)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Size.SIZE_FIND_EXISTS)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Color.COLOR_FIND_EXISTS)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Color.COLOR_FIND_EXISTS)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Category.CATEGORY_TO_SIZE)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Category.Category_Child.CATEGORY_CHILD_FIND_BY_PARENT_ID)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.UPLOAD_IMAGE)
+
         ){
             filterChain.doFilter(request, response);
         }else{
@@ -67,9 +86,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                         String username = decodedJWT.getSubject();
                         String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
                         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                        Arrays.stream(roles).forEach(role -> {
-                            authorities.add(new SimpleGrantedAuthority(role));
-                        });
+                        Arrays.stream(roles).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         request.setAttribute("USER_NAME", username);
