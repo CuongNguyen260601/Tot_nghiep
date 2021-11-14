@@ -56,7 +56,6 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Address.ADDRESS_FIND_ALL_PROVINCE)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Size.SIZE_FIND_EXISTS)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Color.COLOR_FIND_EXISTS)
-            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Color.COLOR_FIND_EXISTS)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Category.CATEGORY_TO_SIZE)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Category.Category_Child.CATEGORY_CHILD_FIND_BY_PARENT_ID)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.UPLOAD_IMAGE)

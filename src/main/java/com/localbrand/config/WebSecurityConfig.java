@@ -54,6 +54,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.LOGIN).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.SIGN_UP).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.LOG_OUT).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.REFRESH_TOKEN).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_GET_ALL_USER).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SEARCH_USER).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SHOW_USER).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SHOW_USER_BY_COLOR).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SHOW_USER_BY_COLOR_AND_SIZE).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SHOW_ALL).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_HOT).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_NEW).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_RELATED).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Address.ADDRESS_FIND_ALL_PROVINCE).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Address.ADDRESS_FIND_ALL_DISTRICT).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Address.ADDRESS_FIND_ALL_COMMUNE).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Size.SIZE_FIND_EXISTS).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Color.COLOR_FIND_EXISTS).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Category.CATEGORY_TO_SIZE).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Category.Category_Child.CATEGORY_CHILD_FIND_BY_PARENT_ID).permitAll();
         http.authorizeRequests().antMatchers("/api/webtpf/admin/**").hasAnyAuthority(Role_Enum.ROLE_ADMIN.getRole(),Role_Enum.ROLE_EMPLOYEE.getRole());
         http.authorizeRequests().anyRequest().authenticated();
     }
