@@ -111,7 +111,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
                     " join Category c on c.idCategory = pd.idCategory " +
                     " where p1.idStatus = :idStatus and c.parentId = :idCategoryParent)"
     )
-    Page<Product> findAllByIdCategoryParentAndIdStatus(Integer idCategoryParent, Integer idStatus,Pageable pageable);
+    Page<Product> findAllByIdCategoryParentAndIdStatus(Integer idCategoryParent, Integer idStatus, Pageable pageable);
 
     @Query(
             "select p from Product p " +

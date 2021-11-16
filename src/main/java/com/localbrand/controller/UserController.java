@@ -5,6 +5,7 @@ import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.request.UserRequestDTO;
 import com.localbrand.dto.request.UserUpdateRequestDTO;
 import com.localbrand.dto.response.RefreshTokenDTO;
+import com.localbrand.dto.response.RoleResponseDTO;
 import com.localbrand.dto.response.UserResponseDTO;
 import com.localbrand.dto.response.UserResponseSignupDTO;
 import com.localbrand.service.UserService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(Interface_API.Cors.CORS)
@@ -47,4 +49,15 @@ public class UserController {
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
+    @PostMapping(Interface_API.API.Auth.SIGN_UP_ACCOUNT_EMPLOYEE)
+    public ResponseEntity<ServiceResult<UserResponseSignupDTO>> signUpAccountEmployee(HttpServletRequest request, @Valid @RequestBody UserRequestDTO userRequestDTO){
+        ServiceResult<UserResponseSignupDTO> result = this.userService.signUpAccountEmployee(request, userRequestDTO);
+        return ResponseEntity.status(result.getStatus()).body(result);
+    }
+
+    @GetMapping(Interface_API.API.Auth.GET_LIST_ROLE_DETAIL)
+    public ResponseEntity<ServiceResult<RoleResponseDTO>> getListRole (HttpServletRequest request, @RequestParam Optional<Long> idUser, @RequestParam Optional<Integer> idModule){
+        ServiceResult<RoleResponseDTO> result = this.userService.getListRoleResponse(request, idUser, idModule);
+        return ResponseEntity.status(result.getStatus()).body(result);
+    }
 }

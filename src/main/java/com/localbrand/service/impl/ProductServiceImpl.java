@@ -451,7 +451,7 @@ public class ProductServiceImpl implements ProductService {
         if(idCategory.isEmpty()
                 ||idCategory.get() < 1
                 ||page.isEmpty()
-                ||page.get() < 1
+                ||page.get() < 0
                 ||limit.isEmpty()
                 ||limit.get() < 1)
             return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
@@ -466,7 +466,7 @@ public class ProductServiceImpl implements ProductService {
         if(idUser.isEmpty()
                 ||idUser.get() < 1
                 ||page.isEmpty()
-                ||page.get() < 1
+                ||page.get() < 0
                 ||limit.isEmpty()
                 ||limit.get() < 1)
             return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);

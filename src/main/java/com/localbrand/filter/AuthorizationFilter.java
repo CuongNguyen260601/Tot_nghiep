@@ -10,6 +10,7 @@ import com.localbrand.common.Security_Enum;
 import com.localbrand.entity.Jwt;
 import com.localbrand.repository.JwtRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -67,6 +68,14 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             String authorizationHeader = request.getHeader("Token");
             String refreshToken = request.getHeader("refresh_token");
 
+            if(Objects.isNull(authorizationHeader) || Objects.isNull(refreshToken)){
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                Map<String, String> error = new HashMap<>();
+                error.put("message", "You not login");
+                response.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), error);
+            }
+
             Jwt jwt = this.jwtRepository.findFirstByJwtToken(refreshToken.trim()).orElse(null);
 
             if(Objects.isNull(jwt)){
@@ -95,7 +104,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                     } catch (Exception e) {
                         log.error("Error message: {}", e.getMessage());
                         response.setHeader("error", e.getMessage());
-                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                         Map<String, String> error = new HashMap<>();
                         error.put("error_message", e.getMessage());
                         response.setContentType(APPLICATION_JSON_VALUE);

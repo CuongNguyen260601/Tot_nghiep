@@ -15,6 +15,8 @@ public interface Interface_API {
             String LOG_OUT = "/logout";
             String UPDATE_PROFILE = "/updateprofile";
             String REFRESH_TOKEN = "/refreshtoken";
+            String SIGN_UP_ACCOUNT_EMPLOYEE = "/signupaccountemployee";
+            String GET_LIST_ROLE_DETAIL = "/getroles";
         }
         interface Color {
             String COLOR_FIND_ALL = "/admin/colors/getall";

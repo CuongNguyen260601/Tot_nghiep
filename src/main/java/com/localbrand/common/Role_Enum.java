@@ -13,4 +13,5 @@ public enum Role_Enum {
 
     @Getter
     private String role;
+
 }

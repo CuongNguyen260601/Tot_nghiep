@@ -4,13 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.localbrand.common.JWT_Enum;
-import com.localbrand.common.Security_Enum;
-import com.localbrand.common.ServiceResult;
-import com.localbrand.common.Status_Enum;
+import com.localbrand.common.*;
 import com.localbrand.dto.request.UserRequestDTO;
 import com.localbrand.dto.request.UserUpdateRequestDTO;
 import com.localbrand.dto.response.RefreshTokenDTO;
+import com.localbrand.dto.response.RoleResponseDTO;
 import com.localbrand.dto.response.UserResponseDTO;
 import com.localbrand.dto.response.UserResponseSignupDTO;
 import com.localbrand.entity.*;
@@ -50,6 +48,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final AddressRepository addressRepository;
     private final AddressMapping addressMapping;
+    private final RoleDetailRepository roleDetailRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -72,6 +71,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public ServiceResult<UserResponseSignupDTO> singUp(HttpServletRequest request, UserRequestDTO userRequestDTO) {
         User user = this.userMapping.toEntitySignUp(userRequestDTO);
+
+        user.setIdRole(Role_Id_Enum.ROLE_USER.getId());
+
         user = this.userRepository.save(user);
 
         Algorithm algorithm = Algorithm.HMAC256(Security_Enum.SECRET.getSecret().getBytes());
@@ -113,6 +115,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new ServiceResult<>(HttpStatus.OK, "Signup is success", this.userMapping.toDtoSignup(user, access_token, refresh_token));
     }
 
+    @Transactional
     @Override
     public ServiceResult<UserResponseDTO> updateProfile(HttpServletRequest request, UserUpdateRequestDTO userUpdateRequestDTO) {
         User user = this.userRepository.findById(userUpdateRequestDTO.getIdUser()).orElse(null);
@@ -207,5 +210,95 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         return new ServiceResult<>(HttpStatus.NON_AUTHORITATIVE_INFORMATION, "Logout is success");
     }
+
+    @Override
+    public ServiceResult<UserResponseSignupDTO> signUpAccountEmployee(HttpServletRequest request, UserRequestDTO userRequestDTO) {
+
+        String email = request.getAttribute("USER_NAME").toString();
+
+        User userAdmin = this.userRepository.findFirstByEmailEqualsIgnoreCase(email).orElse(null);
+
+        if(Objects.isNull(userAdmin)
+         || !userAdmin.getIdRole().equals(Role_Id_Enum.ROLE_ADMIN.getId())){
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You not is admin", null);
+        }
+
+        User user = this.userMapping.toEntitySignUp(userRequestDTO);
+
+        user.setIdRole(Role_Id_Enum.ROLE_EMPLOYEE.getId());
+
+        user = this.userRepository.save(user);
+
+        Algorithm algorithm = Algorithm.HMAC256(Security_Enum.SECRET.getSecret().getBytes());
+
+        UserDetails userDetails = this.loadUserByUsername(user.getEmail());
+
+        String access_token = JWT.create()
+                .withSubject(user.getEmail())
+                .withExpiresAt(new Date(System.currentTimeMillis() + JWT_Enum.ACCESS_MINUTE.getValue()*60*1000))
+                .withIssuer(request.getRequestURL().toString())
+                .withClaim("roles",userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .sign(algorithm);
+
+        String refresh_token = JWT.create()
+                .withSubject(user.getEmail())
+                .withExpiresAt(new Date(System.currentTimeMillis() + JWT_Enum.REFRESH_MINUTE.getValue()*60*1000))
+                .withIssuer(request.getRequestURL().toString())
+                .withClaim("roles", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .sign(algorithm);
+
+        Jwt jwt = Jwt
+                .builder()
+                .idUser(user.getIdUser().intValue())
+                .jwtToken(refresh_token)
+                .endTime(Timestamp.from(Instant.now().plusMillis(JWT_Enum.REFRESH_MINUTE.getValue()*60*1000)))
+                .isActive(true)
+                .build();
+
+        jwtRepository.save(jwt);
+
+        Cart cart = Cart.builder()
+                .idCart(null)
+                .idUser(user.getIdUser().intValue())
+                .idStatus(Status_Enum.EXISTS.getCode())
+                .build();
+
+        this.cartRepository.save(cart);
+
+        return new ServiceResult<>(HttpStatus.OK, "Signup is success", this.userMapping.toDtoSignup(user, access_token, refresh_token));
+    }
+
+    @Override
+    public ServiceResult<RoleResponseDTO> getListRoleResponse(HttpServletRequest request, Optional<Long> idUser, Optional<Integer> idModule) {
+
+        if(idUser.isEmpty() || idUser.get() < 1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, "User not found", null);
+        }
+
+        if(idModule.isEmpty() || idModule.get() < 1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, "Module not found", null);
+        }
+
+        User user = this.userRepository.findById(idUser.get()).orElse(null);
+
+        if(Objects.isNull(user)){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, "User not found", null);
+        }
+
+        List<RoleModule> lstRoleModules = this.roleDetailRepository.findByIdRoleAndIdModule(user.getIdRole(), idModule.get());
+
+        List<Integer> listIdAction = new ArrayList<>();
+
+        lstRoleModules.forEach(roleModule -> listIdAction.add(roleModule.getIdAction()));
+
+        RoleResponseDTO roleResponseDTO = RoleResponseDTO
+                .builder()
+                .idModule(idModule.get())
+                .listAction(listIdAction)
+                .build();
+
+        return new ServiceResult<>(HttpStatus.OK, "Get list role by module is success", roleResponseDTO);
+    }
+
 
 }
