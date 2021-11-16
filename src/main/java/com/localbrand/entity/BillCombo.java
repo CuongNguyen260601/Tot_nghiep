@@ -33,6 +33,9 @@ public class BillCombo implements Serializable {
     @Column(name = "idCombo", nullable = false)
     private Integer idCombo;
 
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 

@@ -51,4 +51,7 @@ public class Combo implements Serializable {
     @Column(name = "backPhoto", nullable = false)
     private String backPhoto;
 
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
 }

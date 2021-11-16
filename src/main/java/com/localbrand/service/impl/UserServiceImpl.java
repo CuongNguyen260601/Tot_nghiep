@@ -205,7 +205,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             this.jwtRepository.delete(jwt);
         }
 
-        return new ServiceResult<>(HttpStatus.OK, "Logout is success");
+        return new ServiceResult<>(HttpStatus.NON_AUTHORITATIVE_INFORMATION, "Logout is success");
     }
 
 }

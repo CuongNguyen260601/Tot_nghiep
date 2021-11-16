@@ -130,14 +130,17 @@ public class BillServiceImpl implements BillService {
     public ServiceResult<BillResponseDTO> saveBillAdmin(BillRequestDTO billRequestDTO) {
         log.info("Save bill");
 
-        Address address = this.addressMapping.toEntitySave(billRequestDTO.getAddressRequestDTO());
-
-        address = this.addressRepository.save(address);
-
         Bill bill = this.billMapping.toEntitySave(billRequestDTO);
 
-        bill.setIdAddress(address.getIdAddress().intValue());
+        if(Objects.nonNull(billRequestDTO.getIdAddress())){
+            bill.setIdAddress(billRequestDTO.getIdAddress());
+        }else {
+            Address address = this.addressMapping.toEntitySave(billRequestDTO.getAddressRequestDTO());
 
+            address = this.addressRepository.save(address);
+
+            bill.setIdAddress(address.getIdAddress().intValue());
+        }
 
         bill = this.billRepository.save(bill);
 
@@ -149,13 +152,6 @@ public class BillServiceImpl implements BillService {
             if(billProduct.getIdStatus().equals(Status_Enum.EXISTS.getCode())){
                 total += billProduct.getPrice()*billProduct.getQuantity();
             }
-        }
-
-        if(Objects.nonNull(bill.getIdVoucher()))
-        {
-            Voucher voucher = this.voucherRepository.findById(bill.getIdVoucher().longValue()).orElse(null);
-
-            total = total/100 * (100 - voucher.getDiscount());
         }
 
         bill.setTotal(total);

@@ -1,15 +1,16 @@
 package com.localbrand.model_mapping.Impl;
 
+import com.localbrand.common.Status_Enum;
 import com.localbrand.dto.ProductDetailDTO;
 import com.localbrand.dto.request.BillRequestDTO;
 import com.localbrand.dto.request.ProductDetailBillRequestDTO;
 import com.localbrand.dto.response.BillProductResponseDTO;
-import com.localbrand.entity.Bill;
-import com.localbrand.entity.BillProduct;
-import com.localbrand.entity.ProductDetail;
+import com.localbrand.entity.*;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.BillProductRepository;
 import com.localbrand.repository.ProductDetailRepository;
+import com.localbrand.repository.ProductSaleRepository;
+import com.localbrand.repository.SaleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,8 @@ public class BillProductMapping implements Mapping<BillProductResponseDTO, BillP
     private final ProductDetailRepository productDetailRepository;
     private final ProductMapping productMapping;
     private final BillProductRepository billProductRepository;
+    private final ProductSaleRepository productSaleRepository;
+    private final SaleRepository saleRepository;
 
     @Override
     public BillProductResponseDTO toDto(BillProduct billProduct) {
@@ -62,6 +65,16 @@ public class BillProductMapping implements Mapping<BillProductResponseDTO, BillP
                 ProductDetail productDetail = this.productDetailRepository.findById(detailBillRequestDTO.getIdProductDetail()).orElse(null);
 
                 if(Objects.nonNull(productDetail)){
+                    ProductSale  productSale = this.productSaleRepository.findFirstByIdProductDetailAndIdStatus(productDetail.getIdProductDetail().intValue(), Status_Enum.EXISTS.getCode()).orElse(null);
+
+                    float price = productDetail.getPrice();
+
+                    if(Objects.nonNull(productSale)){
+                        Sale sale = this.saleRepository.findById(productSale.getIdSale().longValue()).orElse(null);
+                        if(Objects.nonNull(sale)){
+                            price = price/100*(100-sale.getDiscount());
+                        }
+                    }
 
                     BillProduct billProductNull = BillProduct
                             .builder()
@@ -69,7 +82,7 @@ public class BillProductMapping implements Mapping<BillProductResponseDTO, BillP
                             .idBill(bill.getIdBill().intValue())
                             .idProductDetail(productDetail.getIdProductDetail().intValue())
                             .quantity(detailBillRequestDTO.getQuantity())
-                            .price(productDetail.getPrice())
+                            .price(price)
                             .idStatus(detailBillRequestDTO.getIdStatus())
                             .build();
                     lstBillProducts.add(billProductNull);
