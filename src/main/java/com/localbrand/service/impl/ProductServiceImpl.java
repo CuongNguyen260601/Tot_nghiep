@@ -427,6 +427,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ServiceResult<List<ProductShowUserResponseDTO>> getListNewProduct(Optional<Integer> limit) {
 
+        if(limit.isEmpty()
+                ||limit.get() < 1)
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
         Pageable pageable = PageRequest.of(0, limit.get());
         List<Product> listProduct = this.productRepository.findAllProductNew(pageable).toList();
         return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
@@ -435,6 +438,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ServiceResult<List<ProductShowUserResponseDTO>> getListHotProduct(Optional<Integer> limit) {
+        if(limit.isEmpty()
+                ||limit.get() < 1)
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
         Pageable pageable = PageRequest.of(0, limit.get());
         List<Product> listProduct = this.productRepository.findAllProductHot(pageable).toList();
         return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
@@ -442,8 +448,30 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ServiceResult<List<ProductShowUserResponseDTO>> getListProductByCategory(Optional<Integer> idCategory, Optional<Integer> page, Optional<Integer> limit) {
+        if(idCategory.isEmpty()
+                ||idCategory.get() < 1
+                ||page.isEmpty()
+                ||page.get() < 1
+                ||limit.isEmpty()
+                ||limit.get() < 1)
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
+
         Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
         List<Product> listProduct = this.productRepository.findAllByIdCategoryParentAndIdStatus(idCategory.get(), Status_Enum.EXISTS.getCode(), pageable).toList();
+        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductLikeByUser(Optional<Integer> idUser, Optional<Integer> page, Optional<Integer> limit) {
+        if(idUser.isEmpty()
+                ||idUser.get() < 1
+                ||page.isEmpty()
+                ||page.get() < 1
+                ||limit.isEmpty()
+                ||limit.get() < 1)
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
+        List<Product> listProduct = this.productRepository.findProductLikeByIdUser(idUser.get(), pageable).toList();
         return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
     }
 

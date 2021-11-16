@@ -170,4 +170,14 @@ public class ProductController {
         ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductByCategory(idCategory,page,limit);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
+
+    @GetMapping(Interface_API.API.Product.PRODUCT_LIKE)
+    public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductLike(
+            @RequestParam Optional<Integer> idUser,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit
+    ){
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductLikeByUser(idUser,page,limit);
+        return ResponseEntity.status(result.getStatus().value()).body(result);
+    }
 }

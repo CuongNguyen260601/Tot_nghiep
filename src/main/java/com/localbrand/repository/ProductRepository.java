@@ -217,4 +217,14 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     )
     Page<Product> findAllProductHot(Pageable pageable);
 
+    @Query(
+            "select p from Product p where p.idProduct in " +
+                    " (select distinct (l.idProduct) from Like l" +
+                    " join Product p1 on p1.idProduct = l.idProduct " +
+                    " where p1.idStatus = 2 " +
+                    " and l.idUser = :userId " +
+                    " and l.likeProduct = true )"
+    )
+    Page<Product> findProductLikeByIdUser(Integer userId, Pageable pageable);
+
 }

@@ -101,6 +101,7 @@ public interface Interface_API {
             String PRODUCT_NEW = "/user/products/findproductnew";
             String PRODUCT_HOT = "/user/products/findproducthot";
             String PRODUCT_RELATED = "/user/products/findproductrelated";
+            String PRODUCT_LIKE = "/user/products/findproductlike";
         }
 
         interface Cart {
@@ -131,6 +132,10 @@ public interface Interface_API {
             String ADDRESS_FIND_ALL_PROVINCE = "/getallprovince";
             String ADDRESS_FIND_ALL_DISTRICT = "/getalldistrict";
             String ADDRESS_FIND_ALL_COMMUNE = "/getallcommune";
+        }
+
+        interface Like{
+            String LIKE_SAVE = "/user/likeordislike";
         }
     }
 }

@@ -6,6 +6,7 @@ import com.localbrand.dto.CartComboDTO;
 import com.localbrand.dto.CartDTO;
 import com.localbrand.dto.CartProductDTO;
 import com.localbrand.dto.ProductDetailDTO;
+import com.localbrand.dto.response.CartListResponseDTO;
 import com.localbrand.dto.response.CartProductResponseDTO;
 import com.localbrand.entity.Cart;
 import com.localbrand.entity.CartProduct;
@@ -71,7 +72,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public ServiceResult<List<CartProductResponseDTO>> getListCartProduct(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit) {
+    public ServiceResult<CartListResponseDTO> getListCartProduct(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit) {
         log.info("Get list cart product");
 
         if(Objects.isNull(idCart) || idCart.isEmpty() || idCart.get() < 1){
@@ -97,7 +98,9 @@ public class CartServiceImpl implements CartService {
                     }
                 }
         ).collect(Collectors.toList());
-        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.GET_LIST_CART_PRODUCT_BY_USER_SUCCESS,listCartProduct);
+
+        Boolean isBoolean = this.cartProductRepository.countAllByIdCart(idCart.get()) - pageable.getPageSize() > 0;
+        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.GET_LIST_CART_PRODUCT_BY_USER_SUCCESS,CartListResponseDTO.builder().cartProducts(listCartProduct).isNextPage(isBoolean).build());
     }
 
     @Override

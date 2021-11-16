@@ -5,18 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartProductResponseDTO {
+public class CartListResponseDTO {
 
-    private Long idCartProduct;
+    private List<CartProductResponseDTO> cartProducts;
 
-    private Integer idCart;
-
-    private ProductDetailUserDTO productDetailDTO;
-
-    private Integer quantity;
-
+    private Boolean isNextPage;
 }
