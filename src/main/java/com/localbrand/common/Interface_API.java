@@ -144,5 +144,38 @@ public interface Interface_API {
         interface Like{
             String LIKE_SAVE = "/user/likeordislike";
         }
+
+        interface Combo {
+            String COMBO_ADD = "/admin/combos/save";
+            String COMBO_GET_LIST_PARENT = "/admin/combos/getlistparent";
+            String COMBO_GET_LIST_CHILD = "/admin/combos/getlistchild";
+            String COMBO_SHOW = "/admin/combos/show";
+            String COMBO_DELETE_PARENT = "/admin/combos/deleteparent";
+            String COMBO_DELETE_CHILD = "/admin/combos/deletechild";
+            String COMBO_SEARCH = "/admin/combos/search";
+            String COMBO_GET_ALL_USER = "/user/combos/getlistproduct";
+            String COMBO_SEARCH_USER = "/user/combos/search";
+            String COMBO_SHOW_USER = "/user/combos/showdetail";
+            String COMBO_SHOW_USER_BY_COLOR = "/user/combos/showdetailbycolor";
+            String COMBO_SHOW_USER_BY_COLOR_AND_SIZE = "/user/combos/showdetailbycolorandsize";
+            String COMBO_SHOW_ALL = "/user/combos/showall";
+            String COMBO_NEW = "/user/combos/findproductnew";
+            String COMBO_HOT = "/user/combos/findproducthot";
+            String COMBO_RELATED = "/user/combos/findproductrelated";
+            String COMBO_LIKE = "/user/combos/findproductlike";
+        }
+
+        interface News {
+            String NEWS_FIND_ALL = "/admin/news/getall";
+            String NEWS_FIND_ALL_USER = "/user/news/getall";
+            String NEWS_FIND_BY_STATUS = "/admin/news/findbystatus";
+            String NEWS_FIND_SORT = "/admin/news/getallsort";
+            String NEWS_FIND_BY_ID = "/admin/news/findbyid/{idNews}";
+            String NEWS_SAVE = "/admin/news/save";
+            String NEWS_DELETE = "/admin/news/delete";
+            String NEWS_SEARCH = "/admin/news/search";
+            String NEWS_FIND_EXISTS = "/admin/news/findexists";
+        }
+
     }
 }

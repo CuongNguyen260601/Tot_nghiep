@@ -188,4 +188,81 @@ public interface Notification {
             String GET_LIST_BILL_PRODUCT_SUCCESS ="Get list bill product success";
         }
     }
+
+    interface Combo {
+        String GET_LIST_COMBO_SUCCESS = "Get list combo success";
+        String GET_COMBO_BY_ID_SUCCESS = "Get combo by id success";
+        String GET_COMBO_BY_ID_FALSE = "Voucher does not exists";
+        String GET_COMBO_AND_SORT_SUCESS = "Get combo and sort is success";
+        String GET_COMBO_AND_SORT_FALSE = "Invalid sort";
+        String SAVE_COMBO_SUCCESS = "Save combo is success";
+        String SAVE_COMBO_FALSE = "Save combo is false";
+        String DELETE_COMBO_SUCCESS = "Delete combo is success";
+        String DELETE_COMBO_FALSE = "Delete combo is false";
+        String SEARCH_COMBO_SUCCESS = "Search combo is success";
+        String FIND_COMBO_BY_STATUS_SUCCESS = "Find combo by status is success";
+        interface Validate_Combo {
+            String VALIDATE_ID = "Invalid id combo";
+            String VALIDATE_NAME = "Invalid name combo";
+            String VALIDATE_PRICE = "Invalid price combo";
+            String VALIDATE_STATUS = "Invalid status combo";
+            String VALIDATE_QUANTITY = "Invalid quantity combo";
+        }
+    }
+
+    interface ComboDetail {
+        String GET_LIST_COMBO_DETAIL_SUCCESS = "Get list combo detail success";
+        String GET_COMBO_DETAIL_BY_ID_SUCCESS = "Get combo detail by id success";
+        String GET_COMBO_DETAIL_BY_ID_FALSE = "Voucher does not exists";
+        String GET_COMBO_DETAIL_AND_SORT_SUCESS = "Get combo detail and sort is success";
+        String GET_COMBO_DETAIL_AND_SORT_FALSE = "Invalid sort";
+        String SAVE_COMBO_DETAIL_SUCCESS = "Save combo detail is success";
+        String SAVE_COMBO_DETAIL_FALSE = "Save combo detail is false";
+        String DELETE_COMBO_DETAIL_SUCCESS = "Delete combo detail is success";
+        String DELETE_COMBO_DETAIL_FALSE = "Delete combo detail is false";
+        String SEARCH_COMBO_DETAIL_SUCCESS = "Search combo detail is success";
+        String FIND_COMBO_DETAIL_BY_STATUS_SUCCESS = "Find combo detail by status is success";
+        interface Validate_ComboDetail {
+            String VALIDATE_ID_PRODUCT_DETAIL = "Invalid id product detail";
+            String VALIDATE_ID_COMBO = "Invalid id combo";
+            String VALIDATE_ID = "Invalid id combo detail";
+            String VALIDATE_STATUS = "Invalid status combo detail";
+        }
+    }
+
+    interface ComboTag {
+        String GET_LIST_COMBO_DETAIL_SUCCESS = "Get list combo detail success";
+        String GET_COMBO_DETAIL_BY_ID_SUCCESS = "Get combo detail by id success";
+        String GET_COMBO_DETAIL_BY_ID_FALSE = "Voucher does not exists";
+        String GET_COMBO_DETAIL_AND_SORT_SUCESS = "Get combo detail and sort is success";
+        String GET_COMBO_DETAIL_AND_SORT_FALSE = "Invalid sort";
+        String SAVE_COMBO_DETAIL_SUCCESS = "Save combo detail is success";
+        String SAVE_COMBO_DETAIL_FALSE = "Save combo detail is false";
+        String DELETE_COMBO_DETAIL_SUCCESS = "Delete combo detail is success";
+        String DELETE_COMBO_DETAIL_FALSE = "Delete combo detail is false";
+        String SEARCH_COMBO_DETAIL_SUCCESS = "Search combo detail is success";
+        String FIND_COMBO_DETAIL_BY_STATUS_SUCCESS = "Find combo detail by status is success";
+        interface Validate_ComboTag {
+            String VALIDATE_ID = "Invalid id combo tag";
+        }
+    }
+
+    interface News {
+        String GET_LIST_NEWS_SUCCESS = "Get list news success";
+        String GET_NEWS_BY_ID_SUCCESS = "Get news by id success";
+        String GET_NEWS_BY_ID_FALSE = "Voucher does not exists";
+        String SAVE_NEWS_SUCCESS = "Save news is success";
+        String SAVE_NEWS_FALSE = "Save news is false";
+        String DELETE_NEWS_SUCCESS = "Delete news is success";
+        String DELETE_NEWS_FALSE = "Delete news is false";
+        String SEARCH_NEWS_BY_TITLE_SUCCESS = "Search news is success";
+        interface Validate_News {
+            String VALIDATE_ID = "Invalid id news";
+            String VALIDATE_ID_USER = "Invalid id user";
+            String VALIDATE_TITLE = "Invalid title";
+            String VALIDATE_SHORT_CONTENT = "Invalid short content";
+            String VALIDATE_STATUS = "Invalid status news";
+            String VALIDATE_IMAGE_NEW = "Invalid image news";
+        }
+    }
 }
