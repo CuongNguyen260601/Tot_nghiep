@@ -18,6 +18,8 @@ public interface SizeRepository extends JpaRepository<Size, Long>, JpaSpecificat
 
     List<Size> findAllByIdCategoryAndIdStatus(Integer idCategory, Integer idStatus);
 
+    List<Size> findAllByIdCategory(Integer idCategory);
+
     Page<Size> findAllByIdStatusAndIdCategory(Integer idStatus, Integer idCategory, Pageable pageable);
 
     Page<Size> findAllByIdCategory (Integer idCategory, Pageable pageable);

@@ -325,6 +325,13 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
+    public ServiceResult<List<CategoryParentDTO>> getAllCategoryParent() {
+        this.log.info("Get list category parent");
+        List<Category> listCategory = this.categoryRepository.findAll();
+        return new ServiceResult<>(HttpStatus.OK,Notification.Category.GET_LIST_PARENT_TO_SIZE, listCategory.stream().map(this.categoryParentMapping::toDto).collect(Collectors.toList()));
+    }
+
+    @Override
     public ServiceResult<List<CategoryChildDTO>> findAllCategoryChild(HttpServletRequest request, Optional<Long> parentId,Optional<Integer> page) {
         Object email = request.getAttribute("USER_NAME");
 
@@ -562,5 +569,21 @@ public class CategoryServiceImpl  implements CategoryService{
         List<Category> listCategory = this.categoryRepository.findAllByParentIdAndIdStatus(parentId.orElse(0), Status_Enum.EXISTS.getCode());
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Category.GET_CATEGORY_CHILD_BY_PARENT_SUCCESS, listCategory.stream().map(this.categoryChildMapping::toDto).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ServiceResult<List<CategoryChildDTO>> getAllCategoryChildByParent(HttpServletRequest request, Optional<Integer> parentId) {
+
+        this.log.info("Get list category child by parentId");
+
+        if(Objects.isNull(parentId)
+                || parentId.isEmpty()
+                || parentId.get() < 0
+        ) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Category.Validate_Category.VALIDATE_STATUS);
+
+        List<Category> listCategory = this.categoryRepository.findAllByParentId(parentId.orElse(0));
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Category.GET_CATEGORY_CHILD_BY_PARENT_SUCCESS, listCategory.stream().map(this.categoryChildMapping::toDto).collect(Collectors.toList()));
+
     }
 }

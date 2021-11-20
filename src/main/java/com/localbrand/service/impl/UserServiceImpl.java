@@ -26,6 +26,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -314,7 +315,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not change password", null);
         }
 
-        boolean checkOldPassword = this.passwordEncoder.matches(user.getPasswordUser(), changePasswordRequest.getOldPassword());
+        boolean checkOldPassword = BCrypt.checkpw(changePasswordRequest.getOldPassword(), user.getPasswordUser());
 
         if(!checkOldPassword){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, "Invalid old password");
@@ -324,7 +325,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user = this.userRepository.save(user);
 
-        return new ServiceResult<>(HttpStatus.OK, "Update is success", this.userMapping.toDto(user));
+        return new ServiceResult<>(HttpStatus.OK, "Change password is success", this.userMapping.toDto(user));
     }
 
     @Override

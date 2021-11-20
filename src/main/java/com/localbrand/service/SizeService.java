@@ -26,4 +26,6 @@ public interface SizeService {
 
     ServiceResult<List<SizeResponseDTO>> getSizeByIdCategory (Optional<Integer> idCategory);
 
+    ServiceResult<List<SizeResponseDTO>> getSizeByCategory (Optional<Integer> idCategory);
+
 }

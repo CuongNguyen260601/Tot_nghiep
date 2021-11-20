@@ -87,4 +87,12 @@ public class SizeController {
                 .status(result.getStatus().value())
                 .body(result);
     }
+
+    @GetMapping(Interface_API.API.Size.SIZE_FIND_BY_CATEGORY)
+    public ResponseEntity<ServiceResult<List<SizeResponseDTO>>> findByCate(@PathVariable Optional<Integer> idCategory) {
+        ServiceResult<List<SizeResponseDTO>> result = this.sizeService.getSizeByCategory(idCategory);
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
 }

@@ -24,6 +24,7 @@ public interface Interface_API {
         }
         interface Color {
             String COLOR_FIND_ALL = "/admin/colors/getall";
+            String COLOR_GET_ALL = "/admin/colors/findall";
             String COLOR_FIND_SORT = "/admin/colors/getallsort";
             String COLOR_FIND_BY_ID = "/admin/colors/findbyid/{idColor}";
             String COLOR_SAVE = "/admin/colors/save";
@@ -42,6 +43,7 @@ public interface Interface_API {
             String SIZE_SEARCH = "/admin/sizes/search";
             String SIZE_FIND_BY_STATUS = "/admin/sizes/findbystatus";
             String SIZE_FIND_EXISTS = "/admin/sizes/findbyidcategory/{idCategory}";
+            String SIZE_FIND_BY_CATEGORY = "/admin/sizes/findbycategory/{idCategory}";
 
         }
 
@@ -71,6 +73,7 @@ public interface Interface_API {
             String CATEGORY_TO_SIZE = "/admin/categories/getexists";
             interface Category_Parent {
                 String CATEGORY_PARENT_FIND_ALL = "/admin/categories/parent/getall";
+                String CATEGORY_PARENT_FIND_ALL_PARENT = "/admin/categories/parent/getallcategoryparent";
                 String CATEGORY_PARENT_FIND_SORT = "/admin/categories/parent/getallsort";
                 String CATEGORY_PARENT_FIND_BY_ID = "/admin/categories/parent/findbyid/{idCategory}";
                 String CATEGORY_PARENT_SAVE = "/admin/categories/parent/save";
@@ -87,6 +90,7 @@ public interface Interface_API {
                 String CATEGORY_CHILD_SEARCH = "/admin/categories/child/search";
                 String CATEGORY_CHILD_FIND_BY_STATUS = "/admin/categories/child/findbystatus";
                 String CATEGORY_CHILD_FIND_BY_PARENT_ID = "/admin/categories/child/findbyparent/{parentId}";
+                String CATEGORY_CHILD_FIND_ALL_BY_PARENT_ID = "/admin/categories/child/findallbyparent/{parentId}";
             }
         }
 

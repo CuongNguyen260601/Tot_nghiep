@@ -27,6 +27,8 @@ public interface CategoryService {
 
     ServiceResult<List<CategoryParentDTO>> findByStatusCategoryParent(HttpServletRequest request, Optional<Integer> idStatus, Optional<Integer> page);
 
+    ServiceResult<List<CategoryParentDTO>> getAllCategoryParent();
+
     // Category child
 
     ServiceResult<List<CategoryChildDTO>> findAllCategoryChild(HttpServletRequest request, Optional<Long> parentId, Optional<Integer> page);
@@ -46,5 +48,7 @@ public interface CategoryService {
     // Service to product
 
     ServiceResult<List<CategoryChildDTO>> getAllCategoryChildByParentId(HttpServletRequest request, Optional<Integer> parentId);
+
+    ServiceResult<List<CategoryChildDTO>> getAllCategoryChildByParent(HttpServletRequest request, Optional<Integer> parentId);
 
 }

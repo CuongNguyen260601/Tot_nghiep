@@ -22,6 +22,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSp
 
     List<Category> findAllByParentIdAndIdStatus(Integer parentId, Integer idStatus);
 
+    List<Category> findAllByParentId(Integer idStatus);
+
     Page<Category> findAllByParentIdAndIdStatus(Integer parentId, Integer idStatus, Pageable pageable);
 
     List<Category> findAllByIdStatusAndParentIdIsNull(Integer idStatus);

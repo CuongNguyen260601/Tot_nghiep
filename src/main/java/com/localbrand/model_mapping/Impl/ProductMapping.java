@@ -325,6 +325,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         productShowUserResponseDTO.setLike(totalLike);
         productShowUserResponseDTO.setCategoryChildDTO(this.categoryChildMapping.toDto(this.categoryRepository.findCategoryChildByIdProduct(product.getIdProduct())));
         productShowUserResponseDTO.setCategoryParentDTO(this.categoryParentMapping.toDto(this.categoryRepository.findCategoryParentByIdProduct(product.getIdProduct())));
+        productShowUserResponseDTO.setIsLike(false);
 
         Gender gender = this.genderRepository.findByIdProduct(product.getIdProduct());
         GenderDTO genderDTO = GenderDTO.builder()

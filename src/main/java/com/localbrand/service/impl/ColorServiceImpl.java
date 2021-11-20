@@ -61,6 +61,14 @@ public class ColorServiceImpl implements ColorService{
     }
 
     @Override
+    public ServiceResult<List<ColorDTO>> getAll() {
+        List<Color> listColor = this.colorRepository.findAll();
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Color.GET_LIST_COLOR_SUCCESS, listColor.stream().map(this.colorMapping::toDto).collect(Collectors.toList()));
+
+    }
+
+    @Override
     public ServiceResult<List<ColorDTO>> findAllAndSort(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
         Object email = request.getAttribute("USER_NAME");
 

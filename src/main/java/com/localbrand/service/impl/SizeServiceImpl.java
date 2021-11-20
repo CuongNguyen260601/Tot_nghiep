@@ -271,4 +271,16 @@ public class  SizeServiceImpl implements SizeService {
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Size.FIND_SIZE_BY_STATUS_SUCCESS, listSize.stream().map(this.sizeMapping::toDtoResponse).collect(Collectors.toList()));
     }
+
+    @Override
+    public ServiceResult<List<SizeResponseDTO>> getSizeByCategory(Optional<Integer> idCategory) {
+        if(Objects.isNull(idCategory)
+                || idCategory.isEmpty()
+                || idCategory.get() < 1
+        ) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Category.Validate_Category.VALIDATE_ID);
+
+        List<Size> listSize = this.sizeRepository.findAllByIdCategory(idCategory.get());
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Size.FIND_SIZE_BY_STATUS_SUCCESS, listSize.stream().map(this.sizeMapping::toDtoResponse).collect(Collectors.toList()));
+    }
 }

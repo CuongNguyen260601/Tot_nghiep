@@ -33,6 +33,14 @@ public class CategoryController {
                 .body(result);
     }
 
+    @GetMapping(Interface_API.API.Category.Category_Parent.CATEGORY_PARENT_FIND_ALL_PARENT)
+    public ResponseEntity<ServiceResult<List<CategoryParentDTO>>> fillAllCategory(HttpServletRequest request) {
+        ServiceResult<List<CategoryParentDTO>> result = this.categoryService.getAllCategoryParent();
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
+
     @GetMapping(Interface_API.API.Category.Category_Parent.CATEGORY_PARENT_FIND_SORT)
     public ResponseEntity<ServiceResult<List<CategoryParentDTO>>> fillAllCategoryParentByPropertiesAndSort(
             HttpServletRequest request,
@@ -154,6 +162,14 @@ public class CategoryController {
     @GetMapping(Interface_API.API.Category.Category_Child.CATEGORY_CHILD_FIND_BY_PARENT_ID)
     public ResponseEntity<ServiceResult<List<CategoryChildDTO>>> getAllCategoryByParentId(HttpServletRequest request, @PathVariable Optional<Integer> parentId){
         ServiceResult<List<CategoryChildDTO>> result = this.categoryService.getAllCategoryChildByParentId(request, parentId);
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
+
+    @GetMapping(Interface_API.API.Category.Category_Child.CATEGORY_CHILD_FIND_ALL_BY_PARENT_ID)
+    public ResponseEntity<ServiceResult<List<CategoryChildDTO>>> getAllCategoryByParent(HttpServletRequest request, @PathVariable Optional<Integer> parentId){
+        ServiceResult<List<CategoryChildDTO>> result = this.categoryService.getAllCategoryChildByParent(request, parentId);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);

@@ -11,6 +11,8 @@ public interface ColorService {
 
     ServiceResult<List<ColorDTO>> findAll(HttpServletRequest request, Optional<Integer> page);
 
+    ServiceResult<List<ColorDTO>> getAll();
+
     ServiceResult<List<ColorDTO>> findAllAndSort(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idStatus,Optional<Integer> page);
 
     ServiceResult<ColorDTO> getById(HttpServletRequest request, Optional<Long> idColor);

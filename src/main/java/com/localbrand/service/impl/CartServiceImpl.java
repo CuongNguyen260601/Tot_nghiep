@@ -5,7 +5,6 @@ import com.localbrand.common.Status_Enum;
 import com.localbrand.dto.CartComboDTO;
 import com.localbrand.dto.CartDTO;
 import com.localbrand.dto.CartProductDTO;
-import com.localbrand.dto.ProductDetailDTO;
 import com.localbrand.dto.response.CartListResponseDTO;
 import com.localbrand.dto.response.CartProductResponseDTO;
 import com.localbrand.entity.Cart;
@@ -14,7 +13,6 @@ import com.localbrand.entity.ProductDetail;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.CartMapping;
 import com.localbrand.model_mapping.Impl.CartProductMapping;
-import com.localbrand.repository.CartComboRepository;
 import com.localbrand.repository.CartProductRepository;
 import com.localbrand.repository.CartRepository;
 import com.localbrand.repository.ProductDetailRepository;
@@ -31,6 +29,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,10 +87,12 @@ public class CartServiceImpl implements CartService {
 
         List<CartProduct> listCart = this.cartProductRepository.findAllByIdCart(idCart.get(), pageable).toList();
 
+        AtomicReference<Float> totalMoney = new AtomicReference<>(0F);
         List<CartProductResponseDTO> listCartProduct = listCart.stream().map(
                 cartProduct -> {
                     ProductDetail productDetail = this.productDetailRepository.findById(cartProduct.getIdProductDetail().longValue()).orElse(null);
                     if(Objects.nonNull(productDetail)) {
+                        totalMoney.set(totalMoney.get()+ cartProduct.getQuantity()*productDetail.getPrice());
                         return this.cartProductMapping.toCartUserDTO(cartProduct, productDetail);
                     }else{
                         return null;
@@ -100,7 +101,7 @@ public class CartServiceImpl implements CartService {
         ).collect(Collectors.toList());
 
         Boolean isBoolean = this.cartProductRepository.countAllByIdCart(idCart.get()) - pageable.getPageSize() > 0;
-        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.GET_LIST_CART_PRODUCT_BY_USER_SUCCESS,CartListResponseDTO.builder().cartProducts(listCartProduct).isNextPage(isBoolean).build());
+        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.GET_LIST_CART_PRODUCT_BY_USER_SUCCESS,CartListResponseDTO.builder().cartProducts(listCartProduct).isNextPage(isBoolean).totalMoney(totalMoney.get()).build());
     }
 
     @Override

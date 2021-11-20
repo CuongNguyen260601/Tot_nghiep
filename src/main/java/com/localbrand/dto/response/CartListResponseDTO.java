@@ -16,4 +16,6 @@ public class CartListResponseDTO {
     private List<CartProductResponseDTO> cartProducts;
 
     private Boolean isNextPage;
+
+    private Float totalMoney;
 }

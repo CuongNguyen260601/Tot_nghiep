@@ -30,6 +30,15 @@ public class ColorController {
                 .body(result);
     }
 
+    @GetMapping(Interface_API.API.Color.COLOR_GET_ALL)
+    public ResponseEntity<ServiceResult<List<ColorDTO>>> fillAll() {
+        ServiceResult<List<ColorDTO>> result = this.colorService.getAll();
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
+
+
     @GetMapping(Interface_API.API.Color.COLOR_FIND_SORT)
     public ResponseEntity<ServiceResult<List<ColorDTO>>> fillAllAndSort(HttpServletRequest request, @RequestParam Optional<Integer> sort, @RequestParam Optional<Integer> idStatus,@RequestParam Optional<Integer> page) {
         ServiceResult<List<ColorDTO>> result = this.colorService.findAllAndSort(request, sort, idStatus,page);
