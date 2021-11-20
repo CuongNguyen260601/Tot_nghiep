@@ -22,6 +22,8 @@ public class ProductChildResponseDTO {
 
     private Integer idProduct;
 
+    private String nameProduct;
+
     private Integer idGender;
 
     private CategoryChildDTO category;

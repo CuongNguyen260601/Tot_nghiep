@@ -24,7 +24,8 @@ public class Role_Utils {
             return false;
         }
 
-        RoleDetail roleDetail = this.roleDetailRepository.findByIdRoleAndIdModuleAndIdAction(user.getIdRole(), idModule, idAction).orElse(null);
+        RoleDetail roleDetail = this.roleDetailRepository.findByIdRoleAndIdModuleAndIdAction(user.getIdRole(), idModule.longValue()
+                , idAction).orElse(null);
 
         if(Objects.isNull(roleDetail)){
             return false;

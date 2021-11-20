@@ -8,6 +8,7 @@ import com.localbrand.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -24,13 +25,14 @@ public class ProductController {
     }
 
     @PostMapping(Interface_API.API.Product.PRODUCT_ADD)
-    public ResponseEntity<ServiceResult<ProductResponseDTO>> addAll(@Valid @RequestBody ProductRequestDTO productRequestDTO){
-        ServiceResult<ProductResponseDTO> result = this.productService.saveProduct(productRequestDTO);
+    public ResponseEntity<ServiceResult<ProductResponseDTO>> addAll(HttpServletRequest request, @Valid @RequestBody ProductRequestDTO productRequestDTO){
+        ServiceResult<ProductResponseDTO> result = this.productService.saveProduct(request, productRequestDTO);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_GET_LIST_PARENT)
     public ResponseEntity<ServiceResult<List<ProductParentResponseDTO>>> getAllParent(
+           HttpServletRequest request,
            @RequestParam Optional<Integer> sort,
            @RequestParam Optional<Integer> idStatus,
            @RequestParam Optional<Integer> idCategoryParent,
@@ -39,12 +41,13 @@ public class ProductController {
            @RequestParam Optional<Integer> page
     ){
         ServiceResult<List<ProductParentResponseDTO>> result =
-                this.productService.getAllParent(sort, idStatus, idCategoryParent, idCategoryChild, idGender, page);
+                this.productService.getAllParent(request, sort, idStatus, idCategoryParent, idCategoryChild, idGender, page);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_GET_LIST_CHILD)
     public ResponseEntity<ServiceResult<List<ProductChildResponseDTO>>> getAllParent(
+            HttpServletRequest request,
             @RequestParam Optional<Integer> sort,
             @RequestParam Optional<Integer> idProduct,
             @RequestParam Optional<Integer> idStatus,
@@ -54,7 +57,7 @@ public class ProductController {
             @RequestParam Optional<Integer> page
     ){
         ServiceResult<List<ProductChildResponseDTO>> result =
-                this.productService.getAllChild(sort,
+                this.productService.getAllChild(request, sort,
                         idProduct,
                         idStatus,
                         idColor,
@@ -65,31 +68,32 @@ public class ProductController {
     }
 
     @DeleteMapping(Interface_API.API.Product.PRODUCT_DELETE_PARENT)
-    public ResponseEntity<ServiceResult<ProductParentResponseDTO>> deleteParent( @RequestParam Optional<Long> idProduct){
-        ServiceResult<ProductParentResponseDTO> result = this.productService.deleteProductParent(idProduct);
+    public ResponseEntity<ServiceResult<ProductParentResponseDTO>> deleteParent(HttpServletRequest request, @RequestParam Optional<Long> idProduct){
+        ServiceResult<ProductParentResponseDTO> result = this.productService.deleteProductParent(request, idProduct);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @DeleteMapping(Interface_API.API.Product.PRODUCT_DELETE_CHILD)
-    public ResponseEntity<ServiceResult<ProductChildResponseDTO>> deleteChild( @RequestParam Optional<Long> idProductDetail){
-        ServiceResult<ProductChildResponseDTO> result = this.productService.deleteProductChild(idProductDetail);
+    public ResponseEntity<ServiceResult<ProductChildResponseDTO>> deleteChild(HttpServletRequest request, @RequestParam Optional<Long> idProductDetail){
+        ServiceResult<ProductChildResponseDTO> result = this.productService.deleteProductChild(request, idProductDetail);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SHOW)
-    public ResponseEntity<ServiceResult<ProductResponseShowAdminDTO>> showProduct(@RequestParam Optional<Long> idProduct){
-        ServiceResult<ProductResponseShowAdminDTO> result = this.productService.showProduct(idProduct);
+    public ResponseEntity<ServiceResult<ProductResponseShowAdminDTO>> showProduct(HttpServletRequest request, @RequestParam Optional<Long> idProduct){
+        ServiceResult<ProductResponseShowAdminDTO> result = this.productService.showProduct(request, idProduct);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SEARCH)
-    public ResponseEntity<ServiceResult<List<ProductParentResponseDTO>>> searchProduct(@RequestParam String name, @RequestParam Optional<Integer> page){
-        ServiceResult<List<ProductParentResponseDTO>> result = this.productService.searchByName(name, page);
+    public ResponseEntity<ServiceResult<List<ProductParentResponseDTO>>> searchProduct(HttpServletRequest request, @RequestParam String name, @RequestParam Optional<Integer> page){
+        ServiceResult<List<ProductParentResponseDTO>> result = this.productService.searchByName(request, name, page);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_GET_ALL_USER)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getListProductOnUser(
+            HttpServletRequest request,
             @RequestParam Optional<Integer> sort,
             @RequestParam Optional<Integer> idCategoryParent,
             @RequestParam Optional<Integer> idCategoryChild,
@@ -100,6 +104,7 @@ public class ProductController {
             @RequestParam Optional<Integer> limit
     ){
         ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getAllProductShowUser(
+                request,
                 sort,
                 idCategoryParent,
                 idCategoryChild,
@@ -113,8 +118,8 @@ public class ProductController {
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SEARCH_USER)
-    public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> searchProductOnUser(@RequestParam String name, @RequestParam Optional<Integer> page, @RequestParam Optional<Integer> limit){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.searchByNameOnUser(name, page, limit);
+    public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> searchProductOnUser(HttpServletRequest request, @RequestParam String name, @RequestParam Optional<Integer> page, @RequestParam Optional<Integer> limit){
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.searchByNameOnUser(request, name, page, limit);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
@@ -138,46 +143,51 @@ public class ProductController {
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SHOW_ALL)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getAllShowUser(
+            HttpServletRequest request,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getAllProductOnUser(page, limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getAllProductOnUser(request, page, limit);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_NEW)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductNew(
+            HttpServletRequest request,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListNewProduct(limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListNewProduct(request, limit);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_HOT)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductHot(
+            HttpServletRequest request,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListHotProduct(limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListHotProduct(request, limit);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_RELATED)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductRelated(
+            HttpServletRequest request,
             @RequestParam Optional<Integer> idCategory,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductByCategory(idCategory,page,limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductByCategory(request, idCategory,page,limit);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_LIKE)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductLike(
+            HttpServletRequest request,
             @RequestParam Optional<Integer> idUser,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductLikeByUser(idUser,page,limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductLikeByUser(request, idUser,page,limit);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 }

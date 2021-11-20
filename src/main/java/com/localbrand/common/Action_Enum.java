@@ -6,11 +6,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Action_Enum {
 
-    CREATE(1),
-    UPDATE(2),
-    READ(3),
-    DELETE(4),
-    CANCEL(5);
+    SAVE(1),
+    READ(2),
+    DELETE(3),
+    CANCEL(4);
 
     @Getter
     private Integer action;

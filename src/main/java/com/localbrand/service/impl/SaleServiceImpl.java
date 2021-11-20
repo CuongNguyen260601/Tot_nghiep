@@ -1,14 +1,13 @@
 package com.localbrand.service.impl;
 
-import com.localbrand.common.Config_Enum;
-import com.localbrand.common.ServiceResult;
-import com.localbrand.common.Status_Enum;
+import com.localbrand.common.*;
 import com.localbrand.dto.SaleDTO;
 import com.localbrand.entity.Sale;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.SaleMapping;
 import com.localbrand.repository.SaleRepository;
 import com.localbrand.service.SaleService;
+import com.localbrand.utils.Role_Utils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,9 +32,21 @@ public class SaleServiceImpl implements SaleService{
 
     private final SaleRepository saleRepository;
     private final SaleMapping saleMapping;
+    private final Role_Utils role_utils;
 
     @Override
-    public ServiceResult<List<SaleDTO>> findAll(Optional<Integer> page) {
+    public ServiceResult<List<SaleDTO>> findAll(HttpServletRequest request, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SALE.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get sale", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get sale", null);
+        }
 
         this.log.info("Get list sale with page");
 
@@ -49,7 +61,18 @@ public class SaleServiceImpl implements SaleService{
     }
 
     @Override
-    public ServiceResult<List<SaleDTO>> findAllAndSort(Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<SaleDTO>> findAllAndSort(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SALE.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get sale", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get sale", null);
+        }
 
         this.log.info("Get list sale with page and sort");
 
@@ -77,7 +100,18 @@ public class SaleServiceImpl implements SaleService{
     }
 
     @Override
-    public ServiceResult<SaleDTO> getById(Optional<Long> idSale) {
+    public ServiceResult<SaleDTO> getById(HttpServletRequest request, Optional<Long> idSale) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SALE.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get sale", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get sale", null);
+        }
 
         this.log.info("Get sale by id");
 
@@ -93,7 +127,18 @@ public class SaleServiceImpl implements SaleService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<SaleDTO> save(SaleDTO saleDTO) {
+    public ServiceResult<SaleDTO> save(HttpServletRequest request, SaleDTO saleDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SALE.getModule(), Action_Enum.SAVE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save sale", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save sale", null);
+        }
 
         this.log.info("Save sale: "+ saleDTO);
 
@@ -114,7 +159,18 @@ public class SaleServiceImpl implements SaleService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<SaleDTO> delete(SaleDTO saleDTO) {
+    public ServiceResult<SaleDTO> delete(HttpServletRequest request, SaleDTO saleDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SALE.getModule(), Action_Enum.DELETE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete sale", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete sale", null);
+        }
 
         this.log.info("Delete sale: "+ saleDTO);
 
@@ -135,7 +191,17 @@ public class SaleServiceImpl implements SaleService{
     }
 
     @Override
-    public ServiceResult<List<SaleDTO>> searchByName(String nameSale, Optional<Integer> page) {
+    public ServiceResult<List<SaleDTO>> searchByName(HttpServletRequest request, String nameSale, Optional<Integer> page) {
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SALE.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get sale", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get sale", null);
+        }
         this.log.info("Get list sale by name and page");
 
         if(page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
@@ -148,7 +214,18 @@ public class SaleServiceImpl implements SaleService{
     }
 
     @Override
-    public ServiceResult<List<SaleDTO>> findByStatus(Optional<Integer> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<SaleDTO>> findByStatus(HttpServletRequest request, Optional<Integer> idStatus, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SALE.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get sale", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get sale", null);
+        }
         this.log.info("Get list sale by status and page");
 
         if(idStatus.isEmpty()

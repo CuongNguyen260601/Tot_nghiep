@@ -1,8 +1,6 @@
 package com.localbrand.service.impl;
 
-import com.localbrand.common.Config_Enum;
-import com.localbrand.common.ServiceResult;
-import com.localbrand.common.Status_Enum;
+import com.localbrand.common.*;
 import com.localbrand.dto.CategoryChildDTO;
 import com.localbrand.dto.CategoryParentDTO;
 import com.localbrand.entity.Category;
@@ -11,6 +9,7 @@ import com.localbrand.model_mapping.Impl.CategoryChildMapping;
 import com.localbrand.model_mapping.Impl.CategoryParentMapping;
 import com.localbrand.repository.CategoryRepository;
 import com.localbrand.service.CategoryService;
+import com.localbrand.utils.Role_Utils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +36,7 @@ public class CategoryServiceImpl  implements CategoryService{
     private final CategoryRepository categoryRepository;
     private final CategoryParentMapping categoryParentMapping;
     private final CategoryChildMapping categoryChildMapping;
+    private final Role_Utils role_utils;
 
     @Override
     public ServiceResult<List<CategoryChildDTO>> findAllCategoryParent() {
@@ -45,7 +46,18 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<List<CategoryParentDTO>> findAllCategoryParent(Optional<Integer> page) {
+    public ServiceResult<List<CategoryParentDTO>> findAllCategoryParent(HttpServletRequest request, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
 
         this.log.info("Get list category parent");
 
@@ -69,7 +81,18 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<List<CategoryParentDTO>> findAllByPropertiesAndSort(Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<CategoryParentDTO>> findAllByPropertiesAndSort(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
 
         this.log.info("Get list category with properties");
 
@@ -106,7 +129,19 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<CategoryParentDTO> getByIdCategoryParent(Optional<Long> idCategory) {
+    public ServiceResult<CategoryParentDTO> getByIdCategoryParent(HttpServletRequest request, Optional<Long> idCategory) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
+
         this.log.info("Get category parent by id:");
 
         if (idCategory.isEmpty() || idCategory.get() < 1) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Category.Validate_Category.VALIDATE_ID, null);
@@ -125,7 +160,19 @@ public class CategoryServiceImpl  implements CategoryService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<CategoryParentDTO> saveCategoryParent(CategoryParentDTO categoryDTO) {
+    public ServiceResult<CategoryParentDTO> saveCategoryParent(HttpServletRequest request, CategoryParentDTO categoryDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.SAVE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save category", null);
+        }
+
         this.log.info("Save Category Parent: "+categoryDTO);
 
         try {
@@ -153,7 +200,19 @@ public class CategoryServiceImpl  implements CategoryService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<CategoryParentDTO> deleteCategoryParent(CategoryParentDTO categoryDTO) {
+    public ServiceResult<CategoryParentDTO> deleteCategoryParent(HttpServletRequest request, CategoryParentDTO categoryDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.DELETE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete category", null);
+        }
+
         this.log.info("Delete category parent");
 
         try {
@@ -185,7 +244,19 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<List<CategoryParentDTO>> searchByNameCategoryParent(String nameCategory, Optional<Integer> page) {
+    public ServiceResult<List<CategoryParentDTO>> searchByNameCategoryParent(HttpServletRequest request, String nameCategory, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
+
         this.log.info("Get list category parent by name");
 
         if(page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
@@ -210,7 +281,19 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<List<CategoryParentDTO>> findByStatusCategoryParent(Optional<Integer> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<CategoryParentDTO>> findByStatusCategoryParent(HttpServletRequest request, Optional<Integer> idStatus, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
+
         this.log.info("Get list category parent by name");
 
         if(idStatus.isEmpty()
@@ -242,7 +325,18 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<List<CategoryChildDTO>> findAllCategoryChild(Optional<Long> parentId,Optional<Integer> page) {
+    public ServiceResult<List<CategoryChildDTO>> findAllCategoryChild(HttpServletRequest request, Optional<Long> parentId,Optional<Integer> page) {
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
+
         this.log.info("Get list category child by id category parent");
 
         if (parentId.isEmpty() || parentId.get() < 1) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Category.Validate_Category.VALIDATE_ID_PARENT, null);
@@ -257,7 +351,14 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<List<CategoryChildDTO>> findAllCategoryChildAndSort(Optional<Integer> sort, Optional<Long> parentId, Optional<Long> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<CategoryChildDTO>> findAllCategoryChildAndSort(HttpServletRequest request, Optional<Integer> sort, Optional<Long> parentId, Optional<Long> idStatus, Optional<Integer> page) {
+        String email = request.getAttribute("USER_NAME").toString();
+
+        Boolean checkRole = role_utils.checkRole(email, Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+        if(!checkRole){
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
+
         this.log.info("Get list category child by id category parent and sort");
 
         if (parentId.isEmpty() || parentId.get() < 1) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Category.Validate_Category.VALIDATE_ID_PARENT, null);
@@ -285,7 +386,18 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<CategoryChildDTO> getByIdCategoryChild(Optional<Long> idCategory) {
+    public ServiceResult<CategoryChildDTO> getByIdCategoryChild(HttpServletRequest request, Optional<Long> idCategory) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
 
         if (idCategory.isEmpty() || idCategory.get() < 1) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Category.Validate_Category.VALIDATE_ID, null);
 
@@ -299,7 +411,18 @@ public class CategoryServiceImpl  implements CategoryService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<CategoryChildDTO> saveCategoryChild(CategoryChildDTO categoryChildDTO) {
+    public ServiceResult<CategoryChildDTO> saveCategoryChild(HttpServletRequest request, CategoryChildDTO categoryChildDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.SAVE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save category", null);
+        }
         this.log.info("Save category child: "+ categoryChildDTO);
 
         try {
@@ -319,7 +442,19 @@ public class CategoryServiceImpl  implements CategoryService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<CategoryChildDTO> deleteCategoryChild(CategoryChildDTO categoryChildDTO) {
+    public ServiceResult<CategoryChildDTO> deleteCategoryChild(HttpServletRequest request, CategoryChildDTO categoryChildDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.DELETE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete category", null);
+        }
+
         this.log.info("Delete category child: "+ categoryChildDTO);
 
         try {
@@ -344,7 +479,18 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<List<CategoryChildDTO>> searchByNameCategoryChild(String nameCategory, Optional<Long> parentId, Optional<Integer> page) {
+    public ServiceResult<List<CategoryChildDTO>> searchByNameCategoryChild(HttpServletRequest request, String nameCategory, Optional<Long> parentId, Optional<Integer> page) {
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
+
         this.log.info("Get list category child by name");
 
         if (parentId.isEmpty() || parentId.get() < 1) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Category.Validate_Category.VALIDATE_ID, null);
@@ -359,7 +505,19 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<List<CategoryChildDTO>> findByStatusCategoryChild(Optional<Integer> idStatus, Optional<Long> parentId, Optional<Integer> page) {
+    public ServiceResult<List<CategoryChildDTO>> findByStatusCategoryChild(HttpServletRequest request, Optional<Integer> idStatus, Optional<Long> parentId, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
+
         this.log.info("Get list size by status and parent id");
 
         if(idStatus.isEmpty()
@@ -381,7 +539,18 @@ public class CategoryServiceImpl  implements CategoryService{
     }
 
     @Override
-    public ServiceResult<List<CategoryChildDTO>> getAllCategoryChildByParentId(Optional<Integer> parentId) {
+    public ServiceResult<List<CategoryChildDTO>> getAllCategoryChildByParentId(HttpServletRequest request, Optional<Integer> parentId) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.CATEGORY.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get category", null);
+        }
 
         this.log.info("Get list category child by parentId");
 

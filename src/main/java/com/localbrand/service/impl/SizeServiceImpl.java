@@ -1,8 +1,6 @@
 package com.localbrand.service.impl;
 
-import com.localbrand.common.Config_Enum;
-import com.localbrand.common.ServiceResult;
-import com.localbrand.common.Status_Enum;
+import com.localbrand.common.*;
 import com.localbrand.dto.SizeDTO;
 import com.localbrand.dto.response.SizeResponseDTO;
 import com.localbrand.entity.Size;
@@ -10,6 +8,7 @@ import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.SizeMapping;
 import com.localbrand.repository.SizeRepository;
 import com.localbrand.service.SizeService;
+import com.localbrand.utils.Role_Utils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,9 +33,21 @@ public class  SizeServiceImpl implements SizeService {
 
     private final SizeRepository sizeRepository;
     private final SizeMapping sizeMapping;
+    private final Role_Utils role_utils;
 
     @Override
-    public ServiceResult<List<SizeResponseDTO>> findAll(Optional<Integer> page) {
+    public ServiceResult<List<SizeResponseDTO>> findAll(HttpServletRequest request, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SIZE.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get size", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get size", null);
+        }
 
         this.log.info("Get list size with page");
 
@@ -50,7 +62,18 @@ public class  SizeServiceImpl implements SizeService {
     }
 
     @Override
-    public ServiceResult<List<SizeResponseDTO>> findAllAndSort(Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> idCategory, Optional<Integer> page) {
+    public ServiceResult<List<SizeResponseDTO>> findAllAndSort(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> idCategory, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SIZE.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get size", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get size", null);
+        }
 
         this.log.info("Get list size with page and sort");
 
@@ -90,7 +113,18 @@ public class  SizeServiceImpl implements SizeService {
     }
 
     @Override
-    public ServiceResult<SizeResponseDTO> getById(Optional<Long> idSize) {
+    public ServiceResult<SizeResponseDTO> getById(HttpServletRequest request, Optional<Long> idSize) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SIZE.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get size", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get size", null);
+        }
 
         this.log.info("Get size by id");
 
@@ -106,7 +140,18 @@ public class  SizeServiceImpl implements SizeService {
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<SizeResponseDTO> save(SizeDTO sizeDTO) {
+    public ServiceResult<SizeResponseDTO> save(HttpServletRequest request, SizeDTO sizeDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SIZE.getModule(), Action_Enum.SAVE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save size", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save size", null);
+        }
 
         this.log.info("Save size: "+ sizeDTO);
 
@@ -127,7 +172,18 @@ public class  SizeServiceImpl implements SizeService {
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<SizeResponseDTO> delete(SizeDTO sizeDTO) {
+    public ServiceResult<SizeResponseDTO> delete(HttpServletRequest request, SizeDTO sizeDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SIZE.getModule(), Action_Enum.DELETE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete size", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete size", null);
+        }
 
         this.log.info("Delete size: "+ sizeDTO);
 
@@ -148,7 +204,19 @@ public class  SizeServiceImpl implements SizeService {
     }
 
     @Override
-    public ServiceResult<List<SizeResponseDTO>> searchByName(String nameSize, Optional<Integer> page) {
+    public ServiceResult<List<SizeResponseDTO>> searchByName(HttpServletRequest request, String nameSize, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SIZE.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get size", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get size", null);
+        }
+
         this.log.info("Get list size by name and page");
 
         if(page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
@@ -161,7 +229,19 @@ public class  SizeServiceImpl implements SizeService {
     }
 
     @Override
-    public ServiceResult<List<SizeResponseDTO>> findByStatus(Optional<Integer> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<SizeResponseDTO>> findByStatus(HttpServletRequest request, Optional<Integer> idStatus, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.SIZE.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get size", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get size", null);
+        }
+
         this.log.info("Get list size by status and page");
 
         if(idStatus.isEmpty()

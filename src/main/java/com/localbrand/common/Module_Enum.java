@@ -13,7 +13,7 @@ public enum Module_Enum {
     VOUCHER(5),
     PRODUCT(6),
     CART(7),
-    BILL_USER(8),
+    BILL(8),
     COMBO(9),
     ROLE(10),
     NEW(11);

@@ -1,12 +1,15 @@
 package com.localbrand.model_mapping.Impl;
 
+import com.localbrand.common.Name_Status_Enum;
 import com.localbrand.dto.request.BillRequestDTO;
 import com.localbrand.dto.response.BillResponseDTO;
 import com.localbrand.entity.Address;
 import com.localbrand.entity.Bill;
+import com.localbrand.entity.User;
 import com.localbrand.entity.Voucher;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.AddressRepository;
+import com.localbrand.repository.UserRepository;
 import com.localbrand.repository.VoucherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,15 +24,19 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
     private final AddressMapping addressMapping;
     private final VoucherRepository voucherRepository;
     private final VoucherMapping voucherMapping;
+    private final UserRepository userRepository;
+    private final UserMapping userMapping;
 
     @Override
     public BillResponseDTO toDto(Bill bill) {
         Address address = this.addressRepository.findById(bill.getIdAddress().longValue()).orElse(null);
 
+        User user = this.userRepository.findById(bill.getIdUser().longValue()).orElse(null);
+
         BillResponseDTO billResponseDTO = BillResponseDTO
                 .builder()
                 .idBill(bill.getIdBill())
-                .idUser(bill.getIdUser())
+                .userResponseDTO(this.userMapping.toDto(user))
                 .address(this.addressMapping.toDto(address))
                 .phoneUser(bill.getPhoneUser())
                 .emailUser(bill.getEmailUser())
@@ -41,6 +48,8 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
                 .payment(bill.getPayment())
                 .transportFee(bill.getTransportFee())
                 .billType(bill.getBillType())
+                .idStatus(bill.getIdStatus())
+                .nameStatus(Name_Status_Enum.findByCode(bill.getIdStatus()).getName())
                 .build();
 
         if(Objects.nonNull(bill.getIdVoucher())){
@@ -59,7 +68,7 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
         return Bill
                 .builder()
                 .idBill(billResponseDTO.getIdBill())
-                .idUser(billResponseDTO.getIdUser())
+                .idUser(billResponseDTO.getUserResponseDTO().getIdUser().intValue())
                 .idAddress(billResponseDTO.getAddress().getIdAddress().intValue())
                 .phoneUser(billResponseDTO.getPhoneUser())
                 .emailUser(billResponseDTO.getEmailUser())

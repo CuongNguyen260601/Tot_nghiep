@@ -17,7 +17,7 @@ public class BillResponseDTO {
 
     private Long idBill;
 
-    private Integer idUser;
+    private UserResponseDTO userResponseDTO;
 
     private AddressDTO address;
 
@@ -42,6 +42,8 @@ public class BillResponseDTO {
     private VoucherDTO voucher;
 
     private Integer idStatus;
+
+    private String nameStatus;
 
     private Integer billType;
 }

@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -87,7 +88,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         Jwt jwtFind  = this.jwtRepository.findByIdUser(userEntity.getIdUser().intValue()).orElse(null);
 
-        this.jwtRepository.delete(jwtFind);
+        if(Objects.nonNull(jwtFind)){
+            this.jwtRepository.delete(jwtFind);
+        }
 
         Jwt jwt = Jwt
                 .builder()

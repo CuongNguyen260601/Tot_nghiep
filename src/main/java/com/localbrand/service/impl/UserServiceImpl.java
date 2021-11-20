@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.localbrand.common.*;
+import com.localbrand.dto.request.ChangePasswordRequest;
 import com.localbrand.dto.request.UserRequestDTO;
 import com.localbrand.dto.request.UserUpdateRequestDTO;
 import com.localbrand.dto.response.RefreshTokenDTO;
@@ -18,12 +19,14 @@ import com.localbrand.repository.*;
 import com.localbrand.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +48,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserMapping userMapping;
     private final JwtRepository jwtRepository;
     private final CartRepository cartRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final AddressRepository addressRepository;
     private final AddressMapping addressMapping;
     private final RoleDetailRepository roleDetailRepository;
@@ -71,8 +74,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public ServiceResult<UserResponseSignupDTO> singUp(HttpServletRequest request, UserRequestDTO userRequestDTO) {
         User user = this.userMapping.toEntitySignUp(userRequestDTO);
-
-        user.setIdRole(Role_Id_Enum.ROLE_USER.getId());
+//
+//        user.setIdRole(Role_Id_Enum.ROLE_USER.getId());
 
         user = this.userRepository.save(user);
 
@@ -298,6 +301,51 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .build();
 
         return new ServiceResult<>(HttpStatus.OK, "Get list role by module is success", roleResponseDTO);
+    }
+
+    @Override
+    public ServiceResult<UserResponseDTO> changePassword(HttpServletRequest request, ChangePasswordRequest changePasswordRequest) {
+
+        String email = request.getAttribute("USER_NAME").toString();
+
+        User user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email).orElse(null);
+
+        if(Objects.isNull(user)){
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not change password", null);
+        }
+
+        boolean checkOldPassword = this.passwordEncoder.matches(user.getPasswordUser(), changePasswordRequest.getOldPassword());
+
+        if(!checkOldPassword){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, "Invalid old password");
+        }
+
+        user.setPasswordUser(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+
+        user = this.userRepository.save(user);
+
+        return new ServiceResult<>(HttpStatus.OK, "Update is success", this.userMapping.toDto(user));
+    }
+
+    @Override
+    public ServiceResult<?> getNewPassword(String email) {
+
+        User user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email).orElse(null);
+
+        if(Objects.isNull(user)){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, "Invalid email", null);
+        }
+
+        String generatedNewPassword = RandomStringUtils.random(6,true, false);
+
+        user.setPasswordUser(passwordEncoder.encode(generatedNewPassword));
+
+        this.userRepository.save(user);
+
+        // todo send email to user với mật mới
+
+        return new ServiceResult<>(HttpStatus.OK, "Get password is success", null);
+
     }
 
 

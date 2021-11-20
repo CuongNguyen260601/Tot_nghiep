@@ -21,4 +21,6 @@ public class ProductShowUserResponseDTO extends ProductParentResponseDTO{
     private Float maxPrice;
 
     private Integer like;
+
+    private Boolean isLike;
 }

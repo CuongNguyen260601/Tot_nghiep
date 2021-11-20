@@ -7,7 +7,7 @@ import lombok.Getter;
 public enum JWT_Enum {
 
 
-    ACCESS_MINUTE(10),
+    ACCESS_MINUTE(1000),
     REFRESH_MINUTE(10080);
 
     @Getter

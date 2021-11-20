@@ -17,6 +17,10 @@ public interface Interface_API {
             String REFRESH_TOKEN = "/refreshtoken";
             String SIGN_UP_ACCOUNT_EMPLOYEE = "/signupaccountemployee";
             String GET_LIST_ROLE_DETAIL = "/getroles";
+            String GET_ALL_ROLE_DETAIL = "/admin/roles/findAllrole";
+            String ACCEPT_ROLE = "/admin/roles/acceptrole";
+            String CHANGE_PASSWORD = "/profile/changepassword";
+            String GET_NEW_PASSWORD = "/profile/getnewpassword";
         }
         interface Color {
             String COLOR_FIND_ALL = "/admin/colors/getall";
@@ -122,6 +126,7 @@ public interface Interface_API {
             String BILL_SAVE_USER = "/user/bills/save";
             String BILL_SAVE_ADMIN = "/admin/bills/save";
             String BILL_CANCEL_USER = "/user/bills/cancel";
+            String BILL_CANCEL_ADMIN = "/admin/bills/cancel";
             String BILL_GET_ALL_LIST_USER = "/user/bills/getalllist";
             String BILL_GET_ALL_LIST_ADMIN = "/admin/bills/getalllist";
             String BILL_GET_ALL_LIST_AND_FILTER_USER = "/user/bills/getalllistandfilter";

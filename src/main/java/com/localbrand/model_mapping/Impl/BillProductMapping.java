@@ -37,7 +37,7 @@ public class BillProductMapping implements Mapping<BillProductResponseDTO, BillP
                 .builder()
                 .idBillProduct(billProduct.getIdBillProduct())
                 .idBill(billProduct.getIdBill())
-                .productDetailDTO(this.productMapping.toProductDetailUserDTOByProductDetail(productDetail))
+                .productChildResponseDTO(this.productMapping.toProductChild(productDetail))
                 .quantity(billProduct.getQuantity())
                 .price(billProduct.getPrice())
                 .idStatus(billProduct.getIdStatus())

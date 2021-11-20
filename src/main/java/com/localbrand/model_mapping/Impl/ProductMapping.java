@@ -276,9 +276,13 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
         List<Integer> listTag= this.productTagRepository
                 .listTagByProduct(productDetail.getIdProductDetail().intValue());
+
+        Product product = this.productRepository.findById(productDetail.getIdProduct().longValue()).orElse(null);
+
         ProductChildResponseDTO productChildResponseDTO = ProductChildResponseDTO
                 .builder()
                 .idProductDetail(productDetail.getIdProductDetail())
+                .nameProduct(product.getNameProduct())
                 .idProduct(productDetail.getIdProduct())
                 .idGender(productDetail.getIdGender())
                 .category(this.categoryChildMapping.toDto(category))
@@ -616,5 +620,43 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         productDetailUserDTO.setLike(totalLike);
         return productDetailUserDTO;
 
+    }
+
+
+    public ProductShowUserResponseDTO toProductShowUserAndLike(Product product, User user){
+
+        List<Color> listColor = this.colorRepository.findAllByIdProduct(product.getIdProduct());
+
+        ProductShowUserResponseDTO productShowUserResponseDTO = new ProductShowUserResponseDTO();
+
+        Integer totalLike = likeRepository.countLikeByIdProduct(product.getIdProduct().intValue());
+
+        Like like = this.likeRepository.findFirstByIdUserAndIdProduct(user.getIdUser().intValue(), product.getIdProduct().intValue()).orElse(null);
+
+        productShowUserResponseDTO.setIdProduct(product.getIdProduct());
+        productShowUserResponseDTO.setNameProduct(product.getNameProduct());
+        productShowUserResponseDTO.setDateCreate(product.getDateCreate());
+        productShowUserResponseDTO.setTotalProduct(product.getTotalProduct());
+        productShowUserResponseDTO.setIdStatus(product.getIdStatus());
+        productShowUserResponseDTO.setDescriptionProduct(product.getDescriptionProduct());
+        productShowUserResponseDTO.setCoverPhoto(product.getCoverPhoto());
+        productShowUserResponseDTO.setFrontPhoto(product.getFrontPhoto());
+        productShowUserResponseDTO.setBackPhoto(product.getBackPhoto());
+        productShowUserResponseDTO.setListTag(this.tagRepository.findByIdProduct(product.getIdProduct()));
+        productShowUserResponseDTO.setMinPrice(this.productRepository.minPrice(product.getIdProduct()));
+        productShowUserResponseDTO.setMaxPrice(this.productRepository.maxPrice(product.getIdProduct()));
+        productShowUserResponseDTO.setListColor(listColor.stream().map(this.colorMapping::toDto).collect(Collectors.toList()));
+        productShowUserResponseDTO.setLike(totalLike);
+        productShowUserResponseDTO.setCategoryChildDTO(this.categoryChildMapping.toDto(this.categoryRepository.findCategoryChildByIdProduct(product.getIdProduct())));
+        productShowUserResponseDTO.setCategoryParentDTO(this.categoryParentMapping.toDto(this.categoryRepository.findCategoryParentByIdProduct(product.getIdProduct())));
+        productShowUserResponseDTO.setIsLike(!Objects.isNull(like)&&like.getLikeProduct());
+        Gender gender = this.genderRepository.findByIdProduct(product.getIdProduct());
+        GenderDTO genderDTO = GenderDTO.builder()
+                .idGender(gender.getIdGender())
+                .nameGender(gender.getNameGender())
+                .build();
+
+        productShowUserResponseDTO.setGenderDTO(genderDTO);
+        return productShowUserResponseDTO;
     }
 }

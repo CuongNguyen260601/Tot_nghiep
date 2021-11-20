@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.sql.Date;
 import java.util.List;
@@ -33,8 +34,8 @@ public class BillController {
     }
 
     @PostMapping(Interface_API.API.Bill.BILL_SAVE_ADMIN)
-    public ResponseEntity<ServiceResult<BillResponseDTO>> saveBillAdmin(@Valid @RequestBody BillRequestDTO billRequestDTO){
-        ServiceResult<BillResponseDTO> result = this.billService.saveBillAdmin(billRequestDTO);
+    public ResponseEntity<ServiceResult<BillResponseDTO>> saveBillAdmin(HttpServletRequest request, @Valid @RequestBody BillRequestDTO billRequestDTO){
+        ServiceResult<BillResponseDTO> result = this.billService.saveBillAdmin(request,billRequestDTO);
 
         return ResponseEntity
                 .status(result.getStatus())
@@ -47,6 +48,19 @@ public class BillController {
             @RequestParam String reason
     ){
         ServiceResult<BillResponseDTO> result = this.billService.cancelBillUser(idBill, reason);
+
+        return ResponseEntity
+                .status(result.getStatus())
+                .body(result);
+    }
+
+    @PostMapping(Interface_API.API.Bill.BILL_CANCEL_ADMIN)
+    public ResponseEntity<ServiceResult<BillResponseDTO>> cancelBillAdmin(
+            HttpServletRequest request,
+            @RequestParam Optional<Long> idBill,
+            @RequestParam String reason
+    ){
+        ServiceResult<BillResponseDTO> result = this.billService.cancelBillAdmin(request, idBill, reason);
 
         return ResponseEntity
                 .status(result.getStatus())
@@ -98,10 +112,11 @@ public class BillController {
 
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_ADMIN)
     public ResponseEntity<ServiceResult<List<BillResponseDTO>>> getAllListBillAdmin(
+            HttpServletRequest request,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<BillResponseDTO>> result = this.billService.getAllListBillAdmin(page,limit);
+        ServiceResult<List<BillResponseDTO>> result = this.billService.getAllListBillAdmin(request, page,limit);
 
         return ResponseEntity
                 .status(result.getStatus())
@@ -110,6 +125,7 @@ public class BillController {
 
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_AND_FILTER_ADMIN)
     public ResponseEntity<ServiceResult<List<BillResponseDTO>>> getAllListBillUserAndFilterAdmin(
+            HttpServletRequest request,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit,
             @RequestParam Optional<Integer> sort,
@@ -117,7 +133,7 @@ public class BillController {
             @RequestParam Optional<Date> startDate,
             @RequestParam Optional<Date> endDate
     ){
-        ServiceResult<List<BillResponseDTO>> result = this.billService.getListBillAndSortAdmin(page, limit, sort, idStatus, startDate, endDate);
+        ServiceResult<List<BillResponseDTO>> result = this.billService.getListBillAndSortAdmin(request, page, limit, sort, idStatus, startDate, endDate);
 
         return ResponseEntity
                 .status(result.getStatus())
@@ -126,11 +142,12 @@ public class BillController {
 
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_PRODUCT_BILL_ADMIN)
     public ResponseEntity<ServiceResult<List<BillProductResponseDTO>>> getAllListBillUserAndFilterAdmin(
+            HttpServletRequest request,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit,
             @RequestParam Optional<Integer> idBill
     ){
-        ServiceResult<List<BillProductResponseDTO>> result = this.billService.getListBillProductByBillAdmin(page, limit, idBill);
+        ServiceResult<List<BillProductResponseDTO>> result = this.billService.getListBillProductByBillAdmin(request, page, limit, idBill);
 
         return ResponseEntity
                 .status(result.getStatus())

@@ -1,19 +1,20 @@
 package com.localbrand.service.impl;
 
-import com.localbrand.common.Config_Enum;
-import com.localbrand.common.ServiceResult;
-import com.localbrand.common.Status_Enum;
+import com.localbrand.common.*;
 import com.localbrand.dto.request.ProductRequestDTO;
 import com.localbrand.dto.response.*;
 import com.localbrand.entity.Color;
 import com.localbrand.entity.Product;
 import com.localbrand.entity.ProductDetail;
+import com.localbrand.entity.User;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.ProductMapping;
 import com.localbrand.repository.ColorRepository;
 import com.localbrand.repository.ProductDetailRepository;
 import com.localbrand.repository.ProductRepository;
+import com.localbrand.repository.UserRepository;
 import com.localbrand.service.ProductService;
+import com.localbrand.utils.Role_Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,10 +35,23 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductDetailRepository productDetailRepository;
     private final ColorRepository colorRepository;
+    private final Role_Utils role_utils;
+    private final UserRepository userRepository;
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<ProductResponseDTO> saveProduct(ProductRequestDTO productRequestDTO) {
+    public ServiceResult<ProductResponseDTO> saveProduct(HttpServletRequest request, ProductRequestDTO productRequestDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.PRODUCT.getModule(), Action_Enum.SAVE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save product", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save product", null);
+        }
 
         Product product = this.productMapping.toEntity(productRequestDTO);
 
@@ -54,12 +69,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductParentResponseDTO>> getAllParent(Optional<Integer> sort,
+    public ServiceResult<List<ProductParentResponseDTO>> getAllParent( HttpServletRequest request,
+                                                                      Optional<Integer> sort,
                                                                       Optional<Integer> idStatus,
                                                                       Optional<Integer> idCategoryParent,
                                                                       Optional<Integer> idCategoryChild,
                                                                       Optional<Integer> idGender,
                                                                       Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.PRODUCT.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get product", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get product", null);
+        }
 
         if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
 
@@ -142,13 +169,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductChildResponseDTO>> getAllChild(Optional<Integer> sort,
+    public ServiceResult<List<ProductChildResponseDTO>> getAllChild(HttpServletRequest request,
+                                                                    Optional<Integer> sort,
                                                                     Optional<Integer> idProduct,
                                                                     Optional<Integer> idStatus,
                                                                     Optional<Integer> idColor,
                                                                     Optional<Integer> idSize,
                                                                     Optional<Integer> idTag,
                                                                     Optional<Integer> page) {
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.PRODUCT.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get product", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get product", null);
+        }
+
         if (page.isEmpty()
                 || page.get() < 0
                 || idProduct.isEmpty()
@@ -230,7 +269,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductParentResponseDTO>> searchByName(String name, Optional<Integer> page) {
+    public ServiceResult<List<ProductParentResponseDTO>> searchByName(HttpServletRequest request, String name, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.PRODUCT.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get product", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get product", null);
+        }
 
         if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
 
@@ -242,7 +292,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<ProductResponseShowAdminDTO> showProduct(Optional<Long> idProduct) {
+    public ServiceResult<ProductResponseShowAdminDTO> showProduct(HttpServletRequest  request, Optional<Long> idProduct) {
+        String email = request.getAttribute("USER_NAME").toString();
+
+        Boolean checkRole = role_utils.checkRole(email, Module_Enum.PRODUCT.getModule(), Action_Enum.READ.getAction());
+        if(!checkRole){
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get product", null);
+        }
         Product product = this.productRepository.findById(idProduct.get()).orElse(null);
 
         if(Objects.isNull(product))
@@ -253,7 +309,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<ProductParentResponseDTO> deleteProductParent(Optional<Long> idProduct) {
+    public ServiceResult<ProductParentResponseDTO> deleteProductParent(HttpServletRequest request, Optional<Long> idProduct) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.PRODUCT.getModule(), Action_Enum.DELETE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete product", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete product", null);
+        }
+
         Product product = this.productRepository.findById(idProduct.get()).orElse(null);
 
         if(Objects.isNull(product))
@@ -271,7 +339,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<ProductChildResponseDTO> deleteProductChild(Optional<Long> idProductDetail) {
+    public ServiceResult<ProductChildResponseDTO> deleteProductChild(HttpServletRequest request, Optional<Long> idProductDetail) {
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.PRODUCT.getModule(), Action_Enum.DELETE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete product", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete product", null);
+        }
+
         ProductDetail productDetail = this.productDetailRepository.findById(idProductDetail.get()).orElse(null);
 
         if(Objects.isNull(productDetail))
@@ -288,17 +367,45 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getAllProductOnUser(Optional<Integer> page, Optional<Integer> limit) {
+    public ServiceResult<List<ProductShowUserResponseDTO>> getAllProductOnUser(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        User user;
+
+        if(Objects.nonNull(email)){
+            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
+        }else{
+            user = null;
+        }
         if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
 
         Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
         List<Product> listProduct = this.productRepository.findAllByIdStatus(Status_Enum.EXISTS.getCode(), pageable).toList();
-        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
+
+        List<ProductShowUserResponseDTO> listProductShowUserResponseDTOS;
+
+        if(Objects.isNull(user)){
+            listProductShowUserResponseDTOS = listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList());
+        }else {
+            listProductShowUserResponseDTOS = listProduct.stream().map(product -> this.productMapping.toProductShowUserAndLike(product, user)).collect(Collectors.toList());
+        }
+        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProductShowUserResponseDTOS);
 
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getAllProductShowUser(Optional<Integer> sort, Optional<Integer> idCategoryParent, Optional<Integer> idCategoryChild, Optional<Integer> idGender, Optional<Float> minPrice, Optional<Float> maxPrice, Optional<Integer> page, Optional<Integer> limit) {
+    public ServiceResult<List<ProductShowUserResponseDTO>> getAllProductShowUser(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idCategoryParent, Optional<Integer> idCategoryChild, Optional<Integer> idGender, Optional<Float> minPrice, Optional<Float> maxPrice, Optional<Integer> page, Optional<Integer> limit) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        User user;
+
+        if(Objects.nonNull(email)){
+            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
+        }else{
+            user = null;
+        }
 
         if (page.isEmpty()
                 || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
@@ -337,7 +444,13 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        List<ProductShowUserResponseDTO> listProductShowUserResponseDTOS = listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList());
+        List<ProductShowUserResponseDTO> listProductShowUserResponseDTOS;
+
+        if(Objects.isNull(user)){
+            listProductShowUserResponseDTOS = listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList());
+        }else {
+            listProductShowUserResponseDTOS = listProduct.stream().map(product -> this.productMapping.toProductShowUserAndLike(product, user)).collect(Collectors.toList());
+        }
 
         if(sort.get().equals(0)){
             listProductShowUserResponseDTOS.sort(new Comparator<ProductShowUserResponseDTO>() {
@@ -367,14 +480,33 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> searchByNameOnUser(String name, Optional<Integer> page, Optional<Integer> limit) {
+    public ServiceResult<List<ProductShowUserResponseDTO>> searchByNameOnUser(HttpServletRequest request, String name, Optional<Integer> page, Optional<Integer> limit) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        User user;
+
+        if(Objects.nonNull(email)){
+            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
+        }else{
+            user = null;
+        }
+
         if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
 
         Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
 
         List<Product> listProduct = this.productRepository.findAllByNameProductLikeAndIdStatus("%"+name+"%", Status_Enum.EXISTS.getCode(), pageable).toList();
 
-        return new ServiceResult<>(HttpStatus.OK, Notification.Product.SEARCH_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
+        List<ProductShowUserResponseDTO> listProductShowUserResponseDTOS;
+
+        if(Objects.isNull(user)){
+            listProductShowUserResponseDTOS = listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList());
+        }else {
+            listProductShowUserResponseDTOS = listProduct.stream().map(product -> this.productMapping.toProductShowUserAndLike(product, user)).collect(Collectors.toList());
+        }
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Product.SEARCH_PRODUCT_ON_USER_SUCCESS, listProductShowUserResponseDTOS);
     }
 
     @Override
@@ -425,29 +557,75 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getListNewProduct(Optional<Integer> limit) {
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListNewProduct(HttpServletRequest request, Optional<Integer> limit) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        User user;
+
+        if(Objects.nonNull(email)){
+            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
+        }else{
+            user = null;
+        }
 
         if(limit.isEmpty()
                 ||limit.get() < 1)
             return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
         Pageable pageable = PageRequest.of(0, limit.get());
         List<Product> listProduct = this.productRepository.findAllProductNew(pageable).toList();
-        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
 
+        List<ProductShowUserResponseDTO> listProductShowUserResponseDTOS;
+
+        if(Objects.isNull(user)){
+            listProductShowUserResponseDTOS = listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList());
+        }else {
+            listProductShowUserResponseDTOS = listProduct.stream().map(product -> this.productMapping.toProductShowUserAndLike(product, user)).collect(Collectors.toList());
+        }
+        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProductShowUserResponseDTOS);
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getListHotProduct(Optional<Integer> limit) {
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListHotProduct(HttpServletRequest request, Optional<Integer> limit) {
+        Object email = request.getAttribute("USER_NAME");
+
+        User user;
+
+        if(Objects.nonNull(email)){
+            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
+        }else{
+            user = null;
+        }
         if(limit.isEmpty()
                 ||limit.get() < 1)
             return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
         Pageable pageable = PageRequest.of(0, limit.get());
         List<Product> listProduct = this.productRepository.findAllProductHot(pageable).toList();
-        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
+
+        List<ProductShowUserResponseDTO> listProductShowUserResponseDTOS;
+
+        if(Objects.isNull(user)){
+            listProductShowUserResponseDTOS = listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList());
+        }else {
+            listProductShowUserResponseDTOS = listProduct.stream().map(product -> this.productMapping.toProductShowUserAndLike(product, user)).collect(Collectors.toList());
+        }
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProductShowUserResponseDTOS);
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductByCategory(Optional<Integer> idCategory, Optional<Integer> page, Optional<Integer> limit) {
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductByCategory(HttpServletRequest request, Optional<Integer> idCategory, Optional<Integer> page, Optional<Integer> limit) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        User user;
+
+        if(Objects.nonNull(email)){
+                user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
+        }else{
+            user = null;
+        }
+
         if(idCategory.isEmpty()
                 ||idCategory.get() < 1
                 ||page.isEmpty()
@@ -457,12 +635,33 @@ public class ProductServiceImpl implements ProductService {
             return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
 
         Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
+
         List<Product> listProduct = this.productRepository.findAllByIdCategoryParentAndIdStatus(idCategory.get(), Status_Enum.EXISTS.getCode(), pageable).toList();
-        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
+
+        List<ProductShowUserResponseDTO> listProductShowUserResponseDTOS;
+
+        if(Objects.isNull(user)){
+            listProductShowUserResponseDTOS = listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList());
+        }else {
+            listProductShowUserResponseDTOS = listProduct.stream().map(product -> this.productMapping.toProductShowUserAndLike(product, user)).collect(Collectors.toList());
+        }
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProductShowUserResponseDTOS);
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductLikeByUser(Optional<Integer> idUser, Optional<Integer> page, Optional<Integer> limit) {
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductLikeByUser(HttpServletRequest request, Optional<Integer> idUser, Optional<Integer> page, Optional<Integer> limit) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        User user;
+
+        if(Objects.nonNull(email)){
+            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
+        }else{
+            user = null;
+        }
+
         if(idUser.isEmpty()
                 ||idUser.get() < 1
                 ||page.isEmpty()
@@ -472,7 +671,16 @@ public class ProductServiceImpl implements ProductService {
             return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
         Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
         List<Product> listProduct = this.productRepository.findProductLikeByIdUser(idUser.get(), pageable).toList();
-        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList()));
+
+        List<ProductShowUserResponseDTO> listProductShowUserResponseDTOS;
+
+        if(Objects.isNull(user)){
+            listProductShowUserResponseDTOS = listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList());
+        }else {
+            listProductShowUserResponseDTOS = listProduct.stream().map(product -> this.productMapping.toProductShowUserAndLike(product, user)).collect(Collectors.toList());
+        }
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProductShowUserResponseDTOS);
     }
 
 }

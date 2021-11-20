@@ -9,6 +9,7 @@ import com.localbrand.service.VoucherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -25,56 +26,56 @@ public class VoucherController {
     }
 
     @GetMapping(Interface_API.API.Voucher.VOUCHER_FIND_ALL)
-    public ResponseEntity<ServiceResult<List<VoucherDTO>>> fillAll(@RequestParam Optional<Integer> page) {
-        ServiceResult<List<VoucherDTO>> result = this.voucherService.findAll(page);
+    public ResponseEntity<ServiceResult<List<VoucherDTO>>> fillAll(HttpServletRequest request, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<VoucherDTO>> result = this.voucherService.findAll(request, page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Voucher.VOUCHER_FIND_SORT)
-    public ResponseEntity<ServiceResult<List<VoucherDTO>>> fillAllAndSort(@RequestParam Optional<Integer> sort, @RequestParam Optional<Integer> idStatus,@RequestParam Optional<Integer> page) {
-        ServiceResult<List<VoucherDTO>> result = this.voucherService.findAllAndSort(sort, idStatus, page);
+    public ResponseEntity<ServiceResult<List<VoucherDTO>>> fillAllAndSort(HttpServletRequest request, @RequestParam Optional<Integer> sort, @RequestParam Optional<Integer> idStatus,@RequestParam Optional<Integer> page) {
+        ServiceResult<List<VoucherDTO>> result = this.voucherService.findAllAndSort(request, sort, idStatus, page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Voucher.VOUCHER_FIND_BY_ID)
-    public ResponseEntity<ServiceResult<VoucherDTO>> getById(@PathVariable Optional<Long> idVoucher) {
-        ServiceResult<VoucherDTO> result = this.voucherService.getById(idVoucher);
+    public ResponseEntity<ServiceResult<VoucherDTO>> getById(HttpServletRequest request, @PathVariable Optional<Long> idVoucher) {
+        ServiceResult<VoucherDTO> result = this.voucherService.getById(request, idVoucher);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @PostMapping(Interface_API.API.Voucher.VOUCHER_SAVE)
-    public ResponseEntity<ServiceResult<VoucherDTO>> save(@Valid @RequestBody VoucherDTO voucherDTO) {
-        ServiceResult<VoucherDTO> result = this.voucherService.save(voucherDTO);
+    public ResponseEntity<ServiceResult<VoucherDTO>> save(HttpServletRequest request, @Valid @RequestBody VoucherDTO voucherDTO) {
+        ServiceResult<VoucherDTO> result = this.voucherService.save(request, voucherDTO);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @DeleteMapping(Interface_API.API.Voucher.VOUCHER_DELETE)
-    public ResponseEntity<ServiceResult<VoucherDTO>> delete(@Valid @RequestBody VoucherDTO voucherDTO) {
-        ServiceResult<VoucherDTO> result = this.voucherService.delete(voucherDTO);
+    public ResponseEntity<ServiceResult<VoucherDTO>> delete(HttpServletRequest request, @Valid @RequestBody VoucherDTO voucherDTO) {
+        ServiceResult<VoucherDTO> result = this.voucherService.delete(request, voucherDTO);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Voucher.VOUCHER_SEARCH)
-    public ResponseEntity<ServiceResult<List<VoucherDTO>>> searchByName(@RequestParam String name, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<VoucherDTO>> result = this.voucherService.searchByName(name,page);
+    public ResponseEntity<ServiceResult<List<VoucherDTO>>> searchByName(HttpServletRequest request, @RequestParam String name, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<VoucherDTO>> result = this.voucherService.searchByName(request,name,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Voucher.VOUCHER_FIND_BY_STATUS)
-    public ResponseEntity<ServiceResult<List<VoucherDTO>>> findByStatus(@RequestParam Optional<Integer> idStatus, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<VoucherDTO>> result = this.voucherService.findByStatus(idStatus,page);
+    public ResponseEntity<ServiceResult<List<VoucherDTO>>> findByStatus(HttpServletRequest request, @RequestParam Optional<Integer> idStatus, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<VoucherDTO>> result = this.voucherService.findByStatus(request, idStatus,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);

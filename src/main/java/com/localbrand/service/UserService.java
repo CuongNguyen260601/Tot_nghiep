@@ -1,6 +1,7 @@
 package com.localbrand.service;
 
 import com.localbrand.common.ServiceResult;
+import com.localbrand.dto.request.ChangePasswordRequest;
 import com.localbrand.dto.request.UserRequestDTO;
 import com.localbrand.dto.request.UserUpdateRequestDTO;
 import com.localbrand.dto.response.RefreshTokenDTO;
@@ -25,5 +26,9 @@ public interface UserService {
     ServiceResult<UserResponseSignupDTO> signUpAccountEmployee(HttpServletRequest request, UserRequestDTO userRequestDTO);
 
     ServiceResult<RoleResponseDTO> getListRoleResponse(HttpServletRequest request, Optional<Long> idUser, Optional<Integer> idModule);
+
+    ServiceResult<UserResponseDTO> changePassword(HttpServletRequest request, ChangePasswordRequest changePasswordRequest);
+
+    ServiceResult<?> getNewPassword(String email);
 
 }

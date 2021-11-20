@@ -16,12 +16,12 @@ public class BillProductResponseDTO {
 
     private Integer idBill;
 
-    private ProductDetailUserDTO productDetailDTO;
-
     private Integer quantity;
 
     private Float price;
 
     private Integer idStatus;
+
+    private ProductChildResponseDTO productChildResponseDTO;
 
 }

@@ -25,4 +25,6 @@ public interface LikeRepository extends JpaRepository<Like, Long>, JpaSpecificat
                     " and (:idCombo = -1 or l.idCombo = :idCombo) "
     )
     Optional<Integer> totalLikeByProductOrCombo(Integer idProduct, Integer idCombo);
+
+    Optional<Like> findFirstByIdUserAndIdProduct(Integer idUser, Integer idProduct);
 }

@@ -1,14 +1,13 @@
 package com.localbrand.service.impl;
 
-import com.localbrand.common.Config_Enum;
-import com.localbrand.common.ServiceResult;
-import com.localbrand.common.Status_Enum;
+import com.localbrand.common.*;
 import com.localbrand.dto.ColorDTO;
 import com.localbrand.entity.Color;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.ColorMapping;
 import com.localbrand.repository.ColorRepository;
 import com.localbrand.service.ColorService;
+import com.localbrand.utils.Role_Utils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,9 +31,22 @@ public class ColorServiceImpl implements ColorService{
 
     private final ColorRepository colorRepository;
     private final ColorMapping colorMapping;
+    private final Role_Utils role_utils;
+
 
     @Override
-    public ServiceResult<List<ColorDTO>> findAll(Optional<Integer> page) {
+    public ServiceResult<List<ColorDTO>> findAll(HttpServletRequest request, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COLOR.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get color", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get color", null);
+        }
 
         this.log.info("Get list color with page");
 
@@ -48,7 +61,17 @@ public class ColorServiceImpl implements ColorService{
     }
 
     @Override
-    public ServiceResult<List<ColorDTO>> findAllAndSort(Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<ColorDTO>> findAllAndSort(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COLOR.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get color", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get color", null);
+        }
 
         this.log.info("Get list color with page and sort");
 
@@ -76,7 +99,18 @@ public class ColorServiceImpl implements ColorService{
     }
 
     @Override
-    public ServiceResult<ColorDTO> getById(Optional<Long> idColor) {
+    public ServiceResult<ColorDTO> getById(HttpServletRequest request, Optional<Long> idColor) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COLOR.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get color", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get color", null);
+        }
 
         this.log.info("Get color by id");
 
@@ -92,7 +126,18 @@ public class ColorServiceImpl implements ColorService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<ColorDTO> save(ColorDTO colorDTO) {
+    public ServiceResult<ColorDTO> save(HttpServletRequest request, ColorDTO colorDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COLOR.getModule(), Action_Enum.SAVE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save color", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save color", null);
+        }
 
         this.log.info("Save color: "+ colorDTO);
 
@@ -113,7 +158,18 @@ public class ColorServiceImpl implements ColorService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<ColorDTO> delete(ColorDTO colorDTO) {
+    public ServiceResult<ColorDTO> delete(HttpServletRequest request, ColorDTO colorDTO) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COLOR.getModule(), Action_Enum.DELETE.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete color", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete color", null);
+        }
 
         this.log.info("Delete color: "+ colorDTO);
 
@@ -134,7 +190,19 @@ public class ColorServiceImpl implements ColorService{
     }
 
     @Override
-    public ServiceResult<List<ColorDTO>> searchByName(String nameColor, Optional<Integer> page) {
+    public ServiceResult<List<ColorDTO>> searchByName(HttpServletRequest request, String nameColor, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COLOR.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get color", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get color", null);
+        }
+
         this.log.info("Get list color by name and page");
 
         if(page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
@@ -147,7 +215,19 @@ public class ColorServiceImpl implements ColorService{
     }
 
     @Override
-    public ServiceResult<List<ColorDTO>> findByStatus(Optional<Integer> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<ColorDTO>> findByStatus(HttpServletRequest request, Optional<Integer> idStatus, Optional<Integer> page) {
+
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COLOR.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get color", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get color", null);
+        }
+
         this.log.info("Get list color by status and page");
 
         if(idStatus.isEmpty()
