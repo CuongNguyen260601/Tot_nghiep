@@ -5,6 +5,7 @@ import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.request.BillRequestDTO;
 import com.localbrand.dto.response.BillProductResponseDTO;
 import com.localbrand.dto.response.BillResponseDTO;
+import com.localbrand.dto.response.BillResponseUserDTO;
 import com.localbrand.service.BillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -148,6 +149,36 @@ public class BillController {
             @RequestParam Optional<Integer> idBill
     ){
         ServiceResult<List<BillProductResponseDTO>> result = this.billService.getListBillProductByBillAdmin(request, page, limit, idBill);
+
+        return ResponseEntity
+                .status(result.getStatus())
+                .body(result);
+    }
+
+    @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_USER_OTHER)
+    public ResponseEntity<ServiceResult<List<BillResponseUserDTO>>> getAllListBillUserOther(
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Integer> idUser
+    ){
+        ServiceResult<List<BillResponseUserDTO>> result = this.billService.getAllListBillUserOther(page,limit,idUser);
+
+        return ResponseEntity
+                .status(result.getStatus())
+                .body(result);
+    }
+
+    @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_AND_FILTER_USER_OTHER)
+    public ResponseEntity<ServiceResult<List<BillResponseUserDTO>>> getAllListBillUserAndFilterUserOther(
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Integer> idUser,
+            @RequestParam Optional<Integer> sort,
+            @RequestParam Optional<Integer> idStatus,
+            @RequestParam Optional<Date> startDate,
+            @RequestParam Optional<Date> endDate
+    ){
+        ServiceResult<List<BillResponseUserDTO>> result = this.billService.getAllListBillUserAndSortOther(page, limit, idUser, sort, idStatus, startDate, endDate);
 
         return ResponseEntity
                 .status(result.getStatus())

@@ -10,6 +10,7 @@ import com.localbrand.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +21,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Configuration
@@ -50,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .addFilterBefore(new AuthorizationFilter(jwtRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilter(authenticationFilter)
-                .cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()).and();
+                .cors().configurationSource(corsConfigurationSource()).and();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.LOGIN).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.SIGN_UP).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.LOG_OUT).permitAll();
@@ -80,5 +86,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        List<String> listMethod = new ArrayList<>();
+        listMethod.add("GET");
+        listMethod.add("POST");
+        listMethod.add("PUT");
+        listMethod.add("DELETE");
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.applyPermitDefaultValues();
+        corsConfiguration.setAllowedMethods(listMethod);
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
     }
 }

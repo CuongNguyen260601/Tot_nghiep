@@ -7,6 +7,7 @@ import com.localbrand.common.Status_Enum;
 import com.localbrand.dto.request.BillRequestDTO;
 import com.localbrand.dto.response.BillProductResponseDTO;
 import com.localbrand.dto.response.BillResponseDTO;
+import com.localbrand.dto.response.BillResponseUserDTO;
 import com.localbrand.entity.*;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.AddressMapping;
@@ -71,8 +72,6 @@ public class BillServiceImpl implements BillService {
             if(Objects.isNull(voucher)){
                 if(StringUtils.isNotBlank(billRequestDTO.getCodeVoucher())){
                     voucher = this.voucherRepository.findByCodeVoucher(billRequestDTO.getCodeVoucher().trim()).orElse(null);
-                }else{
-                    voucher = null;
                 }
             }
         }
@@ -87,6 +86,8 @@ public class BillServiceImpl implements BillService {
             }
 
             bill.setIdVoucher(voucher.getIdVoucher().intValue());
+
+            this.voucherUserRepository.delete(voucherUser);
         }
         if(Objects.nonNull(billRequestDTO.getIdAddress())){
             bill.setIdAddress(billRequestDTO.getIdAddress());
@@ -102,7 +103,7 @@ public class BillServiceImpl implements BillService {
 
         List<BillProduct> lstBillProduct = this.billProductMapping.toListProduct(bill, billRequestDTO);
 
-        Float total = 0F;
+        float total = 0F;
 
         for (BillProduct billProduct:lstBillProduct) {
             if(billProduct.getIdStatus().equals(Status_Enum.EXISTS.getCode())){
@@ -117,6 +118,8 @@ public class BillServiceImpl implements BillService {
         if(Objects.nonNull(voucher))
         {
             total = total/100 * (100 - voucher.getDiscount());
+
+
         }
 
         bill.setTotal(total);
@@ -413,6 +416,62 @@ public class BillServiceImpl implements BillService {
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Bill.Bill_Product.GET_LIST_BILL_PRODUCT_SUCCESS, lstBillProduct.stream().map(this.billProductMapping::toDto).collect(Collectors.toList()));
 
+    }
+
+    @Override
+    public ServiceResult<List<BillResponseUserDTO>> getAllListBillUserOther(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idUser) {
+        log.error("Get list bill");
+
+        if(page.isEmpty() || page.get() < 0
+                || limit.isEmpty() || limit.get() <1
+        ){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
+        }
+
+        if(idUser.isEmpty() || idUser.get()<1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Bill.GET_LIST_BILL_IS_FALSE, null);
+        }
+
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
+
+        List<Bill> listBill = this.billRepository.findAllByIdUser(idUser.get(), pageable).toList();
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Bill.GET_LIST_BILL_IS_SUCCESS, listBill.stream().map(this.billMapping::toDtoResponse).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ServiceResult<List<BillResponseUserDTO>> getAllListBillUserAndSortOther(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idUser, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Date> startDate, Optional<Date> endDate) {
+        log.error("Get list bill and filter");
+
+        if(page.isEmpty() || page.get() < 0
+                || limit.isEmpty() || limit.get() <1
+        ){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
+        }
+
+        if(idUser.isEmpty() || idUser.get()<1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Bill.GET_LIST_BILL_IS_FALSE, null);
+        }
+
+        Pageable pageable;
+
+        if(sort.isEmpty() || sort.get() < 0 || sort.get() > 1){
+            pageable = PageRequest.of(page.orElse(0), limit.get());
+        }else if( sort.get() == 0){
+            pageable = PageRequest.of(page.orElse(0), limit.get(), Sort.by(Sort.Direction.ASC, "dateCreate"));
+        }else{
+            pageable = PageRequest.of(page.orElse(0), limit.get(), Sort.by(Sort.Direction.DESC, "dateCreate"));
+        }
+
+        List<Bill> listBill = new ArrayList<>();
+
+        if(idStatus.isEmpty() || idStatus.get()<0){
+            listBill = this.billRepository.findAllByIdUser(idUser.get(), startDate.get(), endDate.get(), pageable).toList();
+        }else{
+            listBill = this.billRepository.findAllByIdUserAndIdStatus(idUser.get(), idStatus.get(), startDate.get(), endDate.get(), pageable).toList();
+        }
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Bill.GET_LIST_BILL_IS_SUCCESS, listBill.stream().map(this.billMapping::toDtoResponse).collect(Collectors.toList()));
     }
 
 }

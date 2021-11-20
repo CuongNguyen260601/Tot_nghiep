@@ -1,20 +1,23 @@
 package com.localbrand.model_mapping.Impl;
 
 import com.localbrand.common.Name_Status_Enum;
+import com.localbrand.common.Status_Enum;
 import com.localbrand.dto.request.BillRequestDTO;
+import com.localbrand.dto.response.BillProductResponseDTO;
 import com.localbrand.dto.response.BillResponseDTO;
-import com.localbrand.entity.Address;
-import com.localbrand.entity.Bill;
-import com.localbrand.entity.User;
-import com.localbrand.entity.Voucher;
+import com.localbrand.dto.response.BillResponseUserDTO;
+import com.localbrand.entity.*;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.AddressRepository;
+import com.localbrand.repository.BillProductRepository;
 import com.localbrand.repository.UserRepository;
 import com.localbrand.repository.VoucherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -26,6 +29,8 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
     private final VoucherMapping voucherMapping;
     private final UserRepository userRepository;
     private final UserMapping userMapping;
+    private final BillProductRepository billProductRepository;
+    private final BillProductMapping billProductMapping;
 
     @Override
     public BillResponseDTO toDto(Bill bill) {
@@ -102,5 +107,45 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
                 .total(0F)
                 .billType(billRequestDTO.getBillType())
                 .build();
+    }
+
+    public BillResponseUserDTO toDtoResponse(Bill bill) {
+        Address address = this.addressRepository.findById(bill.getIdAddress().longValue()).orElse(null);
+
+        User user = this.userRepository.findById(bill.getIdUser().longValue()).orElse(null);
+
+        BillResponseUserDTO billResponseUserDTO = new BillResponseUserDTO();
+        billResponseUserDTO.setIdBill(bill.getIdBill());
+        billResponseUserDTO.setUserResponseDTO(this.userMapping.toDto(user));
+        billResponseUserDTO.setAddress(this.addressMapping.toDto(address));
+        billResponseUserDTO.setPhoneUser(bill.getPhoneUser());
+        billResponseUserDTO.setEmailUser(bill.getEmailUser());
+        billResponseUserDTO.setDateCreate(bill.getDateCreate());
+        billResponseUserDTO.setDateCreate(bill.getDateSuccess());
+        billResponseUserDTO.setDescriptionBill(bill.getDescriptionBill());
+        billResponseUserDTO.setTotal(bill.getTotal());
+        billResponseUserDTO.setDeposit(bill.getDeposit());
+        billResponseUserDTO.setPayment(bill.getPayment());
+        billResponseUserDTO.setTransportFee(bill.getTransportFee());
+        billResponseUserDTO.setBillType(bill.getBillType());
+        billResponseUserDTO.setIdStatus(bill.getIdStatus());
+        billResponseUserDTO.setNameStatus(Name_Status_Enum.findByCode(bill.getIdStatus()).getName());
+
+
+        if(Objects.nonNull(bill.getIdVoucher())){
+            Voucher voucher = this.voucherRepository.findById(bill.getIdVoucher().longValue()).orElse(null);
+
+            if(Objects.nonNull(voucher)){
+                billResponseUserDTO.setVoucher(this.voucherMapping.toDto(voucher));
+            }
+        }
+
+        List<BillProduct> billProducts = this.billProductRepository.findAllByIdBillAndIdStatus(bill.getIdBill().intValue(), Status_Enum.EXISTS.getCode());
+
+        List<BillProductResponseDTO> billProductResponseDTOS = billProducts.stream().map(this.billProductMapping::toDto).collect(Collectors.toList());
+
+        billResponseUserDTO.setListBillProductDetail(billProductResponseDTOS);
+
+        return billResponseUserDTO;
     }
 }

@@ -128,8 +128,10 @@ public interface Interface_API {
             String BILL_CANCEL_USER = "/user/bills/cancel";
             String BILL_CANCEL_ADMIN = "/admin/bills/cancel";
             String BILL_GET_ALL_LIST_USER = "/user/bills/getalllist";
+            String BILL_GET_ALL_LIST_USER_OTHER = "/user/bills/getalllistuser";
             String BILL_GET_ALL_LIST_ADMIN = "/admin/bills/getalllist";
             String BILL_GET_ALL_LIST_AND_FILTER_USER = "/user/bills/getalllistandfilter";
+            String BILL_GET_ALL_LIST_AND_FILTER_USER_OTHER = "/user/bills/getalllistandfilteruser";
             String BILL_GET_ALL_LIST_AND_FILTER_ADMIN = "/admin/bills/getalllistandfilter";
             String BILL_GET_ALL_LIST_PRODUCT_BILL_USER = "/user/bills/getalllistbillproduct";
             String BILL_GET_ALL_LIST_PRODUCT_BILL_ADMIN = "/admin/bills/getalllistbillproduct";
