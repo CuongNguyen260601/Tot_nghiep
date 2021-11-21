@@ -9,7 +9,9 @@ import com.localbrand.dto.response.RoleResponseDTO;
 import com.localbrand.dto.response.UserResponseDTO;
 import com.localbrand.dto.response.UserResponseSignupDTO;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +31,6 @@ public interface UserService {
 
     ServiceResult<UserResponseDTO> changePassword(HttpServletRequest request, ChangePasswordRequest changePasswordRequest);
 
-    ServiceResult<?> getNewPassword(String email);
+    ServiceResult<?> getNewPassword(String email) throws MessagingException, IOException;
 
 }

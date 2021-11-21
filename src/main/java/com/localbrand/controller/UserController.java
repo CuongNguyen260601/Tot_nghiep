@@ -17,8 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,7 +88,7 @@ public class UserController {
     }
 
     @GetMapping(Interface_API.API.Auth.GET_NEW_PASSWORD)
-    public ResponseEntity<ServiceResult<?>> acceptRole (@RequestParam String email){
+    public ResponseEntity<ServiceResult<?>> acceptRole (@RequestParam String email) throws MessagingException, IOException {
         ServiceResult<?> result = this.userService.getNewPassword(email);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
