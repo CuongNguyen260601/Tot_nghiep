@@ -12,6 +12,8 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
     Page<Category> findAllByParentIdIsNull(Pageable pageable);
 
+    List<Category> findAllByParentIdIsNull();
+
     Page<Category> findAllByParentId(Integer parentId, Pageable pageable);
 
     Page<Category> findAllByParentIdIsNullAndNameCategoryLike(String name, Pageable pageable);

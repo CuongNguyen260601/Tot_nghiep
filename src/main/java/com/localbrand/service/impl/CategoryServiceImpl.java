@@ -327,7 +327,7 @@ public class CategoryServiceImpl  implements CategoryService{
     @Override
     public ServiceResult<List<CategoryParentDTO>> getAllCategoryParent() {
         this.log.info("Get list category parent");
-        List<Category> listCategory = this.categoryRepository.findAll();
+        List<Category> listCategory = this.categoryRepository.findAllByParentIdIsNull();
         return new ServiceResult<>(HttpStatus.OK,Notification.Category.GET_LIST_PARENT_TO_SIZE, listCategory.stream().map(this.categoryParentMapping::toDto).collect(Collectors.toList()));
     }
 
