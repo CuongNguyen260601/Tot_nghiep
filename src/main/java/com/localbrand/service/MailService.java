@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public interface MailService {
 
-    String sendEmailForgotPassword(User user) throws MessagingException, IOException;
+    String sendEmailForgotPassword(User user);
 
     String sendEmail(MailMessageDTO mailMessageDTO) throws MessagingException, IOException;
 }

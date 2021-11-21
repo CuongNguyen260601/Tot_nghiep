@@ -332,7 +332,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public ServiceResult<?> getNewPassword(String email) throws MessagingException, IOException {
+    public ServiceResult<?> getNewPassword(String email) {
 
         User user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email).orElse(null);
 

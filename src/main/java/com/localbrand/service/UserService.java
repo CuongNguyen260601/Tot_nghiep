@@ -31,6 +31,6 @@ public interface UserService {
 
     ServiceResult<UserResponseDTO> changePassword(HttpServletRequest request, ChangePasswordRequest changePasswordRequest);
 
-    ServiceResult<?> getNewPassword(String email) throws MessagingException, IOException;
+    ServiceResult<?> getNewPassword(String email);
 
 }

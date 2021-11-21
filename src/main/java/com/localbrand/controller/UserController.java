@@ -88,7 +88,7 @@ public class UserController {
     }
 
     @GetMapping(Interface_API.API.Auth.GET_NEW_PASSWORD)
-    public ResponseEntity<ServiceResult<?>> acceptRole (@RequestParam String email) throws MessagingException, IOException {
+    public ResponseEntity<ServiceResult<?>> getNewPassword (@RequestParam String email) {
         ServiceResult<?> result = this.userService.getNewPassword(email);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
