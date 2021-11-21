@@ -59,7 +59,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().configurationSource(corsConfigurationSource()).and();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.LOGIN).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.SIGN_UP).permitAll();
-        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.LOG_OUT).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.REFRESH_TOKEN).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_GET_ALL_USER).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SEARCH_USER).permitAll();

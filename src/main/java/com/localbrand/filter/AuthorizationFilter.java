@@ -41,7 +41,6 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
         if(request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Auth.LOGIN)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Auth.SIGN_UP)
-            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Auth.LOG_OUT)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Auth.REFRESH_TOKEN)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_GET_ALL_USER)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Product.PRODUCT_SEARCH_USER)
