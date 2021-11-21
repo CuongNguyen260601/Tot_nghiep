@@ -76,6 +76,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Size.SIZE_FIND_EXISTS).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Color.COLOR_FIND_EXISTS).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Category.CATEGORY_TO_SIZE).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.UPLOAD_IMAGE).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Auth.GET_NEW_PASSWORD).permitAll();
         http.authorizeRequests().antMatchers("/Image/**").permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Category.Category_Child.CATEGORY_CHILD_FIND_BY_PARENT_ID).permitAll();
         http.authorizeRequests().antMatchers("/api/webtpf/admin/**").hasAnyAuthority(Role_Enum.ROLE_ADMIN.getRole(),Role_Enum.ROLE_EMPLOYEE.getRole());

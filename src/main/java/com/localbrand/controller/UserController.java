@@ -80,13 +80,13 @@ public class UserController {
     }
 
     @PostMapping(Interface_API.API.Auth.CHANGE_PASSWORD)
-    public ResponseEntity<ServiceResult<UserResponseDTO>> acceptRole (HttpServletRequest request, @Valid @RequestBody ChangePasswordRequest changePasswordRequest){
+    public ResponseEntity<ServiceResult<UserResponseDTO>> changePassword (HttpServletRequest request, @Valid @RequestBody ChangePasswordRequest changePasswordRequest){
         ServiceResult<UserResponseDTO> result = this.userService.changePassword(request, changePasswordRequest);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @GetMapping(Interface_API.API.Auth.GET_NEW_PASSWORD)
-    public ResponseEntity<ServiceResult<?>> acceptRole (@RequestParam String email){
+    public ResponseEntity<ServiceResult<?>> getNewPassword (@RequestParam String email){
         ServiceResult<?> result = this.userService.getNewPassword(email);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
