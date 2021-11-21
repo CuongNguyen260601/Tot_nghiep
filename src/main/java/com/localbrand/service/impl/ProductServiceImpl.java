@@ -367,17 +367,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getAllProductOnUser(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit) {
-
-        Object email = request.getAttribute("USER_NAME");
+    public ServiceResult<List<ProductShowUserResponseDTO>> getAllProductOnUser(Optional<Integer> page, Optional<Integer> limit,  Optional<Long> userId) {
 
         User user;
 
-        if(Objects.nonNull(email)){
-            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
-        }else{
+        if(userId.isEmpty() || userId.get() < 1){
             user = null;
+        }else{
+            user = this.userRepository.findById(userId.get()).orElse(null);
         }
+
         if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
 
         Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
@@ -395,16 +394,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getAllProductShowUser(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idCategoryParent, Optional<Integer> idCategoryChild, Optional<Integer> idGender, Optional<Float> minPrice, Optional<Float> maxPrice, Optional<Integer> page, Optional<Integer> limit) {
-
-        Object email = request.getAttribute("USER_NAME");
+    public ServiceResult<List<ProductShowUserResponseDTO>> getAllProductShowUser(Optional<Integer> sort, Optional<Integer> idCategoryParent, Optional<Integer> idCategoryChild, Optional<Integer> idGender, Optional<Float> minPrice, Optional<Float> maxPrice, Optional<Integer> page, Optional<Integer> limit, Optional<Long> userId) {
 
         User user;
 
-        if(Objects.nonNull(email)){
-            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
-        }else{
+        if(userId.isEmpty() || userId.get() < 1){
             user = null;
+        }else{
+            user = this.userRepository.findById(userId.get()).orElse(null);
         }
 
         if (page.isEmpty()
@@ -480,16 +477,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> searchByNameOnUser(HttpServletRequest request, String name, Optional<Integer> page, Optional<Integer> limit) {
-
-        Object email = request.getAttribute("USER_NAME");
+    public ServiceResult<List<ProductShowUserResponseDTO>> searchByNameOnUser(String name, Optional<Integer> page, Optional<Integer> limit, Optional<Long> userId) {
 
         User user;
 
-        if(Objects.nonNull(email)){
-            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
-        }else{
+        if(userId.isEmpty() || userId.get() < 1){
             user = null;
+        }else{
+            user = this.userRepository.findById(userId.get()).orElse(null);
         }
 
         if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
@@ -557,16 +552,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getListNewProduct(HttpServletRequest request, Optional<Integer> limit) {
-
-        Object email = request.getAttribute("USER_NAME");
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListNewProduct(Optional<Integer> limit, Optional<Long> userId) {
 
         User user;
 
-        if(Objects.nonNull(email)){
-            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
-        }else{
+        if(userId.isEmpty() || userId.get() < 1){
             user = null;
+        }else{
+            user = this.userRepository.findById(userId.get()).orElse(null);
         }
 
         if(limit.isEmpty()
@@ -586,15 +579,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getListHotProduct(HttpServletRequest request, Optional<Integer> limit) {
-        Object email = request.getAttribute("USER_NAME");
-
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListHotProduct(Optional<Integer> limit, Optional<Long> userId) {
         User user;
 
-        if(Objects.nonNull(email)){
-            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
-        }else{
+        if(userId.isEmpty() || userId.get() < 1){
             user = null;
+        }else{
+            user = this.userRepository.findById(userId.get()).orElse(null);
         }
         if(limit.isEmpty()
                 ||limit.get() < 1)
@@ -614,16 +605,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductByCategory(HttpServletRequest request, Optional<Integer> idCategory, Optional<Integer> page, Optional<Integer> limit) {
-
-        Object email = request.getAttribute("USER_NAME");
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductByCategory(Optional<Integer> idCategory, Optional<Integer> page, Optional<Integer> limit, Optional<Long> userId) {
 
         User user;
 
-        if(Objects.nonNull(email)){
-                user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
-        }else{
+        if(userId.isEmpty() || userId.get() < 1){
             user = null;
+        }else{
+            user = this.userRepository.findById(userId.get()).orElse(null);
         }
 
         if(idCategory.isEmpty()
@@ -650,16 +639,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductLikeByUser(HttpServletRequest request, Optional<Integer> idUser, Optional<Integer> page, Optional<Integer> limit) {
-
-        Object email = request.getAttribute("USER_NAME");
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductLikeByUser(Optional<Integer> idUser, Optional<Integer> page, Optional<Integer> limit, Optional<Long> userId) {
 
         User user;
 
-        if(Objects.nonNull(email)){
-            user = this.userRepository.findFirstByEmailEqualsIgnoreCase(email.toString()).orElse(null);
-        }else{
+        if(userId.isEmpty() || userId.get() < 1){
             user = null;
+        }else{
+            user = this.userRepository.findById(userId.get()).orElse(null);
         }
 
         if(idUser.isEmpty()

@@ -93,7 +93,6 @@ public class ProductController {
 
     @GetMapping(Interface_API.API.Product.PRODUCT_GET_ALL_USER)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getListProductOnUser(
-            HttpServletRequest request,
             @RequestParam Optional<Integer> sort,
             @RequestParam Optional<Integer> idCategoryParent,
             @RequestParam Optional<Integer> idCategoryChild,
@@ -101,10 +100,10 @@ public class ProductController {
             @RequestParam Optional<Float> minPrice,
             @RequestParam Optional<Float> maxPrice,
             @RequestParam Optional<Integer> page,
-            @RequestParam Optional<Integer> limit
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Long> userId
     ){
         ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getAllProductShowUser(
-                request,
                 sort,
                 idCategoryParent,
                 idCategoryChild,
@@ -112,14 +111,15 @@ public class ProductController {
                 minPrice,
                 maxPrice,
                 page,
-                limit
+                limit,
+                userId
         );
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SEARCH_USER)
-    public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> searchProductOnUser(HttpServletRequest request, @RequestParam String name, @RequestParam Optional<Integer> page, @RequestParam Optional<Integer> limit){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.searchByNameOnUser(request, name, page, limit);
+    public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> searchProductOnUser(@RequestParam String name, @RequestParam Optional<Integer> page, @RequestParam Optional<Integer> limit, @RequestParam Optional<Long> userId){
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.searchByNameOnUser(name, page, limit, userId);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
@@ -143,51 +143,51 @@ public class ProductController {
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SHOW_ALL)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getAllShowUser(
-            HttpServletRequest request,
             @RequestParam Optional<Integer> page,
-            @RequestParam Optional<Integer> limit
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Long> userId
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getAllProductOnUser(request, page, limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getAllProductOnUser(page, limit, userId);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_NEW)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductNew(
-            HttpServletRequest request,
-            @RequestParam Optional<Integer> limit
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Long> userId
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListNewProduct(request, limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListNewProduct(limit, userId);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_HOT)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductHot(
-            HttpServletRequest request,
-            @RequestParam Optional<Integer> limit
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Long> userId
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListHotProduct(request, limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListHotProduct(limit, userId);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_RELATED)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductRelated(
-            HttpServletRequest request,
             @RequestParam Optional<Integer> idCategory,
             @RequestParam Optional<Integer> page,
-            @RequestParam Optional<Integer> limit
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Long> userId
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductByCategory(request, idCategory,page,limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductByCategory(idCategory,page,limit, userId);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_LIKE)
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductLike(
-            HttpServletRequest request,
             @RequestParam Optional<Integer> idUser,
             @RequestParam Optional<Integer> page,
-            @RequestParam Optional<Integer> limit
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Long> userId
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductLikeByUser(request, idUser,page,limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductLikeByUser(idUser,page,limit, userId);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 }

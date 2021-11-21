@@ -38,10 +38,9 @@ public interface ProductService {
 
     ServiceResult<ProductChildResponseDTO> deleteProductChild(HttpServletRequest request, Optional<Long> idProductDetail);
 
-    ServiceResult<List<ProductShowUserResponseDTO>> getAllProductOnUser(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit);
+    ServiceResult<List<ProductShowUserResponseDTO>> getAllProductOnUser(Optional<Integer> page, Optional<Integer> limit, Optional<Long> userId);
 
     ServiceResult<List<ProductShowUserResponseDTO>> getAllProductShowUser(
-                                                            HttpServletRequest request,
                                                             Optional<Integer> sort,
                                                             Optional<Integer> idCategoryParent,
                                                             Optional<Integer> idCategoryChild,
@@ -49,10 +48,11 @@ public interface ProductService {
                                                             Optional<Float> minPrice,
                                                             Optional<Float> maxPrice,
                                                             Optional<Integer> page,
-                                                            Optional<Integer> limit
+                                                            Optional<Integer> limit,
+                                                            Optional<Long> userId
     );
 
-    ServiceResult<List<ProductShowUserResponseDTO>> searchByNameOnUser(HttpServletRequest request, String name, Optional<Integer> page, Optional<Integer> limit);
+    ServiceResult<List<ProductShowUserResponseDTO>> searchByNameOnUser(String name, Optional<Integer> page, Optional<Integer> limit, Optional<Long> userId);
 
     ServiceResult<ProductShowUserResponseDTO> showProductOnUser(Optional<Long> idProduct);
 
@@ -60,11 +60,11 @@ public interface ProductService {
 
     ServiceResult<ProductDetailUserDTO> findByIdProductAndIdColorAndIdSize(Optional<Long> idProduct, Optional<Integer> idColor, Optional<Integer> idSize);
 
-    ServiceResult<List<ProductShowUserResponseDTO>> getListNewProduct(HttpServletRequest request, Optional<Integer> limit);
+    ServiceResult<List<ProductShowUserResponseDTO>> getListNewProduct(Optional<Integer> limit, Optional<Long> userId);
 
-    ServiceResult<List<ProductShowUserResponseDTO>> getListHotProduct(HttpServletRequest request, Optional<Integer> limit);
+    ServiceResult<List<ProductShowUserResponseDTO>> getListHotProduct(Optional<Integer> limit, Optional<Long> userId);
 
-    ServiceResult<List<ProductShowUserResponseDTO>> getListProductByCategory(HttpServletRequest request, Optional<Integer> idCategory, Optional<Integer> page, Optional<Integer> limit);
+    ServiceResult<List<ProductShowUserResponseDTO>> getListProductByCategory(Optional<Integer> idCategory, Optional<Integer> page, Optional<Integer> limit,Optional<Long> userId);
 
-    ServiceResult<List<ProductShowUserResponseDTO>> getListProductLikeByUser(HttpServletRequest request, Optional<Integer> idUser, Optional<Integer> page, Optional<Integer> limit);
+    ServiceResult<List<ProductShowUserResponseDTO>> getListProductLikeByUser(Optional<Integer> idUser, Optional<Integer> page, Optional<Integer> limit, Optional<Long> userId);
 }
