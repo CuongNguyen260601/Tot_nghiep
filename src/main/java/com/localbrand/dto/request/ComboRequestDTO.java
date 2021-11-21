@@ -1,6 +1,7 @@
 package com.localbrand.dto.request;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.localbrand.exception.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,5 +50,6 @@ public class ComboRequestDTO {
     @Min(value = 0, message = Notification.Combo.Validate_Combo.VALIDATE_QUANTITY)
     private Integer quantity;
 
+    @JsonProperty("comboDetail")
     private List<ComboDetailRequestDTO> comboDetailRequestDTO;
 }

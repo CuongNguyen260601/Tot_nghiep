@@ -29,8 +29,6 @@ public class NewsController {
                                                                         @RequestParam Optional<Integer> idStatus,
                                                                         @RequestParam Optional<Integer> page) {
 
-        String usser = request.getAttribute("USER_NAME").toString();
-
         ServiceResult<List<NewsResponseDTO>> result = this.newsService.findAllNew(request,sort,idStatus,page);
         return ResponseEntity
                 .status(result.getStatus().value())
@@ -38,10 +36,10 @@ public class NewsController {
     }
 
     @GetMapping(Interface_API.API.News.NEWS_FIND_ALL_USER)
-    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> fillAllNewUser(HttpServletRequest request,
+    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> fillAllNewUser(
                                                                            @RequestParam Optional<Integer> limit,
                                                                            @RequestParam Optional<Integer> page) {
-        ServiceResult<List<NewsResponseDTO>> result = this.newsService.findAllNewUser(request,limit,page);
+        ServiceResult<List<NewsResponseDTO>> result = this.newsService.findAllNewUser(limit,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
@@ -50,6 +48,30 @@ public class NewsController {
     @GetMapping(Interface_API.API.News.NEWS_FIND_BY_ID)
     public ResponseEntity<ServiceResult<NewsResponseDTO>> getById(HttpServletRequest request,@PathVariable Optional<Long> idNews) {
         ServiceResult<NewsResponseDTO> result = this.newsService.getById(request,idNews);
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
+
+    @GetMapping(Interface_API.API.News.NEWS_SEARCH)
+    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> searchByTitle(HttpServletRequest request,@RequestParam String title, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<NewsResponseDTO>> result = this.newsService.searchByTitle(request,title,page);
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
+
+    @GetMapping(Interface_API.API.News.NEWS_SEARCH_USER)
+    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> searchByTitleUser(HttpServletRequest request,@RequestParam String title, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<NewsResponseDTO>> result = this.newsService.searchByTitleUser(title,page);
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
+
+    @GetMapping(Interface_API.API.News.NEWS_FIND_BY_ID_USER)
+    public ResponseEntity<ServiceResult<NewsResponseDTO>> getByIdUser(@PathVariable Optional<Long> idNews) {
+        ServiceResult<NewsResponseDTO> result = this.newsService.getByIdUser(idNews);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
@@ -71,12 +93,8 @@ public class NewsController {
                 .body(result);
     }
 
-    @GetMapping(Interface_API.API.News.NEWS_SEARCH)
-    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> searchByName(HttpServletRequest request,@RequestParam String title, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<NewsResponseDTO>> result = this.newsService.searchByTitle(request,title,page);
-        return ResponseEntity
-                .status(result.getStatus().value())
-                .body(result);
-    }
+
+
+
 
 }

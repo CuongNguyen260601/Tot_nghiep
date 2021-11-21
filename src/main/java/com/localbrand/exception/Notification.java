@@ -212,16 +212,7 @@ public interface Notification {
 
     interface ComboDetail {
         String GET_LIST_COMBO_DETAIL_SUCCESS = "Get list combo detail success";
-        String GET_COMBO_DETAIL_BY_ID_SUCCESS = "Get combo detail by id success";
-        String GET_COMBO_DETAIL_BY_ID_FALSE = "Voucher does not exists";
-        String GET_COMBO_DETAIL_AND_SORT_SUCESS = "Get combo detail and sort is success";
-        String GET_COMBO_DETAIL_AND_SORT_FALSE = "Invalid sort";
-        String SAVE_COMBO_DETAIL_SUCCESS = "Save combo detail is success";
-        String SAVE_COMBO_DETAIL_FALSE = "Save combo detail is false";
-        String DELETE_COMBO_DETAIL_SUCCESS = "Delete combo detail is success";
-        String DELETE_COMBO_DETAIL_FALSE = "Delete combo detail is false";
-        String SEARCH_COMBO_DETAIL_SUCCESS = "Search combo detail is success";
-        String FIND_COMBO_DETAIL_BY_STATUS_SUCCESS = "Find combo detail by status is success";
+        String GET_LIST_COMBO_DETAIL_BY_ID_COMBO_SUCCESS = "Get list combo detail by idCombo success";
         interface Validate_ComboDetail {
             String VALIDATE_ID_PRODUCT_DETAIL = "Invalid id product detail";
             String VALIDATE_ID_COMBO = "Invalid id combo";

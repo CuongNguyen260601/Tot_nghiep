@@ -10,4 +10,7 @@ public interface ComboRepository extends JpaRepository<Combo, Long>, JpaSpecific
 
     Page<Combo> findAllByNameComboLike(String name, Pageable pageable);
 
+    Page<Combo> findAllByNameComboLikeAndAndIdStatus(String name,Integer status, Pageable pageable);
+
+    Page<Combo> findAllByIdStatus(Integer idStatus, Pageable pageable);
 }

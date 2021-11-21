@@ -1,5 +1,6 @@
 package com.localbrand.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.localbrand.dto.ProductDetailDTO;
 import lombok.*;
 
@@ -15,5 +16,6 @@ public class ComboDetailResponseDTO {
 
     private Integer idCombo;
 
+    @JsonProperty("productDetail")
     private ProductChildResponseDTO productChildResponseDTO;
 }

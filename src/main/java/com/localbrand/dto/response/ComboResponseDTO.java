@@ -2,6 +2,7 @@ package com.localbrand.dto.response;
 
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.localbrand.entity.ComboTag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,4 +38,9 @@ public class ComboResponseDTO {
     private List<ComboTag> listComboTag;
 
     private Integer quantity;
+
+    @JsonProperty("comboDetail")
+    private List<ComboDetailResponseDTO> comboDetailResponseDTO;
+
+
 }

@@ -2,6 +2,7 @@ package com.localbrand.model_mapping.Impl;
 
 
 import com.localbrand.dto.request.ComboRequestDTO;
+import com.localbrand.dto.response.ComboDetailResponseDTO;
 import com.localbrand.dto.response.ComboResponseDTO;
 import com.localbrand.entity.Combo;
 import com.localbrand.entity.ComboTag;
@@ -31,7 +32,7 @@ public class ComboMapping implements Mapping<ComboResponseDTO, Combo> {
         return comboResponseDTO;
     }
 
-    public ComboResponseDTO toDto(Combo combo, List<ComboTag> listComboTag) {
+    public ComboResponseDTO toDto(Combo combo, List<ComboTag> listComboTag, List<ComboDetailResponseDTO> comboDetailResponseDTO) {
         ComboResponseDTO comboResponseDTO = ComboResponseDTO
                 .builder()
                 .idCombo(combo.getIdCombo())
@@ -46,6 +47,7 @@ public class ComboMapping implements Mapping<ComboResponseDTO, Combo> {
                 .quantity(combo.getQuantity())
                 .build();
         comboResponseDTO.setListComboTag(listComboTag);
+        comboResponseDTO.setComboDetailResponseDTO(comboDetailResponseDTO);
         return comboResponseDTO;
     }
 

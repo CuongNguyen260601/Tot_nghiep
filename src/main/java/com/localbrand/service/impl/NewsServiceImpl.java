@@ -121,22 +121,38 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public ServiceResult<NewsResponseDTO> getById(HttpServletRequest request,Optional<Long> idNews) {
+
+        this.log.info("Get news by id");
+
         Object email = request.getAttribute("USER_NAME");
 
         if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.NEW.getModule(), Action_Enum.READ.getAction());
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.NEW.getModule(), Action_Enum.DELETE.getAction());
             if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get new by id", null);
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete new", null);
             }
         }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get new by id", null);
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete new", null);
         }
+
+        if (idNews.isEmpty() || idNews.get() < 1) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.News.Validate_News.VALIDATE_ID, null);
+
+        News news = this.newsRepository.findById(idNews.orElse(1L)).orElse(null);
+
+        if (Objects.isNull(news))
+            return new ServiceResult<>(HttpStatus.NOT_FOUND, Notification.News.GET_NEWS_BY_ID_FALSE, null);
+        List<NewDetail> listNewDetail= newDetailRepository.findByIdNew(news.getIdNew().intValue());
+        return new ServiceResult<>(HttpStatus.OK, Notification.News.GET_NEWS_BY_ID_SUCCESS,this.newsMapping.toResponseDto(news,listNewDetail.stream().map(this.newDetailMapping::toDto).collect(Collectors.toList())));
+    }
+
+    @Override
+    public ServiceResult<NewsResponseDTO> getByIdUser(Optional<Long> idNews) {
 
         this.log.info("Get news by id");
 
         if (idNews.isEmpty() || idNews.get() < 1) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.News.Validate_News.VALIDATE_ID, null);
 
-        News news = this.newsRepository.findById(idNews.orElse(1L)).orElse(null);
+        News news = this.newsRepository.findByIdNewAndIdStatus(idNews.orElse(1L), Status_Enum.EXISTS.getCode()).orElse(null);
 
         if (Objects.isNull(news))
             return new ServiceResult<>(HttpStatus.NOT_FOUND, Notification.News.GET_NEWS_BY_ID_FALSE, null);
@@ -182,10 +198,10 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public ServiceResult<List<NewsResponseDTO>> findAllNewUser(HttpServletRequest request, Optional<Integer> limit, Optional<Integer> page) {
+    public ServiceResult<List<NewsResponseDTO>> findAllNewUser( Optional<Integer> limit, Optional<Integer> page) {
         if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
 
-        Pageable pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode(), Sort.by(Sort.Direction.DESC,"dateCreate"));
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.get(), Sort.by(Sort.Direction.DESC,"dateCreate"));
 
         List<News> listNew = new ArrayList<>();
 
@@ -212,6 +228,18 @@ public class NewsServiceImpl implements NewsService {
         Pageable pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());
 
         List<News> listNews = this.newsRepository.findAllByTitleLike("%"+titleNews+"%", pageable).toList();
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.News.SEARCH_NEWS_BY_TITLE_SUCCESS, listNews.stream().map(this.newsMapping::toResponseDto).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ServiceResult<List<NewsResponseDTO>> searchByTitleUser(String titleNews, Optional<Integer> page) {
+
+        if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
+
+        Pageable pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());
+
+        List<News> listNews = this.newsRepository.findAllByTitleLikeAndIdStatus("%"+titleNews+"%",Status_Enum.EXISTS.getCode(), pageable).toList();
 
         return new ServiceResult<>(HttpStatus.OK, Notification.News.SEARCH_NEWS_BY_TITLE_SUCCESS, listNews.stream().map(this.newsMapping::toResponseDto).collect(Collectors.toList()));
     }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface NewDetailRepository extends JpaRepository<NewDetail, Long>, JpaSpecificationExecutor<NewDetail> {
 
     List<NewDetail> findByIdNew(Integer idNew);
+
+
 }

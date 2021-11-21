@@ -17,14 +17,18 @@ public interface NewsService {
                                                     Optional<Integer> idStatus,
                                                     Optional<Integer> page);
 
-    ServiceResult<List<NewsResponseDTO>> findAllNewUser(HttpServletRequest request ,
+    ServiceResult<List<NewsResponseDTO>> findAllNewUser(
                                                         Optional<Integer> limit,
                                                         Optional<Integer> page);
 
     ServiceResult<NewsResponseDTO> getById(HttpServletRequest request,Optional<Long> idNews);
 
+    ServiceResult<NewsResponseDTO> getByIdUser(Optional<Long> idNews);
+
     ServiceResult<NewRequestDTO> delete(HttpServletRequest request,Optional<Long> idNews);
 
     ServiceResult<List<NewsResponseDTO>> searchByTitle (HttpServletRequest request,String titleNews, Optional<Integer> page);
+
+    ServiceResult<List<NewsResponseDTO>> searchByTitleUser (String titleNews, Optional<Integer> page);
 
 }
