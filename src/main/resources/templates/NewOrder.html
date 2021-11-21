@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: #171A23;
+            font-weight: 500;
+        }
+
+        td {
+            padding: 0 15px;
+        }
+
+        .login-title {
+            font-weight: 700;
+            font-size: 30px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            line-height: 36px;
+            letter-spacing: -0.24px;
+            color: #171A23;
+        }
+
+        .login-title span {
+            color: #FFBF00;
+            font-size: 30px;
+        }
+
+        .btn-email {
+            margin: 20px 0;
+            background: linear-gradient(221.15deg, #BD8727 0%, #FFD574 49.02%, #FECA50 62.02%, #BD8727 101.47%);
+            border-radius: 50px;
+            padding: 14px 30px;
+            width: 200px;
+            border: none;
+        }
+
+        .btn-email a {
+            color: #282C37;
+            font-weight: 500;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+        .table-email table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table-email table th,
+        .table-email table td {
+            padding: 10px;
+        }
+
+        .table-email table th {
+            background: #DEDEDE;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .table-email table td {
+            background: #F7F7F7;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .table-email table tr td:first-child  {
+            width: 160px;
+        }
+
+        .table-email table td a{
+            color: #2F80ED;
+        }
+
+        .table-email table tbody tr:last-child td:first-child {
+            border-bottom: none;
+            border-bottom-left-radius: 20px;
+        }
+
+        .table-email table tbody tr:last-child td:last-child {
+            border-bottom: none;
+            border-bottom-right-radius: 20px;
+        }
+
+        .table-1 table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table-1 table th,
+        .table-1 table td {
+            padding: 10px;
+        }
+
+        .table-1 table th {
+            background: #DEDEDE;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .table-1 table td {
+            background: #F7F7F7;
+        }
+
+        .table-1 table .table-child {
+            border: 1px solid #BDBDBD;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .table-1 table .table-child .table-child__header td {
+            border-radius: 20px 20px 0 0;
+            font-weight: bold;
+        }
+
+        .table-1 table .table-child .table-child__header td:nth-child(2) {
+            border-left: 1px solid #BDBDBD;
+            border-right: 1px solid #BDBDBD;
+        }
+
+        .table-1 table .table-child .table-child__item {
+            border-top: 1px solid #BDBDBD;
+        }
+
+        .table-1 table .table-child .table-child__item td:nth-child(1) {
+            width: 20%;
+        }
+
+        .table-1 table .table-child .table-child__item td:nth-child(2) {
+            border-left: 1px solid #BDBDBD;
+            border-right: 1px solid #BDBDBD;
+            width: 40%;
+        }
+
+        .table-1 table td a{
+            color: #2F80ED;
+        }
+
+        .table-1 table tbody tr:last-child td:first-child {
+            border-bottom: none;
+            border-bottom-left-radius: 20px;
+        }
+
+        .table-1 table tbody tr:last-child td:last-child {
+            border-bottom: none;
+            border-bottom-right-radius: 20px;
+        }
+
+        .table-2 {
+            margin-top: 19px;
+        }
+
+        .table-2 table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table-2 table th,
+        .table-2 table td {
+            padding: 10px;
+        }
+
+        .table-2 .table-2__title {
+            width: 320px;
+        }
+
+        .table-2 table td a{
+            color: #2F80ED;
+        }
+
+        sup {
+            font-size: 6px;
+        }
+
+        img {
+            vertical-align: middle;
+        }
+
+        td {
+            padding: 0 40px;
+        }
+        .note {
+            margin-top: 23px;
+            padding: 13px;
+            color: #00B52A;
+            background-color: #c8ecd0;
+            font-weight: bold;
+        }
+    </style>
+    <title></title>
+</head>
+
+<body>
+<table
+        style="width: 670px; margin: auto; padding-top: 0px; border-collapse: collapse; border: 1px solid #5D6169; border-bottom: none; background: #FAFAFA">
+    <tbody>
+    <tr>
+        <td>
+            <h3 class="login-title">Xin chào, <span th:text="${nameUser}" ></span></h3>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <p style="font-size: 16px; margin-bottom: 20px;">Shop thời trang TPF xin cảm ơn quý khách đã mua hàng</p>
+            <p style="font-size: 16px; font-weight: bold; margin-bottom: 20px;">Max late payment was reached <span th:text="${systemRisk}"></span> times</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <div class="table-email" style="margin-top: 10px">
+                <table>
+                    <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: left; font-size: 16px; font-weight: 600;">Contract Information</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>Contract ID:</td>
+                        <td>
+                            <a th:href="@{${linkViewContract}}" target="_blank" th:text="${contractId}"></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>System risk: </td>
+                        <td>
+                            Borrower can only make a late payment <span th:text="${systemRiskMinus}"></span> times. From the <span th:text="${systemRisk}"></span> time, the collateral will be liquidated.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-1" style="margin-top: 30px">
+                <table>
+                    <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: left; font-size: 16px; font-weight: 600;">Liquidation Information</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr style="border-bottom: 1px solid #E0E0E0;">
+                        <td colspan="2">
+                            <div class="table-child">
+                                <table>
+                                    <tr class="table-child__header">
+                                        <td>Cycle</td>
+                                        <td>Due date (UTC)</td>
+                                        <td>Unpaid amount</td>
+                                    </tr>
+                                    <tr th:each="pr : ${prList}" class="table-child__item">
+                                        <td th:text="${pr.cycleNo}"></td>
+                                        <td th:text="${pr.dueDate}"></td>
+                                        <td>
+                                            <div>
+                                                Penalty: <img th:src="@{${symbolRepaymentCurrency}}" alt="" style="width: 25px; height: 25px; margin-right: 5px;">
+                                                <span th:text="${pr.penalty}"></span>
+                                            </div>
+                                            <div style="margin-top: 12px;">
+                                                Interest: <img th:src="@{${symbolRepaymentCurrency}}" alt="" style="width: 25px; height: 25px; margin-right: 5px;">
+                                                <span th:text="${pr.interest}"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Default Date (UTC)</td>
+                        <td th:text="${defaultDate}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-2">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="table-2__title">Collateral has been sent to lender</td>
+                        <td>
+                            <span th:text="${collateral}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table-2__title">TXN hash</td>
+                        <td>
+                            <a th:href="@{${linkViewContractBsc}}" target="_blank" th:text="${contractTxnHash}"></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <div class="note">
+                Please review your Lender to get 10 DFY as reward, click on the below button
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="text-align: center">
+            <button class="btn-email" style="margin-top: 40px">
+                <a th:href="@{${linkViewContract}}"
+                   target="_blank">Review now</a>
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+
+</html>

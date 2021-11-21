@@ -16,6 +16,7 @@ import com.localbrand.entity.*;
 import com.localbrand.model_mapping.Impl.AddressMapping;
 import com.localbrand.model_mapping.Impl.UserMapping;
 import com.localbrand.repository.*;
+import com.localbrand.service.MailService;
 import com.localbrand.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +32,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
@@ -49,10 +52,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserMapping userMapping;
     private final JwtRepository jwtRepository;
     private final CartRepository cartRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final AddressRepository addressRepository;
     private final AddressMapping addressMapping;
     private final RoleDetailRepository roleDetailRepository;
+    private final MailService mailService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -341,9 +345,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user.setPasswordUser(passwordEncoder.encode(generatedNewPassword));
 
-        this.userRepository.save(user);
+        user = this.userRepository.save(user);
 
-        // todo send email to user với mật mới
+        // todo send email to user với mật khẩu mới
+        if(Objects.nonNull(user)){
+            user.setPasswordUser(generatedNewPassword);
+            mailService.sendEmailForgotPassword(user);
+        }else {
+            log.info(user.toString());
+        }
 
         return new ServiceResult<>(HttpStatus.OK, "Get password is success", null);
 

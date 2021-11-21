@@ -150,5 +150,36 @@ public interface Interface_API {
         interface Like{
             String LIKE_SAVE = "/user/likeordislike";
         }
+
+        interface Combo {
+            String COMBO_FIND_ALL = "/admin/combos/getall";
+            String COMBO_SEARCH = "/admin/combos/search";
+            String COMBO_FIND_BY_ID = "/admin/combos/findbyid/{idCombo}";
+            String COMBO_SAVE = "/admin/combos/save";
+            String COMBO_DELETE = "/admin/combos/delete";
+            String COMBO_FIND_ALL_USER = "/user/combos/getall";
+            String COMBO_FIND_BY_ID_USER = "/user/combos/findbyid/{idCombo}";
+            String COMBO_SEARCH_USER = "/user/combos/search";
+
+        }
+
+        interface ComboDetail {
+            String COMBO_DETAIL_FIND_ALL = "/admin/combo-details/getall";
+            String COMBO_DETAIL_FIND_BY_ID_COMBO = "/admin/combo-details/find-by-id-combo/{idCombo}";
+            String COMBO_DETAIL_FIND_BY_ID = "/admin/combo-details/findbyid/{idComboDetail}";
+
+        }
+
+        interface News {
+            String NEWS_FIND_ALL = "/admin/news/getall";
+            String NEWS_FIND_BY_ID = "/admin/news/findbyid/{idNews}";
+            String NEWS_SAVE = "/admin/news/save";
+            String NEWS_DELETE = "/admin/news/delete";
+            String NEWS_SEARCH = "/admin/news/search";
+            String NEWS_FIND_ALL_USER = "/user/news/getall";
+            String NEWS_FIND_BY_ID_USER = "/user/news/findbyid/{idNews}";
+            String NEWS_SEARCH_USER = "/user/news/search";
+        }
+
     }
 }
