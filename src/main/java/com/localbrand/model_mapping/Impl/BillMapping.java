@@ -121,7 +121,7 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
         billResponseUserDTO.setPhoneUser(bill.getPhoneUser());
         billResponseUserDTO.setEmailUser(bill.getEmailUser());
         billResponseUserDTO.setDateCreate(bill.getDateCreate());
-        billResponseUserDTO.setDateCreate(bill.getDateSuccess());
+        billResponseUserDTO.setDateSuccess(bill.getDateSuccess());
         billResponseUserDTO.setDescriptionBill(bill.getDescriptionBill());
         billResponseUserDTO.setTotal(bill.getTotal());
         billResponseUserDTO.setDeposit(bill.getDeposit());
