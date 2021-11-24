@@ -10,6 +10,19 @@ spring:
     username: NTC260601
     password: 260601
     url: jdbc:sqlserver://localhost:1433;database=db_du_an_tot_nghiep
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lapunsang@gmail.com
+    password: 27072001
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   jpa:
     hibernate:
       naming:
