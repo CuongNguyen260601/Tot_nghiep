@@ -85,6 +85,7 @@ public class ComboServiceImpl implements ComboService {
                 if(Objects.isNull(productDetail)){
                     return new ServiceResult<>(HttpStatus.BAD_REQUEST,Notification.Combo.SAVE_COMBO_FALSE, null);
                 }else {
+                    //check số lượng của sản phẩm còn lại đề tạo combo
                     if(comboRequestDTO.getQuantity() <= productDetail.getQuantity()){
                         listComboDetails.add(new ComboDetail(
                                 dto.getIdComboDetail(),
@@ -92,7 +93,7 @@ public class ComboServiceImpl implements ComboService {
                                 dto.getIdProductDetail()
                         ));
                     }else {
-                        return new ServiceResult<>(HttpStatus.BAD_REQUEST,Notification.Combo.SAVE_COMBO_FALSE, null);
+                        return new ServiceResult<>(HttpStatus.BAD_REQUEST,"Số lượng tối đa bạn có thể tạo là : "+ productDetail.getQuantity() , null);
                     }
                 }
             }
