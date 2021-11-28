@@ -32,4 +32,7 @@ public class CartCombo implements Serializable {
     @Column(name = "idCombo", nullable = false)
     private Integer idCombo;
 
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
 }
