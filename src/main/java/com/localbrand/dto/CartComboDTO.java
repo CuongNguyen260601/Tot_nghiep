@@ -1,5 +1,7 @@
 package com.localbrand.dto;
 
+import com.localbrand.dto.response.ComboResponseDTO;
+import com.localbrand.entity.Combo;
 import com.localbrand.exception.Notification;
 import lombok.*;
 
@@ -20,5 +22,9 @@ public class CartComboDTO {
     private Integer idCart;
 
     @NotNull(message = Notification.Cart.Validate_Cart_Combo.VALIDATE_COMBO)
-    private Integer idCombo;
+    private ComboResponseDTO comboResponseDTO;
+
+    @NotNull(message = Notification.Cart.Validate_Cart_Combo.VALIDATE_QUANTITY)
+    @Min(value = 1, message = Notification.Cart.Validate_Cart_Combo.VALIDATE_QUANTITY)
+    private Integer quantity;
 }

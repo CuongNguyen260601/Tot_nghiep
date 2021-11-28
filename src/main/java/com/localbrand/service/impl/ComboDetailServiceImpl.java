@@ -124,7 +124,7 @@ public class ComboDetailServiceImpl implements ComboDetailService {
 
         if(page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
 
-        Pageable pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());
+        Pageable pageable = PageRequest.of(page.orElse(0),100);
 
         Page<ComboDetail> listComboDetail = null;
 

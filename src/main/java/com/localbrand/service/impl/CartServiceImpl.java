@@ -5,17 +5,15 @@ import com.localbrand.common.Status_Enum;
 import com.localbrand.dto.CartComboDTO;
 import com.localbrand.dto.CartDTO;
 import com.localbrand.dto.CartProductDTO;
+import com.localbrand.dto.response.CartComboResponseDTO;
 import com.localbrand.dto.response.CartListResponseDTO;
 import com.localbrand.dto.response.CartProductResponseDTO;
-import com.localbrand.entity.Cart;
-import com.localbrand.entity.CartProduct;
-import com.localbrand.entity.ProductDetail;
+import com.localbrand.entity.*;
 import com.localbrand.exception.Notification;
+import com.localbrand.model_mapping.Impl.CartComboMapping;
 import com.localbrand.model_mapping.Impl.CartMapping;
 import com.localbrand.model_mapping.Impl.CartProductMapping;
-import com.localbrand.repository.CartProductRepository;
-import com.localbrand.repository.CartRepository;
-import com.localbrand.repository.ProductDetailRepository;
+import com.localbrand.repository.*;
 import com.localbrand.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -38,10 +36,13 @@ public class CartServiceImpl implements CartService {
 
     private final Logger log = LoggerFactory.getLogger(CartServiceImpl.class);
     private final CartProductRepository cartProductRepository;
+    private final CartComboRepository cartComboRepository;
     private final CartMapping cartMapping;
     private final CartRepository cartRepository;
     private final ProductDetailRepository productDetailRepository;
+    private final ComboRepository comboRepository;
     private final CartProductMapping cartProductMapping;
+    private final CartComboMapping cartComboMapping;
 
     @Transactional
     @Override
@@ -85,10 +86,11 @@ public class CartServiceImpl implements CartService {
 
         Pageable pageable = PageRequest.of(page.orElse(0),limit.get() );
 
-        List<CartProduct> listCart = this.cartProductRepository.findAllByIdCart(idCart.get(), pageable).toList();
+        List<CartProduct> listCartProduct = this.cartProductRepository.findAllByIdCart(idCart.get(), pageable).toList();
+        List<CartCombo> listCartCombo = this.cartComboRepository.findAllByIdCart(idCart.get(), pageable).toList();
 
         AtomicReference<Float> totalMoney = new AtomicReference<>(0F);
-        List<CartProductResponseDTO> listCartProduct = listCart.stream().map(
+        List<CartProductResponseDTO> listCartProductResult = listCartProduct.stream().map(
                 cartProduct -> {
                     ProductDetail productDetail = this.productDetailRepository.findById(cartProduct.getIdProductDetail().longValue()).orElse(null);
                     if(Objects.nonNull(productDetail)) {
@@ -100,13 +102,21 @@ public class CartServiceImpl implements CartService {
                 }
         ).collect(Collectors.toList());
 
-        Boolean isBoolean = this.cartProductRepository.countAllByIdCart(idCart.get()) - pageable.getPageSize() > 0;
-        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.GET_LIST_CART_PRODUCT_BY_USER_SUCCESS,CartListResponseDTO.builder().cartProducts(listCartProduct).isNextPage(isBoolean).totalMoney(totalMoney.get()).build());
-    }
+        List<CartComboResponseDTO> listCartComboResult = listCartCombo.stream().map(
+                cartCombo -> {
+                    Combo combo = this.comboRepository.findById(cartCombo.getIdCombo().longValue()).orElse(null);
+                    if(Objects.nonNull(combo)) {
+                        totalMoney.set(totalMoney.get()+ cartCombo.getQuantity()*combo.getPrice());
+                        return this.cartComboMapping.toCartUserDTO(cartCombo, combo);
+                    }else{
+                        return null;
+                    }
+                }
+        ).collect(Collectors.toList());
 
-    @Override
-    public ServiceResult<List<CartComboDTO>> getListCartCombo(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit) {
-        return null;
+        Boolean isBoolean = this.cartProductRepository.countAllByIdCart(idCart.get()) - pageable.getPageSize() > 0;
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.GET_LIST_CART_BY_USER_SUCCESS,CartListResponseDTO.builder().cartProducts(listCartProductResult).cartCombos(listCartComboResult).isNextPage(isBoolean).totalMoney(totalMoney.get()).build());
     }
 
     @Transactional
@@ -126,7 +136,16 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ServiceResult<CartComboDTO> deleteCartCombo(Optional<Long> idCartCombo) {
-        return null;
+
+        log.info("Delete cart combo");
+
+        if(idCartCombo.isEmpty()|| idCartCombo.get() < 1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart_Combo.VALIDATE_ID_CART_COMBO, null);
+        }
+
+        this.cartComboRepository.deleteByIdCartCombo(idCartCombo.get()).orElse(null);
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.DELETE_CART_COMBO_SUCCESS, null);
     }
 
     @Transactional
@@ -153,7 +172,23 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ServiceResult<CartComboDTO> updateQuantityCombo(CartComboDTO cartComboDTO) {
-        return null;
+        log.info("Update quantity cart combo: "+cartComboDTO);
+
+        Combo combo = this.comboRepository.findById(cartComboDTO.getComboResponseDTO().getIdCombo().longValue()).orElse(null);
+
+        if(Objects.isNull(combo)){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart_Combo.VALIDATE_COMBO, null);
+        }
+
+        if(cartComboDTO.getQuantity() > combo.getQuantity()){
+            return new ServiceResult<>(HttpStatus.OK, Notification.Cart.UPDATE_CART_COMBO_NOT_ENOUGH, cartComboDTO);
+        }
+
+        CartCombo cartCombo = this.cartComboMapping.toEntity(cartComboDTO);
+
+        cartCombo = this.cartComboRepository.save(cartCombo);
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.UPDATE_CART_COMBO_SUCCESS, this.cartComboMapping.toDtoCartCombo(cartCombo,combo));
     }
 
     @Override
@@ -197,8 +232,42 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public ServiceResult<CartComboDTO> addComboToCart(Optional<Long> idCombo) {
-        return null;
+    public ServiceResult<CartComboDTO> addComboToCart(Optional<Long> idCombo, Optional<Long> idCart ) {
+        log.info("Add combo to cart: "+idCombo);
+
+        if(idCart.isEmpty() || idCart.get() < 1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart.VALIDATE_ID_CART, null);
+        }
+
+        if(idCombo.isEmpty() || idCombo.get() < 1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart_Combo.VALIDATE_COMBO, null);
+        }
+
+        Combo combo = this.comboRepository.findById(idCombo.get()).orElse(null);
+
+        if(Objects.isNull(combo)){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart_Combo.VALIDATE_COMBO, null);
+        }
+
+        if(combo.getQuantity() == 0){
+            return new ServiceResult<>(HttpStatus.OK, Notification.Cart.UPDATE_CART_COMBO_NOT_ENOUGH, null);
+        }
+
+        CartCombo cartCombo = this.cartComboRepository.findFirstByIdCartAndIdCombo(idCart.get().intValue(), combo.getIdCombo().intValue());
+
+        if(Objects.nonNull(cartCombo)){
+            cartCombo.setQuantity(cartCombo.getQuantity()+1);
+            cartCombo = this.cartComboRepository.save(cartCombo);
+            return new ServiceResult<>(HttpStatus.OK, Notification.Cart.ADD_CART_COMBO_SUCCESS, this.cartComboMapping.toDtoCartCombo(cartCombo,combo));
+        }else{
+            CartCombo cartCombo1  = CartCombo.builder()
+                    .idCart(idCart.get().intValue())
+                    .idCombo(idCombo.get().intValue())
+                    .quantity(1)
+                    .build();
+            cartCombo1 = this.cartComboRepository.save(cartCombo1);
+            return new ServiceResult<>(HttpStatus.OK, Notification.Cart.ADD_CART_COMBO_SUCCESS, this.cartComboMapping.toDtoCartCombo(cartCombo1,combo));
+        }
     }
 
     @Override
