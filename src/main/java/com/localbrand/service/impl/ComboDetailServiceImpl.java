@@ -107,7 +107,7 @@ public class ComboDetailServiceImpl implements ComboDetailService {
     }
 
     @Override
-    public ServiceResult<List<ComboDetailResponseDTO>> findByIdCombo(HttpServletRequest request,Integer idCombo, Optional<Integer> page) {
+    public ServiceResult<List<ComboDetailResponseDTO>> findByIdCombo(HttpServletRequest request,Optional<Integer> idCombo, Optional<Integer> page) {
 
         this.log.info("Get list combo detail by id combo");
 
@@ -125,7 +125,14 @@ public class ComboDetailServiceImpl implements ComboDetailService {
         if(page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
 
         Pageable pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());
-        Page<ComboDetail> listComboDetail = comboDetailRepository.findAllByIdCombo(idCombo,pageable);
+
+        Page<ComboDetail> listComboDetail = null;
+
+        if(Objects.nonNull(idCombo)){
+            listComboDetail = comboDetailRepository.findAllByIdCombo(idCombo.get(),pageable);
+        }else {
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, "Combo không tồn tại", null);
+        }
 
         return new ServiceResult<>(HttpStatus.OK, Notification.ComboDetail.GET_LIST_COMBO_DETAIL_BY_ID_COMBO_SUCCESS, listComboDetail.stream().map(this.comboDetailMapping::toDto).collect(Collectors.toList()));
 

@@ -173,6 +173,10 @@ public interface Notification {
             String VALIDATE_PRODUCT_DETAIL = "Invalid product detail";
             String VALIDATE_QUANTITY = "Invalid quantity";
         }
+        interface Validate_Cart_Combo{
+            String VALIDATE_ID_CART_COMBO = "Invalid id cart combo";
+            String VALIDATE_COMBO = "Invalid combo in cart combo";
+        }
     }
 
     interface Bill{

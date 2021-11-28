@@ -18,6 +18,6 @@ public interface ComboDetailService {
 
     ServiceResult<ComboDetailResponseDTO> delete(HttpServletRequest request,Optional<Long> idComboDetail);
 
-    ServiceResult<List<ComboDetailResponseDTO>> findByIdCombo (HttpServletRequest request,Integer idCombo, Optional<Integer> page);
+    ServiceResult<List<ComboDetailResponseDTO>> findByIdCombo (HttpServletRequest request,Optional<Integer> idCombo, Optional<Integer> page);
 
 }

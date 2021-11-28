@@ -23,7 +23,7 @@ public class ComboDetailController {
     }
 
     @GetMapping(Interface_API.API.ComboDetail.COMBO_DETAIL_FIND_BY_ID_COMBO)
-    public ResponseEntity<ServiceResult<List<ComboDetailResponseDTO>>> findByIdCombo(HttpServletRequest request, @PathVariable Integer idCombo, @RequestParam Optional<Integer> page){
+    public ResponseEntity<ServiceResult<List<ComboDetailResponseDTO>>> findByIdCombo(HttpServletRequest request, @RequestParam Optional<Integer> idCombo, @RequestParam Optional<Integer> page){
         ServiceResult<List<ComboDetailResponseDTO>> result = comboDetailService.findByIdCombo(request,idCombo,page);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
