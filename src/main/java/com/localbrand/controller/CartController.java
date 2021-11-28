@@ -2,6 +2,7 @@ package com.localbrand.controller;
 
 import com.localbrand.common.Interface_API;
 import com.localbrand.common.ServiceResult;
+import com.localbrand.dto.CartComboDTO;
 import com.localbrand.dto.CartDTO;
 import com.localbrand.dto.CartProductDTO;
 import com.localbrand.dto.response.CartListResponseDTO;
@@ -82,6 +83,33 @@ public class CartController {
     @GetMapping(Interface_API.API.Cart.Cart_Product.CART_COUNT_PRODUCT_ADD)
     public ResponseEntity<ServiceResult<Integer>> getTotalCartProduct(@RequestParam Optional<Integer> idCart){
         ServiceResult<Integer> result = this.cartService.totalProductByIdCart(idCart);
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
+
+    @DeleteMapping(Interface_API.API.Cart.Cart_Combo.CART_COMBO_DELETE)
+    public ResponseEntity<ServiceResult<CartComboDTO>> deleteCartCombo(@RequestParam Optional<Long> idCartCombo){
+        ServiceResult<CartComboDTO> result = this.cartService.deleteCartCombo(idCartCombo);
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
+
+    @PutMapping(Interface_API.API.Cart.Cart_Combo.CART_COMBO_UPDATE_QUANTITY)
+    public ResponseEntity<ServiceResult<CartComboDTO>> updateQuantityCartCombo(@RequestBody  CartComboDTO cartComboDTO){
+        ServiceResult<CartComboDTO> result = this.cartService.updateQuantityCombo(cartComboDTO);
+        return ResponseEntity
+                .status(result.getStatus().value())
+                .body(result);
+    }
+
+    @PostMapping(Interface_API.API.Cart.Cart_Combo.CART_COMBO_ADD)
+    public ResponseEntity<ServiceResult<CartComboDTO>> addComboToCart(
+            @RequestParam Optional<Long> idProductDetail,
+            @RequestParam Optional<Long> idCart
+    ){
+        ServiceResult<CartComboDTO> result = this.cartService.addComboToCart(idProductDetail, idCart);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);

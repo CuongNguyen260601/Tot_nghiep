@@ -93,7 +93,7 @@ public class ComboServiceImpl implements ComboService {
                                 dto.getIdProductDetail()
                         ));
                     }else {
-                        return new ServiceResult<>(HttpStatus.BAD_REQUEST,"Số lượng tối đa bạn có thể tạo là : "+ productDetail.getQuantity() , null);
+                        return new ServiceResult<>(HttpStatus.OK,"Số lượng tối đa bạn có thể tạo là : "+ productDetail.getQuantity() , null);
                     }
                 }
             }
@@ -103,7 +103,7 @@ public class ComboServiceImpl implements ComboService {
             ).collect(Collectors.toList());
 
             this.comboDetailRepository.saveAll(listComboDetails);
-            return new ServiceResult<>(HttpStatus.OK,Notification.Combo.SAVE_COMBO_SUCCESS, null);
+            return new ServiceResult<>(HttpStatus.OK,"Lưu combo thành công!", null);
         }catch (Exception ex){
 
             this.log.error(ex.getMessage(), ex);
@@ -262,7 +262,7 @@ public class ComboServiceImpl implements ComboService {
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
         }
 
-        Pageable pageable = PageRequest.of(page.orElse(0), Config_Enum.SIZE_PAGE.getCode());
+        Pageable pageable = PageRequest.of(page.orElse(0), 9);
 
         List<Combo> listCombo = this.comboRepository.findAllByNameComboLikeAndAndIdStatus("%"+nameCombo+"%",Status_Enum.EXISTS.getCode(),pageable).toList();
 

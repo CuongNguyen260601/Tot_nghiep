@@ -124,6 +124,12 @@ public interface Interface_API {
                 String CART_PRODUCT_ADD = "/user/carts/addcartproduct";
                 String CART_COUNT_PRODUCT_ADD = "/user/carts/counttotal";
             }
+            interface Cart_Combo{
+                String CART_COMBO_DELETE = "/user/carts/deletecartcombo";
+                String CART_COMBO_UPDATE_QUANTITY = "/user/carts/updatecartcombo";
+                String CART_COMBO_ADD = "/user/carts/addcartcombo";
+            }
+            
         }
 
         interface Bill {
@@ -165,7 +171,7 @@ public interface Interface_API {
 
         interface ComboDetail {
             String COMBO_DETAIL_FIND_ALL = "/admin/combo-details/getall";
-            String COMBO_DETAIL_FIND_BY_ID_COMBO = "/admin/combo-details/find-by-id-combo/{idCombo}";
+            String COMBO_DETAIL_FIND_BY_ID_COMBO = "/admin/combo-details/find-by-id-combo";
             String COMBO_DETAIL_FIND_BY_ID = "/admin/combo-details/findbyid/{idComboDetail}";
 
         }
@@ -180,6 +186,5 @@ public interface Interface_API {
             String NEWS_FIND_BY_ID_USER = "/user/news/findbyid/{idNews}";
             String NEWS_SEARCH_USER = "/user/news/search";
         }
-
     }
 }

@@ -157,11 +157,15 @@ public interface Notification {
         String SAVE_CART_SUCCESS = "Save cart is success";
         String SAVE_CART_FALSE = "Save cart is false";
         String GET_CART_BY_USER_SUCCESS = "Get cart by user is success";
-        String GET_LIST_CART_PRODUCT_BY_USER_SUCCESS = "Get list cart product by user is success";
+        String GET_LIST_CART_BY_USER_SUCCESS = "Get list cart by user is success";
         String DELETE_CART_PRODUCT_SUCCESS = "Delete cart product is success";
+        String DELETE_CART_COMBO_SUCCESS = "Delete cart combo is success";
         String UPDATE_CART_PRODUCT_NOT_ENOUGH = "Amount product is not enough";
         String UPDATE_CART_PRODUCT_SUCCESS = "Update quantity product success";
+        String UPDATE_CART_COMBO_NOT_ENOUGH = "Amount combo is not enough";
+        String UPDATE_CART_COMBO_SUCCESS = "Update quantity combo success";
         String ADD_CART_PRODUCT_SUCCESS = "Add quantity product success";
+        String ADD_CART_COMBO_SUCCESS = "Add quantity combo success";
         String COUNT_TOTAL_CART_PRODUCT = "Count cart product success";
         interface Validate_Cart{
             String VALIDATE_ID_CART = "Invalid id cart";
@@ -176,6 +180,7 @@ public interface Notification {
         interface Validate_Cart_Combo{
             String VALIDATE_ID_CART_COMBO = "Invalid id cart combo";
             String VALIDATE_COMBO = "Invalid combo in cart combo";
+            String VALIDATE_QUANTITY = "Invalid quantity";
         }
     }
 
