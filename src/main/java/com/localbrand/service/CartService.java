@@ -16,8 +16,6 @@ public interface CartService {
 
     ServiceResult<CartDTO> getCartByUser(Optional<Integer> idUser);
 
-    ServiceResult<List<CartComboDTO>> getListCartCombo(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit);
-
     ServiceResult<CartListResponseDTO> getListCartProduct(Optional<Integer> idCart, Optional<Integer> page, Optional<Integer> limit);
 
     ServiceResult<CartProductDTO> deleteCartProduct(Optional<Long> idCartProduct);
@@ -30,7 +28,7 @@ public interface CartService {
 
     ServiceResult<CartProductDTO> addProductToCart(Optional<Long> idProductDetail, Optional<Long> idCart);
 
-    ServiceResult<CartComboDTO> addComboToCart(Optional<Long> idCombo);
+    ServiceResult<CartComboDTO> addComboToCart(Optional<Long> idCombo,Optional<Long> idCart);
 
     ServiceResult<Integer> totalProductByIdCart(Optional<Integer> idCart);
 }

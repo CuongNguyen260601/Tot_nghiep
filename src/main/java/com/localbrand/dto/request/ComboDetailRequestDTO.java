@@ -17,7 +17,6 @@ public class ComboDetailRequestDTO {
 
     private Long idComboDetail;
 
-    @NotNull(message = Notification.ComboDetail.Validate_ComboDetail.VALIDATE_ID_COMBO)
     private Integer idCombo;
 
     @NotNull(message = Notification.ComboDetail.Validate_ComboDetail.VALIDATE_ID_PRODUCT_DETAIL)

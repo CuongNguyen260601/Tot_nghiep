@@ -11,13 +11,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartListResponseDTO {
+public class CartComboResponseDTO {
 
-    private List<CartProductResponseDTO> cartProducts;
+    private Long idCartCombo;
 
-    private List<CartComboResponseDTO> cartCombos;
+    private Integer idCart;
 
-    private Boolean isNextPage;
+    private ComboResponseDTO comboDTO;
 
-    private Float totalMoney;
+    private Integer quantity;;
 }
