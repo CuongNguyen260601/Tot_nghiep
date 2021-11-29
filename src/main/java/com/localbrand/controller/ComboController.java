@@ -5,6 +5,7 @@ import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.request.ComboRequestDTO;
 import com.localbrand.dto.response.ComboResponseDTO;
 import com.localbrand.service.ComboService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +17,10 @@ import java.util.Optional;
 @CrossOrigin(Interface_API.Cors.CORS)
 @RestController
 @RequestMapping(Interface_API.MAIN)
+@RequiredArgsConstructor
 public class ComboController {
-    private final ComboService comboService;
 
-    public ComboController(ComboService comboService) {
-        this.comboService = comboService;
-    }
+    private final ComboService comboService;
 
     @GetMapping(Interface_API.API.Combo.COMBO_FIND_ALL)
     public ResponseEntity<ServiceResult<List<ComboResponseDTO>>> findAllCombo(HttpServletRequest request,

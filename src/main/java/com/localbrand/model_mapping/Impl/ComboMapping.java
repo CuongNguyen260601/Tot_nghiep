@@ -16,7 +16,7 @@ public class ComboMapping implements Mapping<ComboResponseDTO, Combo> {
 
     @Override
     public ComboResponseDTO toDto(Combo combo) {
-        ComboResponseDTO comboResponseDTO = ComboResponseDTO
+        return ComboResponseDTO
                 .builder()
                 .idCombo(combo.getIdCombo())
                 .nameCombo(combo.getNameCombo())
@@ -29,7 +29,6 @@ public class ComboMapping implements Mapping<ComboResponseDTO, Combo> {
                 .coverPhoto(combo.getCoverPhoto())
                 .quantity(combo.getQuantity())
                 .build();
-        return comboResponseDTO;
     }
 
     public ComboResponseDTO toDto(Combo combo, List<ComboTag> listComboTag, List<ComboDetailResponseDTO> comboDetailResponseDTO) {

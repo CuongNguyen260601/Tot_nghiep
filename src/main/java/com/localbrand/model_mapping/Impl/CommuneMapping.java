@@ -4,10 +4,9 @@ import com.localbrand.dto.CommuneDTO;
 import com.localbrand.dto.DistrictDTO;
 import com.localbrand.entity.Commune;
 import com.localbrand.entity.District;
-import com.localbrand.entity.Province;
+import com.localbrand.exception.ErrorCodes;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.DistrictRepository;
-import com.localbrand.repository.ProvinceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +20,8 @@ public class CommuneMapping implements Mapping<CommuneDTO, Commune> {
     @Override
     public CommuneDTO toDto(Commune commune) {
 
-        District district = this.districtRepository.findById(commune.getIdDistrict()).orElse(null);
+        District district = this.districtRepository.findById(commune.getIdDistrict())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.DISTRICT_IS_NULL));
 
         DistrictDTO districtDTO = this.districtMapping.toDto(district);
 

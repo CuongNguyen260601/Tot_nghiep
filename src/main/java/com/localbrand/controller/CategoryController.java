@@ -5,10 +5,10 @@ import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.CategoryChildDTO;
 import com.localbrand.dto.CategoryParentDTO;
 import com.localbrand.service.CategoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
@@ -17,13 +17,10 @@ import java.util.Optional;
 @CrossOrigin(Interface_API.Cors.CORS)
 @RestController
 @RequestMapping(Interface_API.MAIN)
+@RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @GetMapping(Interface_API.API.Category.Category_Parent.CATEGORY_PARENT_FIND_ALL)
     public ResponseEntity<ServiceResult<List<CategoryParentDTO>>> fillAllCategoryParent(HttpServletRequest request, @RequestParam Optional<Integer> page) {
@@ -34,7 +31,7 @@ public class CategoryController {
     }
 
     @GetMapping(Interface_API.API.Category.Category_Parent.CATEGORY_PARENT_FIND_ALL_PARENT)
-    public ResponseEntity<ServiceResult<List<CategoryParentDTO>>> fillAllCategory(HttpServletRequest request) {
+    public ResponseEntity<ServiceResult<List<CategoryParentDTO>>> fillAllCategory() {
         ServiceResult<List<CategoryParentDTO>> result = this.categoryService.getAllCategoryParent();
         return ResponseEntity
                 .status(result.getStatus().value())

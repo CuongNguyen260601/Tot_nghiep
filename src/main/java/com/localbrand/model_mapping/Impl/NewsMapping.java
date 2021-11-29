@@ -4,28 +4,24 @@ import com.localbrand.dto.NewDetailDTO;
 import com.localbrand.dto.request.NewRequestDTO;
 import com.localbrand.dto.response.NewsResponseDTO;
 import com.localbrand.entity.News;
+import com.localbrand.entity.User;
+import com.localbrand.exception.ErrorCodes;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.NewDetailRepository;
 import com.localbrand.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class NewsMapping implements Mapping<NewRequestDTO, News> {
 
     private final UserRepository userRepository;
-    private final NewDetailRepository newDetailRepository;
-    private final NewDetailMapping newDetailMapping;
-
-    public NewsMapping(UserRepository userRepository, NewDetailRepository newDetailRepository, NewDetailMapping newDetailMapping) {
-        this.userRepository = userRepository;
-        this.newDetailRepository = newDetailRepository;
-        this.newDetailMapping = newDetailMapping;
-    }
 
     public NewRequestDTO toRequestDto(News news) {
-        NewRequestDTO newsDTO = NewRequestDTO
+        return NewRequestDTO
                 .builder()
                 .idNew(news.getIdNew())
                 .title(news.getTitle())
@@ -36,11 +32,14 @@ public class NewsMapping implements Mapping<NewRequestDTO, News> {
                 .idStatus(news.getIdStatus())
                 .imageNew(news.getImageNew())
                 .build();
-        return newsDTO;
     }
 
     public NewsResponseDTO toResponseDto(News news, List<NewDetailDTO> listNewDetailDTO) {
-        NewsResponseDTO newsDTO = NewsResponseDTO
+
+        User user  = userRepository.findById(news.getIdUser().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.USER_IS_NULL));
+
+        return NewsResponseDTO
                 .builder()
                 .idNew(news.getIdNew())
                 .title(news.getTitle())
@@ -49,16 +48,17 @@ public class NewsMapping implements Mapping<NewRequestDTO, News> {
                 .viewNews(news.getViewNews())
                 .idStatus(news.getIdStatus())
                 .imageNew(news.getImageNew())
+                .listNewDetail(listNewDetailDTO)
+                .author(user.getFirstName() + " " + user.getLastName())
                 .build();
-        String firstName = userRepository.findById(news.getIdUser().longValue()).orElse(null).getFirstName();
-        String lastName = userRepository.findById(news.getIdUser().longValue()).orElse(null).getLastName();
-        newsDTO.setAuthor(firstName + " " + lastName );
-        newsDTO.setListNewDetail(listNewDetailDTO);
-        return newsDTO;
+
     }
 
     public NewsResponseDTO toResponseDto(News news) {
-        NewsResponseDTO newsDTO = NewsResponseDTO
+        User user  = userRepository.findById(news.getIdUser().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.USER_IS_NULL));
+
+        return NewsResponseDTO
                 .builder()
                 .idNew(news.getIdNew())
                 .title(news.getTitle())
@@ -66,12 +66,9 @@ public class NewsMapping implements Mapping<NewRequestDTO, News> {
                 .dateCreate(news.getDateCreate())
                 .viewNews(news.getViewNews())
                 .idStatus(news.getIdStatus())
+                .author(user.getFirstName() + " " + user.getLastName())
                 .imageNew(news.getImageNew())
                 .build();
-        String firstName = userRepository.findById(news.getIdUser().longValue()).orElse(null).getFirstName();
-        String lastName = userRepository.findById(news.getIdUser().longValue()).orElse(null).getLastName();
-        newsDTO.setAuthor(firstName + " " + lastName );
-        return newsDTO;
     }
 
     @Override
@@ -81,7 +78,7 @@ public class NewsMapping implements Mapping<NewRequestDTO, News> {
 
     @Override
     public News toEntity(NewRequestDTO newsDTO) {
-        News news = News
+        return News
                 .builder()
                 .idNew(newsDTO.getIdNew())
                 .title(newsDTO.getTitle())
@@ -92,6 +89,5 @@ public class NewsMapping implements Mapping<NewRequestDTO, News> {
                 .idStatus(newsDTO.getIdStatus())
                 .imageNew(newsDTO.getImageNew())
                 .build();
-        return news;
     }
 }

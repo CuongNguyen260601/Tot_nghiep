@@ -6,8 +6,7 @@ public interface Notification {
         String GET_LIST_SIZE_SUCCESS = "Get list size success";
         String GET_SIZE_BY_ID_SUCCESS = "Get size by id success";
         String GET_SIZE_BY_ID_FALSE = "Size does not exists";
-        String GET_SIZE_AND_SORT_SUCESS = "Get size and sort is success";
-        String GET_SIZE_AND_SORT_FALSE = "Invalid sort";
+        String GET_SIZE_AND_SORT_SUCCESS = "Get size and sort is success";
         String SAVE_SIZE_SUCCESS = "Save size is success";
         String SAVE_SIZE_FALSE = "Save size is false";
         String DELETE_SIZE_SUCCESS = "Delete size is success";
@@ -26,7 +25,6 @@ public interface Notification {
         String GET_COLOR_BY_ID_SUCCESS = "Get color by id success";
         String GET_COLOR_BY_ID_FALSE = "Color does not exists";
         String GET_COLOR_AND_SORT_SUCESS = "Get color and sort is success";
-        String GET_COLOR_AND_SORT_FALSE = "Invalid sort";
         String SAVE_COLOR_SUCCESS = "Save color is success";
         String SAVE_COLOR_FALSE = "Save color is false";
         String DELETE_COLOR_SUCCESS = "Delete color is success";
@@ -45,7 +43,6 @@ public interface Notification {
         String GET_SALE_BY_ID_SUCCESS = "Get sale by id success";
         String GET_SALE_BY_ID_FALSE = "Sale does not exists";
         String GET_SALE_AND_SORT_SUCESS = "Get sale and sort is success";
-        String GET_SALE_AND_SORT_FALSE = "Invalid sort";
         String SAVE_SALE_SUCCESS = "Save sale is success";
         String SAVE_SALE_FALSE = "Save sale is false";
         String DELETE_SALE_SUCCESS = "Delete sale is success";
@@ -64,7 +61,6 @@ public interface Notification {
         String GET_VOUCHER_BY_ID_SUCCESS = "Get voucher by id success";
         String GET_VOUCHER_BY_ID_FALSE = "Voucher does not exists";
         String GET_VOUCHER_AND_SORT_SUCESS = "Get voucher and sort is success";
-        String GET_VOUCHER_AND_SORT_FALSE = "Invalid sort";
         String SAVE_VOUCHER_SUCCESS = "Save voucher is success";
         String SAVE_VOUCHER_FALSE = "Save voucher is false";
         String DELETE_VOUCHER_SUCCESS = "Delete voucher is success";
@@ -84,7 +80,6 @@ public interface Notification {
         String GET_CATEGORY_PARENT_BY_ID_SUCCESS = "Get category parent by id success";
         String GET_CATEGORY_PARENT_BY_ID_FALSE = "Category parent does not exists";
         String GET_CATEGORY_PARENT_AND_SORT_SUCESS = "Get category and sort is success";
-        String GET_CATEGORY_PARENT_AND_SORT_FALSE = "Invalid sort";
         String SAVE_CATEGORY_PARENT_SUCCESS = "Save category parent is success";
         String SAVE_CATEGORY_PARENT_FALSE = "Save category parent is false";
         String DELETE_CATEGORY_PARENT_SUCCESS = "Delete category parent is success";
@@ -98,7 +93,6 @@ public interface Notification {
         String GET_CATEGORY_CHILD_BY_ID_SUCCESS = "Get category child by id success";
         String GET_CATEGORY_CHILD_BY_ID_FALSE = "Category does not exists";
         String GET_CATEGORY_CHILD_AND_SORT_SUCESS = "Get category and sort is success";
-        String GET_CATEGORY_CHILD_AND_SORT_FALSE = "Invalid sort";
         String SAVE_CATEGORY_CHILD_SUCCESS = "Save category parent is success";
         String SAVE_CATEGORY_CHILD_FALSE = "Save category parent is false";
         String DELETE_CATEGORY_CHILD_SUCCESS = "Delete category parent is success";
@@ -193,8 +187,6 @@ public interface Notification {
         String GET_LIST_COMBO_SUCCESS = "Get list combo success";
         String GET_COMBO_BY_ID_SUCCESS = "Get combo by id success";
         String GET_COMBO_BY_ID_FALSE = "Voucher does not exists";
-        String GET_COMBO_AND_SORT_SUCESS = "Get combo and sort is success";
-        String GET_COMBO_AND_SORT_FALSE = "Invalid sort";
         String SAVE_COMBO_SUCCESS = "Save combo is success";
         String SAVE_COMBO_FALSE = "Save combo is false";
         String DELETE_COMBO_SUCCESS = "Delete combo is success";
@@ -225,7 +217,7 @@ public interface Notification {
         String GET_LIST_COMBO_DETAIL_SUCCESS = "Get list combo detail success";
         String GET_COMBO_DETAIL_BY_ID_SUCCESS = "Get combo detail by id success";
         String GET_COMBO_DETAIL_BY_ID_FALSE = "Voucher does not exists";
-        String GET_COMBO_DETAIL_AND_SORT_SUCESS = "Get combo detail and sort is success";
+        String GET_COMBO_DETAIL_AND_SORT_SUCCESS = "Get combo detail and sort is success";
         String GET_COMBO_DETAIL_AND_SORT_FALSE = "Invalid sort";
         String SAVE_COMBO_DETAIL_SUCCESS = "Save combo detail is success";
         String SAVE_COMBO_DETAIL_FALSE = "Save combo detail is false";

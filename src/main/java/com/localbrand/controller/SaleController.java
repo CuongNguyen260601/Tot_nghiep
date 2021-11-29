@@ -4,6 +4,7 @@ import com.localbrand.common.Interface_API;
 import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.SaleDTO;
 import com.localbrand.service.SaleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +16,10 @@ import java.util.Optional;
 @CrossOrigin(Interface_API.Cors.CORS)
 @RestController
 @RequestMapping(Interface_API.MAIN)
+@RequiredArgsConstructor
 public class SaleController {
-    private final SaleService saleService;
 
-    public SaleController (SaleService saleService) {
-        this.saleService = saleService;
-    }
+    private final SaleService saleService;
 
     @GetMapping(Interface_API.API.Sale.SALE_FIND_ALL)
     public ResponseEntity<ServiceResult<List<SaleDTO>>> fillAll(HttpServletRequest request, @RequestParam Optional<Integer> page) {

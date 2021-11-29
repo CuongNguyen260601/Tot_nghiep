@@ -10,7 +10,7 @@ public class NewDetailMapping implements Mapping<NewDetailDTO, NewDetail> {
 
     @Override
     public NewDetailDTO toDto(NewDetail newDetail) {
-        NewDetailDTO newDetailDTO = NewDetailDTO
+        return NewDetailDTO
                 .builder()
                 .idNewDetail(newDetail.getIdNewDetail())
                 .idNew(newDetail.getIdNew())
@@ -18,12 +18,11 @@ public class NewDetailMapping implements Mapping<NewDetailDTO, NewDetail> {
                 .imageNewDetail(newDetail.getImageNewDetail())
                 .content(newDetail.getContent())
                 .build();
-        return newDetailDTO;
     }
 
     @Override
     public NewDetail toEntity(NewDetailDTO newDetailDTO) {
-        NewDetail newDetail = NewDetail
+        return NewDetail
                 .builder()
                 .idNewDetail(newDetailDTO.getIdNewDetail())
                 .idNew(newDetailDTO.getIdNew())
@@ -31,6 +30,5 @@ public class NewDetailMapping implements Mapping<NewDetailDTO, NewDetail> {
                 .imageNewDetail(newDetailDTO.getImageNewDetail())
                 .content(newDetailDTO.getContent())
                 .build();
-        return newDetail;
     }
 }

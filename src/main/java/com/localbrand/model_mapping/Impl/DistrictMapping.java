@@ -3,6 +3,7 @@ package com.localbrand.model_mapping.Impl;
 import com.localbrand.dto.DistrictDTO;
 import com.localbrand.entity.District;
 import com.localbrand.entity.Province;
+import com.localbrand.exception.ErrorCodes;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.ProvinceRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,8 @@ public class DistrictMapping implements Mapping<DistrictDTO, District> {
 
     @Override
     public DistrictDTO toDto(District district) {
-        Province province = this.provinceRepository.findById(district.getIdProvince()).orElse(null);
+        Province province = this.provinceRepository.findById(district.getIdProvince())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.PROVINCE_IS_NULL));
 
         return DistrictDTO
                 .builder()

@@ -22,7 +22,6 @@ public class LikeController {
     ResponseEntity<ServiceResult<Integer>> saleLike(@Valid @RequestBody LikeDTO likeDTO){
 
         ServiceResult<Integer> result = this.likeService.likeOrDislike(likeDTO);
-
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 }

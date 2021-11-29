@@ -5,6 +5,7 @@ import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.request.NewRequestDTO;
 import com.localbrand.dto.response.NewsResponseDTO;
 import com.localbrand.service.NewsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +17,10 @@ import java.util.Optional;
 @CrossOrigin(Interface_API.Cors.CORS)
 @RestController
 @RequestMapping(Interface_API.MAIN)
+@RequiredArgsConstructor
 public class NewsController {
-    private final NewsService newsService;
 
-    public NewsController(NewsService  newsService) {
-        this.newsService = newsService;
-    }
+    private final NewsService newsService;
 
     @GetMapping(Interface_API.API.News.NEWS_FIND_ALL)
     public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> fillAllNew(HttpServletRequest request,
@@ -62,7 +61,7 @@ public class NewsController {
     }
 
     @GetMapping(Interface_API.API.News.NEWS_SEARCH_USER)
-    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> searchByTitleUser(HttpServletRequest request,@RequestParam String title, @RequestParam Optional<Integer> page) {
+    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> searchByTitleUser(@RequestParam String title, @RequestParam Optional<Integer> page) {
         ServiceResult<List<NewsResponseDTO>> result = this.newsService.searchByTitleUser(title,page);
         return ResponseEntity
                 .status(result.getStatus().value())

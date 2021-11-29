@@ -23,7 +23,6 @@ public class CartComboMapping implements Mapping<CartComboDTO, CartCombo> {
                 .builder()
                 .idCart(cartComboDTO.getIdCart())
                 .idCartCombo(cartComboDTO.getIdCartCombo())
-//                .idCartCombo(cartComboDTO.getCombo().getIdCombo())
                 .build();
     }
 }

@@ -24,21 +24,18 @@ public class AddressController {
     @GetMapping(Interface_API.API.Address.ADDRESS_FIND_ALL_PROVINCE)
     public ResponseEntity<ServiceResult<List<ProvinceDTO>>> getAllProvince(){
         ServiceResult<List<ProvinceDTO>> result = this.addressService.getAllProvince();
-
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @GetMapping(Interface_API.API.Address.ADDRESS_FIND_ALL_DISTRICT)
     public ResponseEntity<ServiceResult<List<DistrictDTO>>> getAllDistrict(@RequestParam Optional<Integer> idProvince){
         ServiceResult<List<DistrictDTO>> result = this.addressService.getAllDistrictByIdProvince(idProvince);
-
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @GetMapping(Interface_API.API.Address.ADDRESS_FIND_ALL_COMMUNE)
     public ResponseEntity<ServiceResult<List<CommuneDTO>>> getAllCommune(@RequestParam Optional<Integer> idProvince, @RequestParam Optional<Integer> idDistrict){
         ServiceResult<List<CommuneDTO>> result = this.addressService.getAllCommuneByIdProvinceAndIdDistrict(idProvince, idDistrict);
-
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 }

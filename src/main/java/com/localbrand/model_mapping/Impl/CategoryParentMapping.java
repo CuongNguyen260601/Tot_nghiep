@@ -4,6 +4,7 @@ import com.localbrand.dto.CategoryChildDTO;
 import com.localbrand.dto.CategoryParentDTO;
 import com.localbrand.entity.Category;
 import com.localbrand.model_mapping.Mapping;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,13 +12,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class CategoryParentMapping implements Mapping<CategoryParentDTO, Category> {
 
     private final CategoryChildMapping categoryChildMapping;
-
-    public CategoryParentMapping (CategoryChildMapping categoryChildMapping) {
-        this.categoryChildMapping = categoryChildMapping;
-    }
 
     @Override
     public CategoryParentDTO toDto(Category category) {

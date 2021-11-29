@@ -35,7 +35,9 @@ public interface RoleDetailRepository extends JpaRepository<RoleDetail, Long>, J
                     " join Role r on rd.idRole = r.idRole " +
                     " join ModuleAction ma on ma.idModuleAction = rd.idModuleAction " +
                     " join Module m on ma.idModule = m.idModule " +
-                    " join Action a on a.idAction = ma.idAction order by m.idModule ASC"
+                    " join Action a on a.idAction = ma.idAction" +
+                    " where r.idRole = 2 "+
+                    " order by m.idModule ASC "
     )
     List<RoleMapModule> findAllRoleDetail();
 }

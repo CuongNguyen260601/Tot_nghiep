@@ -5,6 +5,7 @@ import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.SizeDTO;
 import com.localbrand.dto.response.SizeResponseDTO;
 import com.localbrand.service.SizeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +17,10 @@ import java.util.Optional;
 @CrossOrigin(Interface_API.Cors.CORS)
 @RestController
 @RequestMapping(Interface_API.MAIN)
+@RequiredArgsConstructor
 public class SizeController {
 
     private final SizeService sizeService;
-
-    public SizeController (SizeService sizeService) {
-        this.sizeService = sizeService;
-    }
 
     @GetMapping(Interface_API.API.Size.SIZE_FIND_ALL)
     public ResponseEntity<ServiceResult<List<SizeResponseDTO>>> fillAll(HttpServletRequest request, @RequestParam Optional<Integer> page) {

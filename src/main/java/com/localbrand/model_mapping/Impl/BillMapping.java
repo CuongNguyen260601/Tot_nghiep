@@ -7,6 +7,7 @@ import com.localbrand.dto.response.BillProductResponseDTO;
 import com.localbrand.dto.response.BillResponseDTO;
 import com.localbrand.dto.response.BillResponseUserDTO;
 import com.localbrand.entity.*;
+import com.localbrand.exception.ErrorCodes;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.AddressRepository;
 import com.localbrand.repository.BillProductRepository;
@@ -34,19 +35,21 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
 
     @Override
     public BillResponseDTO toDto(Bill bill) {
-        Address address = this.addressRepository.findById(bill.getIdAddress().longValue()).orElse(null);
+        Address address = this.addressRepository.findById(bill.getIdAddress().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.ADDRESS_IS_NULL));
 
-        User user = this.userRepository.findById(bill.getIdUser().longValue()).orElse(null);
+        User user = this.userRepository.findById(bill.getIdUser().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.USER_IS_NULL));
 
         BillResponseDTO billResponseDTO = BillResponseDTO
                 .builder()
                 .idBill(bill.getIdBill())
-                .userResponseDTO(this.userMapping.toDto(user))
-                .address(this.addressMapping.toDto(address))
                 .phoneUser(bill.getPhoneUser())
                 .emailUser(bill.getEmailUser())
                 .dateCreate(bill.getDateCreate())
                 .dateSuccess(bill.getDateSuccess())
+                .userResponseDTO(this.userMapping.toDto(user))
+                .address(this.addressMapping.toDto(address))
                 .descriptionBill(bill.getDescriptionBill())
                 .total(bill.getTotal())
                 .deposit(bill.getDeposit())
@@ -110,14 +113,14 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
     }
 
     public BillResponseUserDTO toDtoResponse(Bill bill) {
-        Address address = this.addressRepository.findById(bill.getIdAddress().longValue()).orElse(null);
+        Address address = this.addressRepository.findById(bill.getIdAddress().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.ADDRESS_IS_NULL));
 
-        User user = this.userRepository.findById(bill.getIdUser().longValue()).orElse(null);
+        User user = this.userRepository.findById(bill.getIdUser().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.USER_IS_NULL));
 
         BillResponseUserDTO billResponseUserDTO = new BillResponseUserDTO();
         billResponseUserDTO.setIdBill(bill.getIdBill());
-        billResponseUserDTO.setUserResponseDTO(this.userMapping.toDto(user));
-        billResponseUserDTO.setAddress(this.addressMapping.toDto(address));
         billResponseUserDTO.setPhoneUser(bill.getPhoneUser());
         billResponseUserDTO.setEmailUser(bill.getEmailUser());
         billResponseUserDTO.setDateCreate(bill.getDateCreate());
@@ -130,7 +133,8 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
         billResponseUserDTO.setBillType(bill.getBillType());
         billResponseUserDTO.setIdStatus(bill.getIdStatus());
         billResponseUserDTO.setNameStatus(Name_Status_Enum.findByCode(bill.getIdStatus()).getName());
-
+        billResponseUserDTO.setUserResponseDTO(this.userMapping.toDto(user));
+        billResponseUserDTO.setAddress(this.addressMapping.toDto(address));
 
         if(Objects.nonNull(bill.getIdVoucher())){
             Voucher voucher = this.voucherRepository.findById(bill.getIdVoucher().longValue()).orElse(null);

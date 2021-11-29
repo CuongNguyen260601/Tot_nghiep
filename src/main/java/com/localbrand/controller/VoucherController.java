@@ -2,10 +2,9 @@ package com.localbrand.controller;
 
 import com.localbrand.common.Interface_API;
 import com.localbrand.common.ServiceResult;
-import com.localbrand.dto.SizeDTO;
 import com.localbrand.dto.VoucherDTO;
-import com.localbrand.service.SizeService;
 import com.localbrand.service.VoucherService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +16,10 @@ import java.util.Optional;
 @CrossOrigin(Interface_API.Cors.CORS)
 @RestController
 @RequestMapping(Interface_API.MAIN)
+@RequiredArgsConstructor
 public class VoucherController {
 
     private final VoucherService voucherService;
-
-    public VoucherController (VoucherService voucherService) {
-        this.voucherService = voucherService;
-    }
 
     @GetMapping(Interface_API.API.Voucher.VOUCHER_FIND_ALL)
     public ResponseEntity<ServiceResult<List<VoucherDTO>>> fillAll(HttpServletRequest request, @RequestParam Optional<Integer> page) {

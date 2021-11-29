@@ -5,6 +5,7 @@ import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.request.ProductRequestDTO;
 import com.localbrand.dto.response.*;
 import com.localbrand.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +17,10 @@ import java.util.Optional;
 @CrossOrigin(Interface_API.Cors.CORS)
 @RestController
 @RequestMapping(Interface_API.MAIN)
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
-
-    public ProductController(ProductService productService){
-        this.productService = productService;
-    }
 
     @PostMapping(Interface_API.API.Product.PRODUCT_ADD)
     public ResponseEntity<ServiceResult<ProductResponseDTO>> addAll(HttpServletRequest request, @Valid @RequestBody ProductRequestDTO productRequestDTO){
