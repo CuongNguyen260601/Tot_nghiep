@@ -38,6 +38,8 @@ public class CartComboMapping implements Mapping<CartComboDTO, CartCombo> {
                 .builder()
                 .idCart(cartComboDTO.getIdCart())
                 .idCartCombo(cartComboDTO.getIdCartCombo())
+                .idCombo(cartComboDTO.getComboDTO().getIdCombo().intValue())
+                .quantity(cartComboDTO.getQuantity())
                 .build();
     }
 
@@ -47,7 +49,7 @@ public class CartComboMapping implements Mapping<CartComboDTO, CartCombo> {
         List<ComboDetail> listComboDetail = comboDetailRepository.findAllByIdCombo(combo.getIdCombo().intValue());
         ComboResponseDTO comboResponseDTO = comboMapping.toDto(combo,null,listComboDetail.stream().map(comboDetailMapping::toDto).collect(Collectors.toList()));
 
-        cartComboDTO.setComboResponseDTO(comboResponseDTO);
+        cartComboDTO.setComboDTO(comboResponseDTO);
 
         return cartComboDTO;
     }
