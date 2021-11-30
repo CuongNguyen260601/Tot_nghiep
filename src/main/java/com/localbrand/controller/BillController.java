@@ -28,7 +28,6 @@ public class BillController {
     @PostMapping(Interface_API.API.Bill.BILL_SAVE_USER)
     public ResponseEntity<ServiceResult<BillResponseDTO>> saveBillUser(@Valid @RequestBody BillRequestDTO billRequestDTO){
         ServiceResult<BillResponseDTO> result = this.billService.saveBillUser(billRequestDTO);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -37,7 +36,6 @@ public class BillController {
     @PostMapping(Interface_API.API.Bill.BILL_SAVE_ADMIN)
     public ResponseEntity<ServiceResult<BillResponseDTO>> saveBillAdmin(HttpServletRequest request, @Valid @RequestBody BillRequestDTO billRequestDTO){
         ServiceResult<BillResponseDTO> result = this.billService.saveBillAdmin(request,billRequestDTO);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -49,7 +47,6 @@ public class BillController {
             @RequestParam String reason
     ){
         ServiceResult<BillResponseDTO> result = this.billService.cancelBillUser(idBill, reason);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -62,7 +59,6 @@ public class BillController {
             @RequestParam String reason
     ){
         ServiceResult<BillResponseDTO> result = this.billService.cancelBillAdmin(request, idBill, reason);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -75,7 +71,6 @@ public class BillController {
             @RequestParam Optional<Integer> idUser
     ){
         ServiceResult<List<BillResponseDTO>> result = this.billService.getAllListBill(page,limit,idUser);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -92,7 +87,6 @@ public class BillController {
             @RequestParam Optional<Date> endDate
     ){
         ServiceResult<List<BillResponseDTO>> result = this.billService.getListBillAndSort(page, limit, idUser, sort, idStatus, startDate, endDate);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -105,7 +99,6 @@ public class BillController {
             @RequestParam Optional<Integer> idBill
     ){
         ServiceResult<List<BillProductResponseDTO>> result = this.billService.getListBillProductByBill(page, limit, idBill);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -118,7 +111,6 @@ public class BillController {
             @RequestParam Optional<Integer> limit
     ){
         ServiceResult<List<BillResponseDTO>> result = this.billService.getAllListBillAdmin(request, page,limit);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -135,7 +127,6 @@ public class BillController {
             @RequestParam Optional<Date> endDate
     ){
         ServiceResult<List<BillResponseDTO>> result = this.billService.getListBillAndSortAdmin(request, page, limit, sort, idStatus, startDate, endDate);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -149,7 +140,6 @@ public class BillController {
             @RequestParam Optional<Integer> idBill
     ){
         ServiceResult<List<BillProductResponseDTO>> result = this.billService.getListBillProductByBillAdmin(request, page, limit, idBill);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -162,7 +152,6 @@ public class BillController {
             @RequestParam Optional<Integer> idUser
     ){
         ServiceResult<List<BillResponseUserDTO>> result = this.billService.getAllListBillUserOther(page,limit,idUser);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -179,7 +168,6 @@ public class BillController {
             @RequestParam Optional<Date> endDate
     ){
         ServiceResult<List<BillResponseUserDTO>> result = this.billService.getAllListBillUserAndSortOther(page, limit, idUser, sort, idStatus, startDate, endDate);
-
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);

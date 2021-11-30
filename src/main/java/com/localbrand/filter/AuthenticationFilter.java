@@ -28,8 +28,6 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -55,22 +53,17 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-
         log.info("Username is {} and Password is {}", username, password);
-
         UsernamePasswordAuthenticationToken authenticationToken= new UsernamePasswordAuthenticationToken(username, password);
-
         return authenticationManager.authenticate(authenticationToken);
     }
 
     @Transactional()
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
+    public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
 
         User user = (User) authentication.getPrincipal();
         Algorithm algorithm = Algorithm.HMAC256(Security_Enum.SECRET.getSecret().getBytes());
-
-
         String access_token = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JWT_Enum.ACCESS_MINUTE.getValue()*60*1000))
@@ -83,15 +76,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
-
         com.localbrand.entity.User userEntity = userRepository.findFirstByEmailEqualsIgnoreCase(user.getUsername()).orElse(null);
-
         Jwt jwtFind  = this.jwtRepository.findByIdUser(userEntity.getIdUser().intValue()).orElse(null);
-
         if(Objects.nonNull(jwtFind)){
             this.jwtRepository.delete(jwtFind);
         }
-
         Jwt jwt = Jwt
                 .builder()
                 .idUser(userEntity.getIdUser().intValue())
@@ -99,12 +88,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .endTime(Timestamp.from(Instant.now().plusMillis(JWT_Enum.REFRESH_MINUTE.getValue()*60*1000)))
                 .isActive(true)
                 .build();
-
         this.jwtRepository.save(jwt);
-
         UserResponseSignupDTO userResponseSignupDTO = this.userMapping.toDtoSignup(userEntity, access_token, refresh_token);
         response.setContentType(APPLICATION_JSON_VALUE);
-
         new ObjectMapper().writeValue(response.getOutputStream(), userResponseSignupDTO);
     }
 }

@@ -4,6 +4,7 @@ import com.localbrand.common.Interface_API;
 import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.ColorDTO;
 import com.localbrand.service.ColorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +16,10 @@ import java.util.Optional;
 @CrossOrigin(Interface_API.Cors.CORS)
 @RestController
 @RequestMapping(Interface_API.MAIN)
+@RequiredArgsConstructor
 public class ColorController {
-    private final ColorService colorService;
 
-    public ColorController (ColorService colorService) {
-        this.colorService = colorService;
-    }
+    private final ColorService colorService;
 
     @GetMapping(Interface_API.API.Color.COLOR_FIND_ALL)
     public ResponseEntity<ServiceResult<List<ColorDTO>>> fillAll(HttpServletRequest request, @RequestParam Optional<Integer> page) {

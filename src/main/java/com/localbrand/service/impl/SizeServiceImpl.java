@@ -108,7 +108,7 @@ public class  SizeServiceImpl implements SizeService {
 
         }
 
-        return new ServiceResult<>(HttpStatus.OK, Notification.Size.GET_SIZE_AND_SORT_SUCESS, listSize.stream().map(this.sizeMapping::toDtoResponse).collect(Collectors.toList()));
+        return new ServiceResult<>(HttpStatus.OK, Notification.Size.GET_SIZE_AND_SORT_SUCCESS, listSize.stream().map(this.sizeMapping::toDtoResponse).collect(Collectors.toList()));
 
     }
 

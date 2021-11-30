@@ -6,24 +6,21 @@ import com.localbrand.dto.CartComboDTO;
 import com.localbrand.dto.CartDTO;
 import com.localbrand.dto.CartProductDTO;
 import com.localbrand.dto.response.CartListResponseDTO;
-import com.localbrand.dto.response.CartProductResponseDTO;
 import com.localbrand.service.CartService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = Interface_API.Cors.CORS)
 @RequestMapping(Interface_API.MAIN)
+@RequiredArgsConstructor
 public class CartController {
-    private final CartService cartService;
 
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
+    private final CartService cartService;
 
     @PostMapping(Interface_API.API.Cart.CART_SAVE)
     public ResponseEntity<ServiceResult<CartDTO>> saveCart(@Valid @RequestBody CartDTO cartDTO){

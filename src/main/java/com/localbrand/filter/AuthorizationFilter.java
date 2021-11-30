@@ -9,8 +9,8 @@ import com.localbrand.common.Interface_API;
 import com.localbrand.common.Security_Enum;
 import com.localbrand.entity.Jwt;
 import com.localbrand.repository.JwtRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,14 +27,11 @@ import java.util.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
+@RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
 
 
     private final JwtRepository jwtRepository;
-
-    public AuthorizationFilter(JwtRepository jwtRepository){
-        this.jwtRepository = jwtRepository;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

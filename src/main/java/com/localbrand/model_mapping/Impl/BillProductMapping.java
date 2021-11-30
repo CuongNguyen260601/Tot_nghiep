@@ -1,11 +1,11 @@
 package com.localbrand.model_mapping.Impl;
 
 import com.localbrand.common.Status_Enum;
-import com.localbrand.dto.ProductDetailDTO;
 import com.localbrand.dto.request.BillRequestDTO;
 import com.localbrand.dto.request.ProductDetailBillRequestDTO;
 import com.localbrand.dto.response.BillProductResponseDTO;
 import com.localbrand.entity.*;
+import com.localbrand.exception.ErrorCodes;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.BillProductRepository;
 import com.localbrand.repository.ProductDetailRepository;
@@ -31,7 +31,8 @@ public class BillProductMapping implements Mapping<BillProductResponseDTO, BillP
     @Override
     public BillProductResponseDTO toDto(BillProduct billProduct) {
 
-        ProductDetail productDetail = this.productDetailRepository.findById(billProduct.getIdProductDetail().longValue()).orElse(null);
+        ProductDetail productDetail = this.productDetailRepository.findById(billProduct.getIdProductDetail().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.PRODUCT_DETAIL_IS_NULL));
 
         return BillProductResponseDTO
                 .builder()
@@ -49,30 +50,30 @@ public class BillProductMapping implements Mapping<BillProductResponseDTO, BillP
         return null;
     }
 
-    public List<BillProduct> toListProduct(Bill bill, BillRequestDTO billRequestDTO){
+    public List<BillProduct> toListProduct(Bill bill, BillRequestDTO billRequestDTO) {
 
         List<BillProduct> lstBillProducts = new ArrayList<>();
 
-        for (ProductDetailBillRequestDTO detailBillRequestDTO: billRequestDTO.getListProductDetail()) {
+        for (ProductDetailBillRequestDTO detailBillRequestDTO : billRequestDTO.getListProductDetail()) {
 
             BillProduct billProduct = this.billProductRepository.findFirstByIdBillAndAndIdProductDetail(bill.getIdBill().intValue(), detailBillRequestDTO.getIdProductDetail().intValue());
 
-            if(Objects.nonNull(billProduct)){
+            if (Objects.nonNull(billProduct)) {
                 billProduct.setQuantity(detailBillRequestDTO.getQuantity());
                 billProduct.setIdStatus(detailBillRequestDTO.getIdStatus());
                 lstBillProducts.add(billProduct);
-            }else{
+            } else {
                 ProductDetail productDetail = this.productDetailRepository.findById(detailBillRequestDTO.getIdProductDetail()).orElse(null);
 
-                if(Objects.nonNull(productDetail)){
-                    ProductSale  productSale = this.productSaleRepository.findFirstByIdProductDetailAndIdStatus(productDetail.getIdProductDetail().intValue(), Status_Enum.EXISTS.getCode()).orElse(null);
+                if (Objects.nonNull(productDetail)) {
+                    ProductSale productSale = this.productSaleRepository.findFirstByIdProductDetailAndIdStatus(productDetail.getIdProductDetail().intValue(), Status_Enum.EXISTS.getCode()).orElse(null);
 
                     float price = productDetail.getPrice();
 
-                    if(Objects.nonNull(productSale)){
+                    if (Objects.nonNull(productSale)) {
                         Sale sale = this.saleRepository.findById(productSale.getIdSale().longValue()).orElse(null);
-                        if(Objects.nonNull(sale)){
-                            price = price/100*(100-sale.getDiscount());
+                        if (Objects.nonNull(sale)) {
+                            price = price / 100 * (100 - sale.getDiscount());
                         }
                     }
 

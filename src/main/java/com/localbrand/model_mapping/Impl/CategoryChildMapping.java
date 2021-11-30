@@ -10,20 +10,18 @@ public class CategoryChildMapping implements Mapping<CategoryChildDTO, Category>
     @Override
     public CategoryChildDTO toDto(Category category) {
 
-        CategoryChildDTO categoryChildDTO = CategoryChildDTO
+        return CategoryChildDTO
                 .builder()
                 .idCategory(category.getIdCategory())
                 .parentId(category.getParentId())
                 .nameCategory(category.getNameCategory())
                 .idStatus(category.getIdStatus())
                 .build();
-
-        return categoryChildDTO;
     }
 
     @Override
     public Category toEntity(CategoryChildDTO categoryChildDTO) {
-        Category category = Category
+        return Category
                 .builder()
                 .idCategory(categoryChildDTO.getIdCategory())
                 .parentId(categoryChildDTO.getParentId())
@@ -31,6 +29,5 @@ public class CategoryChildMapping implements Mapping<CategoryChildDTO, Category>
                 .idStatus(categoryChildDTO.getIdStatus())
                 .build();
 
-        return category;
     }
 }

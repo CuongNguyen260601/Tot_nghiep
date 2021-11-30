@@ -3,6 +3,7 @@ package com.localbrand.model_mapping.Impl;
 import com.localbrand.dto.*;
 import com.localbrand.dto.response.CartProductResponseDTO;
 import com.localbrand.entity.*;
+import com.localbrand.exception.ErrorCodes;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -63,29 +64,24 @@ public class CartProductMapping implements Mapping<CartProductDTO, CartProduct> 
                 .detailPhoto(productDetail.getDetailPhoto())
                 .build();
 
-        Category category = this.categoryRepository.findById(productDetail.getIdCategory().longValue()).orElse(null);
+        Category category = this.categoryRepository.findById(productDetail.getIdCategory().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.CATEGORY_IS_NULL));
 
-        CategoryChildDTO categoryChildDTO = this.categoryChildMapping.toDto(category);
+        Color color = this.colorRepository.findById(productDetail.getIdColor().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.COLOR_IS_NULL));
 
-        Color color = this.colorRepository.findById(productDetail.getIdColor().longValue()).orElse(null);
-
-        ColorDTO colorDTO  = this.colorMapping.toDto(color);
-
-        Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue()).orElse(null);
-
-        SizeDTO sizeDTO = this.sizeMapping.toDto(size);
+        Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.SIZE_IS_NULL));
 
         Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
 
-
-
         List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail());
 
-        productDetailDTO.setCategoryDTO(categoryChildDTO);
+        productDetailDTO.setCategoryDTO(this.categoryChildMapping.toDto(category));
 
-        productDetailDTO.setColorDTO(colorDTO);
+        productDetailDTO.setColorDTO(this.colorMapping.toDto(color));
 
-        productDetailDTO.setSizeDTO(sizeDTO);
+        productDetailDTO.setSizeDTO(this.sizeMapping.toDto(size));
 
         if(Objects.nonNull(sale)){
             SaleDTO saleDTO = this.saleMapping.toDto(sale);
