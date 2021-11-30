@@ -134,6 +134,7 @@ public class CartServiceImpl implements CartService {
         return new ServiceResult<>(HttpStatus.OK, Notification.Cart.DELETE_CART_PRODUCT_SUCCESS, null);
     }
 
+    @Transactional
     @Override
     public ServiceResult<CartComboDTO> deleteCartCombo(Optional<Long> idCartCombo) {
 
@@ -170,11 +171,12 @@ public class CartServiceImpl implements CartService {
         return new ServiceResult<>(HttpStatus.OK, Notification.Cart.UPDATE_CART_PRODUCT_SUCCESS, this.cartProductMapping.toDtoCartProduct(cartProduct,productDetail));
     }
 
+    @Transactional
     @Override
     public ServiceResult<CartComboDTO> updateQuantityCombo(CartComboDTO cartComboDTO) {
         log.info("Update quantity cart combo: "+cartComboDTO);
 
-        Combo combo = this.comboRepository.findById(cartComboDTO.getComboResponseDTO().getIdCombo().longValue()).orElse(null);
+        Combo combo = this.comboRepository.findById(cartComboDTO.getComboDTO().getIdCombo().longValue()).orElse(null);
 
         if(Objects.isNull(combo)){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart_Combo.VALIDATE_COMBO, null);

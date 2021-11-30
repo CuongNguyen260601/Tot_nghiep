@@ -106,10 +106,10 @@ public class CartController {
 
     @PostMapping(Interface_API.API.Cart.Cart_Combo.CART_COMBO_ADD)
     public ResponseEntity<ServiceResult<CartComboDTO>> addComboToCart(
-            @RequestParam Optional<Long> idProductDetail,
+            @RequestParam Optional<Long> idCombo,
             @RequestParam Optional<Long> idCart
     ){
-        ServiceResult<CartComboDTO> result = this.cartService.addComboToCart(idProductDetail, idCart);
+        ServiceResult<CartComboDTO> result = this.cartService.addComboToCart(idCombo, idCart);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
