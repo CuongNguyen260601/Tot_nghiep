@@ -9,9 +9,9 @@ import com.localbrand.dto.request.ProductRequestDTO;
 import com.localbrand.dto.request.ProductSizeRequestDTO;
 import com.localbrand.dto.response.*;
 import com.localbrand.entity.*;
+import com.localbrand.exception.ErrorCodes;
 import com.localbrand.model_mapping.Mapping;
 import com.localbrand.repository.*;
-import com.localbrand.utils.TPF_Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
-    private final TPF_Utils tpf_utils;
     private final ProductRepository productRepository;
     private final ProductDetailRepository productDetailRepository;
 
@@ -85,10 +84,10 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
                         .idStatus(sizeRequestDTO.getIdStatus())
                         .build();
 
-                if(!Objects.isNull(sizeRequestDTO.getIdProductDetail()))
+                if(Objects.nonNull(sizeRequestDTO.getIdProductDetail()))
                     productDetail.setIdProductDetail(sizeRequestDTO.getIdProductDetail());
 
-                if(!Objects.isNull(product.getIdProduct()))
+                if(Objects.nonNull(product.getIdProduct()))
                     productDetail.setIdProduct(product.getIdProduct().intValue());
 
                 listProductDetail.add(productDetail);
@@ -104,9 +103,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
     public ProductResponseDTO toProductResponseDTO(Product product){
 
-         List<ProductDetail> listProductDetails
-                 = this.productDetailRepository
-                 .findAllByIdProduct(product.getIdProduct().intValue());
+         List<ProductDetail> listProductDetails = this.productDetailRepository.findAllByIdProduct(product.getIdProduct().intValue());
 
         Set<Integer> idGender = new HashSet<>();
         Set<CategoryChildDTO> categoryChildDTOS = new HashSet<>();
@@ -117,94 +114,76 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
             Category category =this.categoryRepository.
                     findById(productDetail.getIdCategory().
-                            longValue()).orElse(null);
-            if(!Objects.isNull(category))
-                categoryChildDTOS.add(
-                        this.categoryChildMapping
-                                .toDto(category)
-                );
+                            longValue()).orElseThrow(()-> new RuntimeException(ErrorCodes.CATEGORY_IS_NULL));
 
-            Color color = this.colorRepository.findById(productDetail.getIdColor().longValue()).orElse(null);
+            categoryChildDTOS.add(this.categoryChildMapping.toDto(category));
 
-            if(!Objects.isNull(color)){
+            Color color = this.colorRepository.findById(productDetail.getIdColor().longValue())
+                    .orElseThrow(() -> new RuntimeException(ErrorCodes.COLOR_IS_NULL));
 
-                boolean isDuplicate = false;
+            boolean isDuplicate = false;
 
-                for(ProductColorResponseDTO productColorResponseDTO1: productColorResponseDTOS){
+            Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue())
+                    .orElseThrow(() -> new RuntimeException(ErrorCodes.SIZE_IS_NULL));
 
-                    if(productColorResponseDTO1.getColor().getIdColor().equals(productDetail.getIdColor().longValue())){
+            Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
 
-                        Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue()).orElse(null);
+            List<Integer> listTag = this.productTagRepository.listTagByProduct(productDetail.getIdProductDetail().intValue());
 
-                        if(!Objects.isNull(size)){
+            for(ProductColorResponseDTO productColorResponseDTO1: productColorResponseDTOS){
 
-                            Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
+                if(productColorResponseDTO1.getColor().getIdColor().equals(productDetail.getIdColor().longValue())){
 
-                            if(!Objects.isNull(sale)){
-
-                                List<Integer> listTag = this.productTagRepository.listTagByProduct(productDetail.getIdProductDetail().intValue());
-
-                                ProductSizeResponseDTO productSizeResponseDTO = ProductSizeResponseDTO
-                                        .builder()
-                                        .idProductDetail(productDetail.getIdProductDetail())
-                                        .size(this.sizeMapping.toDto(size))
-                                        .quantity(productDetail.getQuantity())
-                                        .sale(this.saleMapping.toDto(sale))
-                                        .idStatus(productDetail.getIdStatus())
-                                        .listTag(listTag)
-                                        .build();
-
-                                productColorResponseDTO1.getListSizeInColor().add(productSizeResponseDTO);
-                            }
-                        }
-
-                        isDuplicate = true;
-
-                        break;
-                    }
-                }
-
-                if(!isDuplicate){
-                    ProductColorResponseDTO productColorResponseDTO = ProductColorResponseDTO
+                    ProductSizeResponseDTO productSizeResponseDTO = ProductSizeResponseDTO
                             .builder()
-                            .color(this.colorMapping.toDto(color))
-                            .detailPhoto(productDetail.getDetailPhoto())
-                            .listSizeInColor(new ArrayList<>())
+                            .idProductDetail(productDetail.getIdProductDetail())
+                            .size(this.sizeMapping.toDto(size))
+                            .quantity(productDetail.getQuantity())
+                            .idStatus(productDetail.getIdStatus())
+                            .listTag(listTag)
                             .build();
 
-                    Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue()).orElse(null);
-
-                    if(!Objects.isNull(size)){
-
-                        Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
-
-                        List<Integer> listTag = this.productTagRepository.listTagByProduct(productDetail.getIdProductDetail().intValue());
-
-                        ProductSizeResponseDTO productSizeResponseDTO = ProductSizeResponseDTO
-                                    .builder()
-                                    .idProductDetail(productDetail.getIdProductDetail())
-                                    .size(this.sizeMapping.toDto(size))
-                                    .quantity(productDetail.getQuantity())
-                                    .price(productDetail.getPrice())
-                                    .idStatus(productDetail.getIdStatus())
-                                    .dateCreate(productDetail.getDateCreate())
-                                    .build();
-
-                        if(listTag.size()>0)
-                            productSizeResponseDTO.setListTag(listTag);
-
-                        if(!Objects.isNull(sale)){
-                            productSizeResponseDTO.setSale(this.saleMapping.toDto(sale));
-                        }
-
-                        productColorResponseDTO.getListSizeInColor().add(productSizeResponseDTO);
-
-                        productColorResponseDTOS.add(productColorResponseDTO);
+                    if(Objects.nonNull(sale)){
+                        productSizeResponseDTO.setSale(this.saleMapping.toDto(sale));
                     }
 
+                    productColorResponseDTO1.getListSizeInColor().add(productSizeResponseDTO);
+
+                    isDuplicate = true;
+
+                    break;
+                }
+            }
+
+            if(!isDuplicate){
+                ProductColorResponseDTO productColorResponseDTO = ProductColorResponseDTO
+                        .builder()
+                        .color(this.colorMapping.toDto(color))
+                        .detailPhoto(productDetail.getDetailPhoto())
+                        .listSizeInColor(new ArrayList<>())
+                        .build();
+
+                ProductSizeResponseDTO productSizeResponseDTO = ProductSizeResponseDTO
+                        .builder()
+                        .idProductDetail(productDetail.getIdProductDetail())
+                        .size(this.sizeMapping.toDto(size))
+                        .quantity(productDetail.getQuantity())
+                        .price(productDetail.getPrice())
+                        .idStatus(productDetail.getIdStatus())
+                        .dateCreate(productDetail.getDateCreate())
+                        .listTag(listTag)
+                        .build();
+
+                if(Objects.nonNull(sale)){
+                    productSizeResponseDTO.setSale(this.saleMapping.toDto(sale));
                 }
 
+                productColorResponseDTO.getListSizeInColor().add(productSizeResponseDTO);
+
+                productColorResponseDTOS.add(productColorResponseDTO);
+
             }
+
         }
 
         List<ProductColorResponseDTO> productColorResponseDTOS1 = new ArrayList<>(productColorResponseDTOS);
@@ -215,6 +194,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
                 .category(categoryChildDTOS.iterator().next())
                 .listDetailColorResponse(productColorResponseDTOS1)
                 .build();
+
         return ProductResponseDTO
                 .builder()
                 .idProduct(product.getIdProduct())
@@ -365,7 +345,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
         List<SizeAndTagInProductShowUser> listSizeAndTagInProductShowUsers = new ArrayList<>();
 
-        if(listSize.size() > 0){
+        if(!listSize.isEmpty()){
 
             for (Size size: listSize) {
                 SizeDTO sizeDTO = this.sizeMapping.toDto(size);
@@ -397,80 +377,67 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
             idCategory.add(productDetail.getIdCategory());
 
-                boolean isDuplicate = false;
+            boolean isDuplicate = false;
 
-                for(ProductColorResponseShowDTO productColorResponseShowDTO: productColorResponseShowDTOS){
+            for(ProductColorResponseShowDTO productColorResponseShowDTO: productColorResponseShowDTOS){
 
                     if(productColorResponseShowDTO.getIdColor() == (productDetail.getIdColor().longValue())){
-
-                            Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
-
-                            if(!Objects.isNull(sale)){
-
-                                ProductSizeResponseShowDTO productSizeResponseShowDTO = ProductSizeResponseShowDTO
-                                        .builder()
-                                        .idProductDetail(productDetail.getIdProductDetail())
-                                        .idSize(productDetail.getIdSize().longValue())
-                                        .quantity(productDetail.getQuantity())
-                                        .idSale(sale.getIdSale().intValue())
-                                        .price(productDetail.getPrice())
-                                        .idStatus(productDetail.getIdStatus())
-                                        .dateCreate(productDetail.getDateCreate())
-                                        .build();
-
-                                productColorResponseShowDTO.getListSizeInColor().add(productSizeResponseShowDTO);
-                            }else{
-                                ProductSizeResponseShowDTO productSizeResponseShowDTO = ProductSizeResponseShowDTO
-                                        .builder()
-                                        .idProductDetail(productDetail.getIdProductDetail())
-                                        .idSize(productDetail.getIdSize().longValue())
-                                        .quantity(productDetail.getQuantity())
-                                        .idSale(null)
-                                        .price(productDetail.getPrice())
-                                        .idStatus(productDetail.getIdStatus())
-                                        .dateCreate(productDetail.getDateCreate())
-                                        .build();
-
-                                productColorResponseShowDTO.getListSizeInColor().add(productSizeResponseShowDTO);
-                            }
-                        isDuplicate = true;
-                        break;
-                    }
-                }
-
-                if(!isDuplicate){
-                    ProductColorResponseShowDTO productColorResponseShowDTO = ProductColorResponseShowDTO
-                            .builder()
-                            .idColor(productDetail.getIdColor())
-                            .detailPhoto(productDetail.getDetailPhoto())
-                            .listSizeInColor(new ArrayList<>())
-                            .build();
-
-                    Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue()).orElse(null);
-
-                    if(!Objects.isNull(size)){
 
                         Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
 
                         ProductSizeResponseShowDTO productSizeResponseShowDTO = ProductSizeResponseShowDTO
                                 .builder()
                                 .idProductDetail(productDetail.getIdProductDetail())
-                                .idSize(size.getIdSize())
+                                .idSize(productDetail.getIdSize().longValue())
                                 .quantity(productDetail.getQuantity())
+                                .idSale(sale.getIdSale().intValue())
                                 .price(productDetail.getPrice())
                                 .idStatus(productDetail.getIdStatus())
                                 .dateCreate(productDetail.getDateCreate())
                                 .build();
 
-                        if(!Objects.isNull(sale))
+                        if(Objects.nonNull(sale)){
                             productSizeResponseShowDTO.setIdSale(sale.getIdSale().intValue());
-
+                        }else{
+                            productSizeResponseShowDTO.setIdSale(null);
+                        }
                         productColorResponseShowDTO.getListSizeInColor().add(productSizeResponseShowDTO);
 
-                        productColorResponseShowDTOS.add(productColorResponseShowDTO);
+                        isDuplicate = true;
+                        break;
                     }
-
                 }
+
+            if(!isDuplicate){
+                ProductColorResponseShowDTO productColorResponseShowDTO = ProductColorResponseShowDTO
+                        .builder()
+                        .idColor(productDetail.getIdColor())
+                        .detailPhoto(productDetail.getDetailPhoto())
+                        .listSizeInColor(new ArrayList<>())
+                        .build();
+
+                Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue())
+                        .orElseThrow(() -> new RuntimeException(ErrorCodes.SIZE_IS_NULL));
+
+                Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
+
+                ProductSizeResponseShowDTO productSizeResponseShowDTO = ProductSizeResponseShowDTO
+                        .builder()
+                        .idProductDetail(productDetail.getIdProductDetail())
+                        .idSize(size.getIdSize())
+                        .quantity(productDetail.getQuantity())
+                        .price(productDetail.getPrice())
+                        .idStatus(productDetail.getIdStatus())
+                        .dateCreate(productDetail.getDateCreate())
+                        .build();
+
+                if(Objects.nonNull(sale))
+                    productSizeResponseShowDTO.setIdSale(sale.getIdSale().intValue());
+
+                productColorResponseShowDTO.getListSizeInColor().add(productSizeResponseShowDTO);
+
+                productColorResponseShowDTOS.add(productColorResponseShowDTO);
+            }
         }
 
         List<ProductColorResponseShowDTO> productColorResponseShowDTOS1 = new ArrayList<>(productColorResponseShowDTOS);
@@ -481,6 +448,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
                 .idCategory(idCategory.iterator().next())
                 .listDetailColorRequest(productColorResponseShowDTOS1)
                 .build();
+
         ProductResponseShowDTO productResponseShowDTO = ProductResponseShowDTO
                 .builder()
                 .idProduct(product.getIdProduct())
@@ -495,7 +463,9 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
                 .detailInProduct(productDetailResponseShowDTO)
                 .build();
 
-        Category category = this.categoryRepository.findById(productResponseShowDTO.getDetailInProduct().getIdCategory().longValue()).orElse(null);
+        Category category = this.categoryRepository.findById(productResponseShowDTO.getDetailInProduct().getIdCategory().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.CATEGORY_IS_NULL));
+
         return ProductResponseShowAdminDTO
                 .builder()
                 .idCategoryParent(category.getParentId())
@@ -529,53 +499,65 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
 
 
 
-        if(!Objects.isNull(productDetail)){
+        if(Objects.nonNull(productDetail)){
             Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
 
-            if(Objects.nonNull(sale))
-                productDetailUserDTO.setSaleDTO(this.saleMapping.toDto(sale));
+            Category category = this.categoryRepository.findById(productDetail.getIdCategory().longValue())
+                    .orElseThrow(() -> new RuntimeException(ErrorCodes.CATEGORY_IS_NULL));
 
-            Category category = this.categoryRepository.findById(productDetail.getIdCategory().longValue()).orElse(null);
+            Color color = this.colorRepository.findById(productDetail.getIdColor().longValue())
+                    .orElseThrow(() -> new RuntimeException(ErrorCodes.COLOR_IS_NULL));
 
-            if(!Objects.isNull(category))
-                productDetailUserDTO.setCategoryDTO(this.categoryChildMapping.toDto(category));
+            Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue())
+                    .orElseThrow(() -> new RuntimeException(ErrorCodes.SIZE_IS_NULL));
 
+            productDetailUserDTO.setCategoryDTO(this.categoryChildMapping.toDto(category));
             productDetailUserDTO.setIdProductDetail(productDetail.getIdProductDetail());
             productDetailUserDTO.setIdGender(productDetail.getIdGender());
-
-            Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue()).orElse(null);
-
-            if(!Objects.isNull(size))
-                productDetailUserDTO.setSizeDTO(this.sizeMapping.toDto(size));
-
+            productDetailUserDTO.setSizeDTO(this.sizeMapping.toDto(size));
             productDetailUserDTO.setPrice(productDetail.getPrice());
             productDetailUserDTO.setAmount(productDetail.getQuantity());
             productDetailUserDTO.setDateCreate(productDetail.getDateCreate());
             productDetailUserDTO.setDetailPhoto(productDetail.getDetailPhoto());
+            productDetailUserDTO.setColorDTO(this.colorMapping.toDto(color));
+            if(Objects.nonNull(sale))
+                productDetailUserDTO.setSaleDTO(this.saleMapping.toDto(sale));
 
+            List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail());
+
+            if(!listTag.isEmpty()){
+                productDetailUserDTO.setListTag(listTag);
+            }
         }
-
-        Color color = this.colorRepository.findById(productDetail.getIdColor().longValue()).orElse(null);
-
-        List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail());
-
-        if(!listTag.isEmpty()){
-            productDetailUserDTO.setListTag(listTag);
-        }
-
-        productDetailUserDTO.setColorDTO(this.colorMapping.toDto(color));
 
         productDetailUserDTO.setLike(totalLike);
+
         return productDetailUserDTO;
     }
 
     public ProductDetailUserDTO toProductDetailUserDTOByProductDetail(ProductDetail productDetail){
 
-        Product product = this.productRepository.findById(productDetail.getIdProduct().longValue()).orElse(null);
+        Product product = this.productRepository.findById(productDetail.getIdProduct().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.PRODUCT_IS_NULL));
 
-        ProductDetailUserDTO productDetailUserDTO = new ProductDetailUserDTO();
 
         Integer totalLike = likeRepository.countLikeByIdProduct(product.getIdProduct().intValue());
+
+        Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
+
+        Category category = this.categoryRepository.findById(productDetail.getIdCategory().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.CATEGORY_IS_NULL));
+
+        Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.SIZE_IS_NULL));
+
+        Color color = this.colorRepository.findById(productDetail.getIdColor().longValue())
+                .orElseThrow(() -> new RuntimeException(ErrorCodes.COLOR_IS_NULL));
+
+        List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail());
+
+
+        ProductDetailUserDTO productDetailUserDTO = new ProductDetailUserDTO();
 
         productDetailUserDTO.setIdProduct(product.getIdProduct());
         productDetailUserDTO.setNameProduct(product.getNameProduct());
@@ -586,54 +568,33 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         productDetailUserDTO.setCoverPhoto(product.getCoverPhoto());
         productDetailUserDTO.setFrontPhoto(product.getFrontPhoto());
         productDetailUserDTO.setBackPhoto(product.getBackPhoto());
-
-            Sale sale = this.saleRepository.findSaleByProductDetail(productDetail.getIdProductDetail());
-
-            if(Objects.nonNull(sale))
-                productDetailUserDTO.setSaleDTO(this.saleMapping.toDto(sale));
-
-            Category category = this.categoryRepository.findById(productDetail.getIdCategory().longValue()).orElse(null);
-
-            if(!Objects.isNull(category))
-                productDetailUserDTO.setCategoryDTO(this.categoryChildMapping.toDto(category));
-
-            productDetailUserDTO.setIdProductDetail(productDetail.getIdProductDetail());
-            productDetailUserDTO.setIdGender(productDetail.getIdGender());
-
-            Size size = this.sizeRepository.findById(productDetail.getIdSize().longValue()).orElse(null);
-
-            if(!Objects.isNull(size))
-                productDetailUserDTO.setSizeDTO(this.sizeMapping.toDto(size));
-
-            productDetailUserDTO.setPrice(productDetail.getPrice());
-            productDetailUserDTO.setAmount(productDetail.getQuantity());
-            productDetailUserDTO.setDateCreate(productDetail.getDateCreate());
-            productDetailUserDTO.setDetailPhoto(productDetail.getDetailPhoto());
-
-        List<Integer> listTag = this.tagRepository.findByIdProductDetail(productDetail.getIdProductDetail());
-
-        Color color = this.colorRepository.findById(productDetail.getIdColor().longValue()).orElse(null);
-
+        productDetailUserDTO.setIdProductDetail(productDetail.getIdProductDetail());
+        productDetailUserDTO.setIdGender(productDetail.getIdGender());
         productDetailUserDTO.setListTag(listTag);
-
         productDetailUserDTO.setColorDTO(this.colorMapping.toDto(color));
-
         productDetailUserDTO.setLike(totalLike);
+        productDetailUserDTO.setPrice(productDetail.getPrice());
+        productDetailUserDTO.setAmount(productDetail.getQuantity());
+        productDetailUserDTO.setDateCreate(productDetail.getDateCreate());
+        productDetailUserDTO.setDetailPhoto(productDetail.getDetailPhoto());
+        productDetailUserDTO.setCategoryDTO(this.categoryChildMapping.toDto(category));
+        productDetailUserDTO.setSizeDTO(this.sizeMapping.toDto(size));
+        if(Objects.nonNull(sale))
+            productDetailUserDTO.setSaleDTO(this.saleMapping.toDto(sale));
+
         return productDetailUserDTO;
 
     }
-
 
     public ProductShowUserResponseDTO toProductShowUserAndLike(Product product, User user){
 
         List<Color> listColor = this.colorRepository.findAllByIdProduct(product.getIdProduct());
 
-        ProductShowUserResponseDTO productShowUserResponseDTO = new ProductShowUserResponseDTO();
-
         Integer totalLike = likeRepository.countLikeByIdProduct(product.getIdProduct().intValue());
 
         Like like = this.likeRepository.findFirstByIdUserAndIdProduct(user.getIdUser().intValue(), product.getIdProduct().intValue()).orElse(null);
 
+        ProductShowUserResponseDTO productShowUserResponseDTO = new ProductShowUserResponseDTO();
         productShowUserResponseDTO.setIdProduct(product.getIdProduct());
         productShowUserResponseDTO.setNameProduct(product.getNameProduct());
         productShowUserResponseDTO.setDateCreate(product.getDateCreate());

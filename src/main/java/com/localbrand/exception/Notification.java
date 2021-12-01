@@ -2,6 +2,14 @@ package com.localbrand.exception;
 
 public interface Notification {
     String PAGE_INVALID = "Invalid page number";
+
+    interface Address {
+        String GET_ALL_PROVINCE_SUCCESS = "Get all list province success";
+        String GET_ALL_DISTRICT_BY_PROVINCE_SUCCESS = "Get all list district by province success";
+        String GET_ALL_DISTRICT_BY_PROVINCE_FALSE = "Get all list district by province false";
+        String GET_ALL_COMMUNE_BY_PROVINCE_AND_DISTRICT_SUCCESS = "Get all list commune by province and district success";
+        String GET_ALL_COMMUNE_BY_PROVINCE_AND_DISTRICT_FALSE = "Get all list commune by province and district false";
+    }
     interface Size {
         String GET_LIST_SIZE_SUCCESS = "Get list size success";
         String GET_SIZE_BY_ID_SUCCESS = "Get size by id success";

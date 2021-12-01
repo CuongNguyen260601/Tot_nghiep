@@ -9,6 +9,7 @@ import com.localbrand.dto.response.BillProductResponseDTO;
 import com.localbrand.dto.response.BillResponseDTO;
 import com.localbrand.dto.response.BillResponseUserDTO;
 import com.localbrand.entity.*;
+import com.localbrand.exception.MessageLogs;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.AddressMapping;
 import com.localbrand.model_mapping.Impl.BillMapping;
@@ -54,11 +55,12 @@ public class BillServiceImpl implements BillService {
     @Override
     public ServiceResult<BillResponseDTO> saveBillUser(BillRequestDTO billRequestDTO) {
 
+        log.info(MessageLogs.SAVE_USER_BILL);
+
         if(!billRequestDTO.getIdStatus().equals(Status_Enum.PROCESSING.getCode())){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Bill.SAVE_BILL_FALSE, null);
         }
 
-        log.info("Save bill");
 
         Voucher voucher;
         if(Objects.isNull(billRequestDTO.getIdVoucher())){

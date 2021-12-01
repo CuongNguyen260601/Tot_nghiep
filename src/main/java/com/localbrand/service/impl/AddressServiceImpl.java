@@ -7,6 +7,8 @@ import com.localbrand.dto.ProvinceDTO;
 import com.localbrand.entity.Commune;
 import com.localbrand.entity.District;
 import com.localbrand.entity.Province;
+import com.localbrand.exception.MessageLogs;
+import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.CommuneMapping;
 import com.localbrand.model_mapping.Impl.DistrictMapping;
 import com.localbrand.model_mapping.Impl.ProvinceMapping;
@@ -37,30 +39,34 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public ServiceResult<List<ProvinceDTO>> getAllProvince() {
+        log.info(MessageLogs.GET_ALL_PROVINCE);
         List<Province> lstProvinces = this.provinceRepository.findAll();
-        return new ServiceResult<>(HttpStatus.OK, "", lstProvinces.stream().map(this.provinceMapping::toDto).collect(Collectors.toList()));
+        return new ServiceResult<>(HttpStatus.OK, Notification.Address.GET_ALL_PROVINCE_SUCCESS, lstProvinces.stream().map(this.provinceMapping::toDto).collect(Collectors.toList()));
     }
 
     @Override
     public ServiceResult<List<DistrictDTO>> getAllDistrictByIdProvince(Optional<Integer> idProvince) {
 
+        log.info(MessageLogs.GET_ALL_DISTRICT_BY_PROVINCE+" : "+idProvince);
+
         if(idProvince.isEmpty() || idProvince.get() < 1){
-            return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST,Notification.Address.GET_ALL_DISTRICT_BY_PROVINCE_FALSE, null);
         }
         List<District> listDistricts = this.districtRepository.findAllByIdProvince(idProvince.get());
 
-        return new ServiceResult<>(HttpStatus.OK, "", listDistricts.stream().map(this.districtMapping::toDto).collect(Collectors.toList()));
+        return new ServiceResult<>(HttpStatus.OK, Notification.Address.GET_ALL_DISTRICT_BY_PROVINCE_SUCCESS, listDistricts.stream().map(this.districtMapping::toDto).collect(Collectors.toList()));
     }
 
     @Override
     public ServiceResult<List<CommuneDTO>> getAllCommuneByIdProvinceAndIdDistrict(Optional<Integer> idProvince, Optional<Integer> idDistrict) {
+        log.info(MessageLogs.GET_ALL_COMMUNE_BY_PROVINCE_AND_DISTRICT+" : "+idProvince+" - "+idDistrict);
 
         if(idProvince.isEmpty() || idProvince.get() < 1 || idDistrict.isEmpty() || idDistrict.get() < 1){
-            return new ServiceResult<>(HttpStatus.BAD_REQUEST,"", null);
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST,Notification.Address.GET_ALL_COMMUNE_BY_PROVINCE_AND_DISTRICT_FALSE, null);
         }
         List<Commune> listCommune = this.communeRepository.findAllByIdProvinceAndAndIdDistrict(idProvince.get(), idDistrict.get());
 
-        return new ServiceResult<>(HttpStatus.OK, "", listCommune.stream().map(this.communeMapping::toDto).collect(Collectors.toList()));
+        return new ServiceResult<>(HttpStatus.OK, Notification.Address.GET_ALL_COMMUNE_BY_PROVINCE_AND_DISTRICT_SUCCESS, listCommune.stream().map(this.communeMapping::toDto).collect(Collectors.toList()));
 
     }
 }

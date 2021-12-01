@@ -2,7 +2,6 @@ package com.localbrand.model_mapping.Impl;
 
 import com.localbrand.dto.*;
 import com.localbrand.dto.response.CartComboResponseDTO;
-import com.localbrand.dto.response.CartProductResponseDTO;
 import com.localbrand.dto.response.ComboResponseDTO;
 import com.localbrand.entity.*;
 import com.localbrand.model_mapping.Mapping;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
