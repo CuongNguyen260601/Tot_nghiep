@@ -22,7 +22,7 @@ public class CartComboDTO {
     private Integer idCart;
 
     @NotNull(message = Notification.Cart.Validate_Cart_Combo.VALIDATE_COMBO)
-    private ComboResponseDTO comboResponseDTO;
+    private ComboResponseDTO comboDTO;
 
     @NotNull(message = Notification.Cart.Validate_Cart_Combo.VALIDATE_QUANTITY)
     @Min(value = 1, message = Notification.Cart.Validate_Cart_Combo.VALIDATE_QUANTITY)
