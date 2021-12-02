@@ -12,4 +12,6 @@ import java.util.List;
 public class BillResponseUserDTO extends BillResponseDTO{
 
     List<BillProductResponseDTO> listBillProductDetail;
+
+    List<BillComboResponseDTO> listBillComboDetail;
 }
