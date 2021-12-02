@@ -5,12 +5,14 @@ import com.localbrand.common.Module_Enum;
 import com.localbrand.common.ServiceResult;
 import com.localbrand.common.Status_Enum;
 import com.localbrand.dto.request.BillRequestDTO;
+import com.localbrand.dto.response.BillComboResponseDTO;
 import com.localbrand.dto.response.BillProductResponseDTO;
 import com.localbrand.dto.response.BillResponseDTO;
 import com.localbrand.dto.response.BillResponseUserDTO;
 import com.localbrand.entity.*;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.AddressMapping;
+import com.localbrand.model_mapping.Impl.BillComboMapping;
 import com.localbrand.model_mapping.Impl.BillMapping;
 import com.localbrand.model_mapping.Impl.BillProductMapping;
 import com.localbrand.repository.*;
@@ -49,6 +51,10 @@ public class BillServiceImpl implements BillService {
     private final VoucherRepository voucherRepository;
     private final VoucherUserRepository voucherUserRepository;
     private final Role_Utils role_utils;
+    private final BillComboMapping billComboMapping;
+    private final CartComboRepository cartComboRepository;
+    private final BillComboRepository billComboRepository;
+
 
     @Transactional(rollbackOn = Exception.class)
     @Override
@@ -102,6 +108,7 @@ public class BillServiceImpl implements BillService {
         bill = this.billRepository.save(bill);
 
         List<BillProduct> lstBillProduct = this.billProductMapping.toListProduct(bill, billRequestDTO);
+        List<BillCombo> lstBillCombo = this.billComboMapping.toListCombo(bill, billRequestDTO);
 
         float total = 0F;
 
@@ -115,10 +122,19 @@ public class BillServiceImpl implements BillService {
             this.cartProductRepository.delete(cartProduct);
         }
 
+        for (BillCombo billCombo:lstBillCombo) {
+            if(billCombo.getIdStatus().equals(Status_Enum.EXISTS.getCode())){
+                total += billCombo.getPrice()* billCombo.getQuantity();
+            }
+
+            CartCombo cartCombo = this.cartComboRepository.findFirstByIdComboAndIdUser(billCombo.getIdCombo(), bill.getIdUser());
+
+            this.cartComboRepository.delete(cartCombo);
+        }
+
         if(Objects.nonNull(voucher))
         {
             total = total/100 * (100 - voucher.getDiscount());
-
 
         }
 
@@ -164,12 +180,18 @@ public class BillServiceImpl implements BillService {
         bill = this.billRepository.save(bill);
 
         List<BillProduct> lstBillProduct = this.billProductMapping.toListProduct(bill, billRequestDTO);
+        List<BillCombo> lstBillCombo = this.billComboMapping.toListCombo(bill, billRequestDTO);
 
         Float total = 0F;
 
         for (BillProduct billProduct:lstBillProduct) {
             if(billProduct.getIdStatus().equals(Status_Enum.EXISTS.getCode())){
                 total += billProduct.getPrice()*billProduct.getQuantity();
+            }
+        }
+        for (BillCombo billCombo:lstBillCombo) {
+            if(billCombo.getIdStatus().equals(Status_Enum.EXISTS.getCode())){
+                total += billCombo.getPrice()*billCombo.getQuantity();
             }
         }
 
@@ -315,10 +337,30 @@ public class BillServiceImpl implements BillService {
 
         Pageable pageable = PageRequest.of(page.orElse(0),limit.get());
 
-
         List<BillProduct> lstBillProduct = this.billProductRepository.findAllByIdBillAndIdStatus(idBill.get(), Status_Enum.EXISTS.getCode(), pageable).toList();
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Bill.Bill_Product.GET_LIST_BILL_PRODUCT_SUCCESS, lstBillProduct.stream().map(this.billProductMapping::toDto).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ServiceResult<List<BillComboResponseDTO>> getListBillComboByBill(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill) {
+        log.error("Get list bill product and filter");
+
+        if(page.isEmpty() || page.get() < 0
+                || limit.isEmpty() || limit.get() <1
+        ){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
+        }
+
+        if(idBill.isEmpty() || idBill.get()<1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Bill.Bill_Combo.GET_LIST_BILL_COMBO_FALSE, null);
+        }
+
+        Pageable pageable = PageRequest.of(page.orElse(0),limit.get());
+
+        List<BillCombo> billCombos = this.billComboRepository.findAllByIdBillAndIdStatus(idBill.get(), Status_Enum.EXISTS.getCode(), pageable).toList();
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Bill.Bill_Combo.GET_LIST_BILL_COMBO_SUCCESS, billCombos.stream().map(this.billComboMapping::toDto).collect(Collectors.toList()));
     }
 
     @Override
@@ -415,6 +457,39 @@ public class BillServiceImpl implements BillService {
         List<BillProduct> lstBillProduct = this.billProductRepository.findAllByIdBill(idBill.get(), pageable).toList();
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Bill.Bill_Product.GET_LIST_BILL_PRODUCT_SUCCESS, lstBillProduct.stream().map(this.billProductMapping::toDto).collect(Collectors.toList()));
+
+    }
+
+    @Override
+    public ServiceResult<List<BillComboResponseDTO>> getListBillComboByBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill) {
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.BILL.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get bill", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get bill", null);
+        }
+
+        log.error("Get list bill product and filter");
+
+        if(page.isEmpty() || page.get() < 0
+                || limit.isEmpty() || limit.get() <1
+        ){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
+        }
+
+        if(idBill.isEmpty() || idBill.get()<1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Bill.Bill_Combo.GET_LIST_BILL_COMBO_FALSE, null);
+        }
+
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
+
+        List<BillCombo> lstBillCombo = this.billComboRepository.findAllByIdBill(idBill.get(), pageable).toList();
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Bill.Bill_Combo.GET_LIST_BILL_COMBO_SUCCESS, lstBillCombo.stream().map(this.billComboMapping::toDto).collect(Collectors.toList()));
 
     }
 

@@ -37,7 +37,7 @@ public class BillCombo implements Serializable {
     private Integer quantity;
 
     @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    private Float price;
 
     @Column(name = "idStatus", nullable = false)
     private Integer idStatus;

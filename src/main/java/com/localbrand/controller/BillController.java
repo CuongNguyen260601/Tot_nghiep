@@ -3,6 +3,7 @@ package com.localbrand.controller;
 import com.localbrand.common.Interface_API;
 import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.request.BillRequestDTO;
+import com.localbrand.dto.response.BillComboResponseDTO;
 import com.localbrand.dto.response.BillProductResponseDTO;
 import com.localbrand.dto.response.BillResponseDTO;
 import com.localbrand.dto.response.BillResponseUserDTO;
@@ -104,6 +105,18 @@ public class BillController {
                 .body(result);
     }
 
+    @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_COMBO_BILL_USER)
+    public ResponseEntity<ServiceResult<List<BillComboResponseDTO>>> getAllListComboBill(
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Integer> idBill
+    ){
+        ServiceResult<List<BillComboResponseDTO>> result = this.billService.getListBillComboByBill(page, limit, idBill);
+        return ResponseEntity
+                .status(result.getStatus())
+                .body(result);
+    }
+
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_ADMIN)
     public ResponseEntity<ServiceResult<List<BillResponseDTO>>> getAllListBillAdmin(
             HttpServletRequest request,
@@ -133,13 +146,26 @@ public class BillController {
     }
 
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_PRODUCT_BILL_ADMIN)
-    public ResponseEntity<ServiceResult<List<BillProductResponseDTO>>> getAllListBillUserAndFilterAdmin(
+    public ResponseEntity<ServiceResult<List<BillProductResponseDTO>>> getAllListBillProductUserAndFilterAdmin(
             HttpServletRequest request,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit,
             @RequestParam Optional<Integer> idBill
     ){
         ServiceResult<List<BillProductResponseDTO>> result = this.billService.getListBillProductByBillAdmin(request, page, limit, idBill);
+        return ResponseEntity
+                .status(result.getStatus())
+                .body(result);
+    }
+
+    @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_COMBO_BILL_ADMIN)
+    public ResponseEntity<ServiceResult<List<BillComboResponseDTO>>> getAllListBillComboUserAndFilterAdmin(
+            HttpServletRequest request,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Integer> idBill
+    ){
+        ServiceResult<List<BillComboResponseDTO>> result = this.billService.getListBillComboByBillAdmin(request, page, limit, idBill);
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);

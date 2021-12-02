@@ -190,6 +190,10 @@ public interface Notification {
             String GET_LIST_BILL_PRODUCT_FALSE ="Get list bill product false";
             String GET_LIST_BILL_PRODUCT_SUCCESS ="Get list bill product success";
         }
+        interface Bill_Combo{
+            String GET_LIST_BILL_COMBO_FALSE ="Get list bill combo false";
+            String GET_LIST_BILL_COMBO_SUCCESS ="Get list bill combo success";
+        }
     }
 
     interface Combo {

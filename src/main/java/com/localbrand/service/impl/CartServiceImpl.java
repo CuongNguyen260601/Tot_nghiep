@@ -9,6 +9,7 @@ import com.localbrand.dto.response.CartComboResponseDTO;
 import com.localbrand.dto.response.CartListResponseDTO;
 import com.localbrand.dto.response.CartProductResponseDTO;
 import com.localbrand.entity.*;
+import com.localbrand.exception.ErrorCodes;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.CartComboMapping;
 import com.localbrand.model_mapping.Impl.CartMapping;
@@ -173,24 +174,25 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Override
-    public ServiceResult<CartComboDTO> updateQuantityCombo(CartComboDTO cartComboDTO) {
-        log.info("Update quantity cart combo: "+cartComboDTO);
+    public ServiceResult<CartComboDTO> updateQuantityCombo(Optional<Long> idCartCombo,Integer quantity) {
+        log.info("Update quantity cart combo: "+ idCartCombo);
 
-        Combo combo = this.comboRepository.findById(cartComboDTO.getComboDTO().getIdCombo().longValue()).orElse(null);
+        CartCombo cartCombo= cartComboRepository.findById(idCartCombo.orElse(null)).orElse(null);
 
-        if(Objects.isNull(combo)){
+        if(Objects.isNull(cartCombo)){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart_Combo.VALIDATE_COMBO, null);
         }
 
-        if(cartComboDTO.getQuantity() > combo.getQuantity()){
-            return new ServiceResult<>(HttpStatus.OK, Notification.Cart.UPDATE_CART_COMBO_NOT_ENOUGH, cartComboDTO);
+        Combo combo = this.comboRepository.findById(cartCombo.getIdCombo().longValue()).orElse(null);
+
+        if(quantity > combo.getQuantity()){
+            return new ServiceResult<>(HttpStatus.OK, Notification.Cart.UPDATE_CART_COMBO_NOT_ENOUGH, null);
         }
 
-        CartCombo cartCombo = this.cartComboMapping.toEntity(cartComboDTO);
+        cartCombo.setQuantity(quantity);
+        this.cartComboRepository.save(cartCombo);
 
-        cartCombo = this.cartComboRepository.save(cartCombo);
-
-        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.UPDATE_CART_COMBO_SUCCESS, this.cartComboMapping.toDtoCartCombo(cartCombo,combo));
+        return new ServiceResult<>(HttpStatus.OK, Notification.Cart.UPDATE_CART_COMBO_SUCCESS, null);
     }
 
     @Override
@@ -251,16 +253,16 @@ public class CartServiceImpl implements CartService {
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Cart.Validate_Cart_Combo.VALIDATE_COMBO, null);
         }
 
-        if(combo.getQuantity() == 0){
-            return new ServiceResult<>(HttpStatus.OK, Notification.Cart.UPDATE_CART_COMBO_NOT_ENOUGH, null);
-        }
-
         CartCombo cartCombo = this.cartComboRepository.findFirstByIdCartAndIdCombo(idCart.get().intValue(), combo.getIdCombo().intValue());
 
         if(Objects.nonNull(cartCombo)){
-            cartCombo.setQuantity(cartCombo.getQuantity()+1);
-            cartCombo = this.cartComboRepository.save(cartCombo);
-            return new ServiceResult<>(HttpStatus.OK, Notification.Cart.ADD_CART_COMBO_SUCCESS, this.cartComboMapping.toDtoCartCombo(cartCombo,combo));
+            if(combo.getQuantity() <= 0 || combo.getQuantity() <= cartCombo.getQuantity()){
+                return new ServiceResult<>(HttpStatus.OK,"Số lượng Combo này đã đạt giới hạn! Không thể thêm Combo vào giỏ hàng.", null);
+            }else {
+                cartCombo.setQuantity(cartCombo.getQuantity()+1);
+                cartCombo = this.cartComboRepository.save(cartCombo);
+                return new ServiceResult<>(HttpStatus.OK, Notification.Cart.ADD_CART_COMBO_SUCCESS, this.cartComboMapping.toDtoCartCombo(cartCombo,combo));
+            }
         }else{
             CartCombo cartCombo1  = CartCombo.builder()
                     .idCart(idCart.get().intValue())
