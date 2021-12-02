@@ -145,6 +145,7 @@ public class BillServiceImpl implements BillService {
         bill = this.billRepository.save(bill);
 
         this.billProductRepository.saveAll(lstBillProduct);
+        this.billComboRepository.saveAll(lstBillCombo);
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Bill.SAVE_BILL_SUCCESS, this.billMapping.toDto(bill));
     }
@@ -202,6 +203,7 @@ public class BillServiceImpl implements BillService {
         bill = this.billRepository.save(bill);
 
         this.billProductRepository.saveAll(lstBillProduct);
+        this.billComboRepository.saveAll(lstBillCombo);
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Bill.SAVE_BILL_SUCCESS, this.billMapping.toDto(bill));
     }
