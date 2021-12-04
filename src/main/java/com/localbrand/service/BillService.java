@@ -2,10 +2,7 @@ package com.localbrand.service;
 
 import com.localbrand.common.ServiceResult;
 import com.localbrand.dto.request.BillRequestDTO;
-import com.localbrand.dto.response.BillComboResponseDTO;
-import com.localbrand.dto.response.BillProductResponseDTO;
-import com.localbrand.dto.response.BillResponseDTO;
-import com.localbrand.dto.response.BillResponseUserDTO;
+import com.localbrand.dto.response.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
@@ -26,17 +23,13 @@ public interface BillService {
 
     ServiceResult<List<BillResponseDTO>> getListBillAndSort(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idUser, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Date> startDate, Optional<Date> endDate);
 
-    ServiceResult<List<BillProductResponseDTO>> getListBillProductByBill(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill);
-
-    ServiceResult<List<BillComboResponseDTO>> getListBillComboByBill(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill);
+    ServiceResult<BillDetailResponseDTO> getBillDetailByBillUser(Optional<Integer> idBill);
 
     ServiceResult<List<BillResponseDTO>> getAllListBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit);
 
     ServiceResult<List<BillResponseDTO>> getListBillAndSortAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Date> startDate, Optional<Date> endDate);
 
-    ServiceResult<List<BillProductResponseDTO>> getListBillProductByBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill);
-
-    ServiceResult<List<BillComboResponseDTO>> getListBillComboByBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill);
+    ServiceResult<BillDetailResponseDTO> getBillDetailByBillAdmin(HttpServletRequest request, Optional<Integer> idBill);
 
     ServiceResult<List<BillResponseUserDTO>> getAllListBillUserOther(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idUser);
 

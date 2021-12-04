@@ -17,5 +17,5 @@ public interface BillComboRepository extends JpaRepository<BillCombo, Long>, Jpa
 
     List<BillCombo> findAllByIdBillAndIdStatus(Integer idBill, Integer idStatus);
 
-    Page<BillCombo> findAllByIdBill(Integer idBill, Pageable pageable);
+    List<BillCombo> findAllByIdBill(Integer idBill);
 }

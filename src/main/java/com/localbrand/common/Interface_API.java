@@ -143,11 +143,9 @@ public interface Interface_API {
             String BILL_GET_ALL_LIST_AND_FILTER_USER = "/user/bills/getalllistandfilter";
             String BILL_GET_ALL_LIST_AND_FILTER_USER_OTHER = "/user/bills/getalllistandfilteruser";
             String BILL_GET_ALL_LIST_AND_FILTER_ADMIN = "/admin/bills/getalllistandfilter";
-            String BILL_GET_ALL_LIST_PRODUCT_BILL_USER = "/user/bills/getalllistbillproduct";
-            String BILL_GET_ALL_LIST_PRODUCT_BILL_ADMIN = "/admin/bills/getalllistbillproduct";
+            String BILL_GET_BILL_DETAIL_USER = "/user/bills/getbilldetail";
+            String BILL_GET_BILL_DETAIL_ADMIN = "/admin/bills/getbilldetail";
 
-            String BILL_GET_ALL_LIST_COMBO_BILL_USER = "/user/bills/getalllistbillcombo";
-            String BILL_GET_ALL_LIST_COMBO_BILL_ADMIN = "/admin/bills/getalllistbillcombo";
         }
 
         interface Address{
