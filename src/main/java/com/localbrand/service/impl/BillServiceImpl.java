@@ -431,6 +431,40 @@ public class BillServiceImpl implements BillService {
 
     }
 
+    @Override
+    public ServiceResult<List<BillComboResponseDTO>> getListBillComboByBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill) {
+        Object email = request.getAttribute("USER_NAME");
+
+        if(Objects.nonNull(email)){
+            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.BILL.getModule(), Action_Enum.READ.getAction());
+            if(!checkRole){
+                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get bill", null);
+            }
+        }else{
+            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get bill", null);
+        }
+
+        log.error("Get list bill product and filter");
+
+        if(page.isEmpty() || page.get() < 0
+                || limit.isEmpty() || limit.get() <1
+        ){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
+        }
+
+        if(idBill.isEmpty() || idBill.get()<1){
+            return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Bill.Bill_Combo.GET_LIST_BILL_COMBO_FALSE, null);
+        }
+
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
+
+        List<BillCombo> lstBillCombo = this.billComboRepository.findAllByIdBill(idBill.get(), pageable).toList();
+
+        return new ServiceResult<>(HttpStatus.OK, Notification.Bill.Bill_Combo.GET_LIST_BILL_COMBO_SUCCESS, lstBillCombo.stream().map(this.billComboMapping::toDto).collect(Collectors.toList()));
+
+    }
+
+
 
     @Override
     public ServiceResult<List<BillResponseUserDTO>> getAllListBillUserOther(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idUser) {

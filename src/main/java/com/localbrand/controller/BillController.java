@@ -140,6 +140,19 @@ public class BillController {
                 .body(result);
     }
 
+    @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_COMBO_BILL_ADMIN)
+    public ResponseEntity<ServiceResult<List<BillComboResponseDTO>>> getAllListBillComboUserAndFilterAdmin(
+            HttpServletRequest request,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Integer> idBill
+    ){
+        ServiceResult<List<BillComboResponseDTO>> result = this.billService.getListBillComboByBillAdmin(request, page, limit, idBill);
+        return ResponseEntity
+                .status(result.getStatus())
+                .body(result);
+    }
+
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_USER_OTHER)
     public ResponseEntity<ServiceResult<List<BillResponseUserDTO>>> getAllListBillUserOther(
             @RequestParam Optional<Integer> page,

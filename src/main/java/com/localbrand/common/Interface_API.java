@@ -146,6 +146,8 @@ public interface Interface_API {
             String BILL_GET_BILL_DETAIL_USER = "/user/bills/getbilldetail";
             String BILL_GET_BILL_DETAIL_ADMIN = "/admin/bills/getbilldetail";
 
+            String BILL_GET_ALL_LIST_COMBO_BILL_ADMIN = "/admin/bills/getalllistbillcombo";
+
         }
 
         interface Address{
