@@ -147,6 +147,7 @@ public interface Interface_API {
             String BILL_GET_BILL_DETAIL_ADMIN = "/admin/bills/getbilldetail";
 
             String BILL_GET_ALL_LIST_COMBO_BILL_ADMIN = "/admin/bills/getalllistbillcombo";
+            String BILL_GET_ALL_LIST_PRODUCT_BILL_ADMIN = "/admin/bills/getalllistbillproduct";
 
         }
 

@@ -31,6 +31,8 @@ public interface BillService {
 
     ServiceResult<BillDetailResponseDTO> getBillDetailByBillAdmin(HttpServletRequest request, Optional<Integer> idBill);
 
+    ServiceResult<List<BillProductResponseDTO>> getListBillProductByBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill);
+
     ServiceResult<List<BillComboResponseDTO>> getListBillComboByBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill);
 
     ServiceResult<List<BillResponseUserDTO>> getAllListBillUserOther(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idUser);

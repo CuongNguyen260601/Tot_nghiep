@@ -17,4 +17,6 @@ public interface BillProductRepository extends JpaRepository<BillProduct, Long>,
     List<BillProduct> findAllByIdBillAndIdStatus(Integer idBill, Integer idStatus);
 
     List<BillProduct> findAllByIdBill(Integer idBill);
+
+    Page<BillProduct> findAllByIdBill(Integer idBill, Pageable pageable);
 }
