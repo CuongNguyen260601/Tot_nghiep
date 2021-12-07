@@ -13,7 +13,6 @@ import java.sql.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ProductDetailSaleResponseDTO extends ProductParentResponseDTO {
 
     private Long idProductDetail;
