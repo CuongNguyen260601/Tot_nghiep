@@ -16,6 +16,6 @@ public interface ProductSaleService {
 
     ServiceResult<List<ProductSaleListResponseDTO>> cancelSaleToProductDetail(List<ProductSaleCancelRequestDTO> productSaleCancelRequestDTOS);
 
-    ServiceResult<List<ProductSaleListResponseDTO>> getListProductSale(Optional<Integer> page, Optional<Integer> limit);
+    ServiceResult<List<ProductSaleListResponseDTO>> getListProductSale(Optional<Integer> idSale, Optional<Integer> page, Optional<Integer> limit);
 
 }

@@ -92,10 +92,10 @@ public class ProductSaleServiceImpl implements ProductSaleService {
     }
 
     @Override
-    public ServiceResult<List<ProductSaleListResponseDTO>> getListProductSale(Optional<Integer> page, Optional<Integer> limit) {
+    public ServiceResult<List<ProductSaleListResponseDTO>> getListProductSale(Optional<Integer> idSale,Optional<Integer> page, Optional<Integer> limit) {
         Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(0));
 
-        List<ProductSale> productSales = this.productSaleRepository.findAllByIdStatus(Status_Enum.EXISTS.getCode(), pageable).toList();
+        List<ProductSale> productSales = this.productSaleRepository.findAllByIdStatusAndIdSale(Status_Enum.EXISTS.getCode(), idSale.get(),pageable).toList();
 
         return new ServiceResult<>(HttpStatus.OK, "Cancel sale is success", productSales.stream().map(this.productSaleMapping::toDtoResponseList).collect(Collectors.toList()));
     }

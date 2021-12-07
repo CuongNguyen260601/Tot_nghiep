@@ -82,28 +82,4 @@ public class SaleController {
                 .status(result.getStatus().value())
                 .body(result);
     }
-
-    @PostMapping(Interface_API.API.Sale.SALE_ADD_TO_LIST_PRODUCT_DETAIL)
-    public ResponseEntity<ServiceResult<ProductSaleResponseDTO>> addSaleToListProductDetail(@Valid @RequestBody ProductSaleRequestDTO productSaleRequestDTO) {
-        ServiceResult<ProductSaleResponseDTO> result = this.productSaleService.addSaleToProductDetail(productSaleRequestDTO);
-        return ResponseEntity
-                .status(result.getStatus().value())
-                .body(result);
-    }
-
-    @PostMapping(Interface_API.API.Sale.SALE_CANCEL_TO_LIST_PRODUCT_DETAIL)
-    public ResponseEntity<ServiceResult<List<ProductSaleListResponseDTO>>> cancelSaleToListProductDetail(List<ProductSaleCancelRequestDTO> productSaleCancelRequestDTOS) {
-        ServiceResult<List<ProductSaleListResponseDTO>> result = this.productSaleService.cancelSaleToProductDetail(productSaleCancelRequestDTOS);
-        return ResponseEntity
-                .status(result.getStatus().value())
-                .body(result);
-    }
-
-    @GetMapping(Interface_API.API.Sale.SALE_GET_LIST_PRODUCT_SALE)
-    public ResponseEntity<ServiceResult<List<ProductSaleListResponseDTO>>> cancelSaleToListProductDetail(@RequestParam Optional<Integer> page,@RequestParam Optional<Integer> limit) {
-        ServiceResult<List<ProductSaleListResponseDTO>> result = this.productSaleService.getListProductSale(page, limit);
-        return ResponseEntity
-                .status(result.getStatus().value())
-                .body(result);
-    }
 }
