@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.sql.Date;
 import java.util.List;
@@ -32,8 +31,8 @@ public class BillController {
     }
 
     @PostMapping(Interface_API.API.Bill.BILL_SAVE_ADMIN)
-    public ResponseEntity<ServiceResult<BillResponseDTO>> saveBillAdmin(HttpServletRequest request, @Valid @RequestBody BillRequestDTO billRequestDTO){
-        ServiceResult<BillResponseDTO> result = this.billService.saveBillAdmin(request,billRequestDTO);
+    public ResponseEntity<ServiceResult<BillResponseDTO>> saveBillAdmin(@Valid @RequestBody BillRequestDTO billRequestDTO){
+        ServiceResult<BillResponseDTO> result = this.billService.saveBillAdmin(billRequestDTO);
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -52,11 +51,10 @@ public class BillController {
 
     @PostMapping(Interface_API.API.Bill.BILL_CANCEL_ADMIN)
     public ResponseEntity<ServiceResult<BillResponseDTO>> cancelBillAdmin(
-            HttpServletRequest request,
             @RequestParam Optional<Long> idBill,
             @RequestParam String reason
     ){
-        ServiceResult<BillResponseDTO> result = this.billService.cancelBillAdmin(request, idBill, reason);
+        ServiceResult<BillResponseDTO> result = this.billService.cancelBillAdmin(idBill, reason);
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -103,11 +101,10 @@ public class BillController {
 
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_ADMIN)
     public ResponseEntity<ServiceResult<List<BillResponseDTO>>> getAllListBillAdmin(
-            HttpServletRequest request,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<BillResponseDTO>> result = this.billService.getAllListBillAdmin(request, page,limit);
+        ServiceResult<List<BillResponseDTO>> result = this.billService.getAllListBillAdmin(page,limit);
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -115,7 +112,6 @@ public class BillController {
 
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_AND_FILTER_ADMIN)
     public ResponseEntity<ServiceResult<List<BillResponseDTO>>> getAllListBillUserAndFilterAdmin(
-            HttpServletRequest request,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit,
             @RequestParam Optional<Integer> sort,
@@ -123,7 +119,7 @@ public class BillController {
             @RequestParam Optional<Date> startDate,
             @RequestParam Optional<Date> endDate
     ){
-        ServiceResult<List<BillResponseDTO>> result = this.billService.getListBillAndSortAdmin(request, page, limit, sort, idStatus, startDate, endDate);
+        ServiceResult<List<BillResponseDTO>> result = this.billService.getListBillAndSortAdmin(page, limit, sort, idStatus, startDate, endDate);
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -131,10 +127,9 @@ public class BillController {
 
     @GetMapping(Interface_API.API.Bill.BILL_GET_BILL_DETAIL_ADMIN)
     public ResponseEntity<ServiceResult<BillDetailResponseDTO>> getBillDetailAdmin(
-            HttpServletRequest request,
             @RequestParam Optional<Integer> idBill
     ){
-        ServiceResult<BillDetailResponseDTO> result = this.billService.getBillDetailByBillAdmin(request, idBill);
+        ServiceResult<BillDetailResponseDTO> result = this.billService.getBillDetailByBillAdmin(idBill);
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -142,12 +137,11 @@ public class BillController {
 
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_PRODUCT_BILL_ADMIN)
     public ResponseEntity<ServiceResult<List<BillProductResponseDTO>>> getAllListBillProductUserAndFilterAdmin(
-            HttpServletRequest request,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit,
             @RequestParam Optional<Integer> idBill
     ){
-        ServiceResult<List<BillProductResponseDTO>> result = this.billService.getListBillProductByBillAdmin(request, page, limit, idBill);
+        ServiceResult<List<BillProductResponseDTO>> result = this.billService.getListBillProductByBillAdmin(page, limit, idBill);
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
@@ -155,12 +149,11 @@ public class BillController {
 
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_COMBO_BILL_ADMIN)
     public ResponseEntity<ServiceResult<List<BillComboResponseDTO>>> getAllListBillComboUserAndFilterAdmin(
-            HttpServletRequest request,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit,
             @RequestParam Optional<Integer> idBill
     ){
-        ServiceResult<List<BillComboResponseDTO>> result = this.billService.getListBillComboByBillAdmin(request, page, limit, idBill);
+        ServiceResult<List<BillComboResponseDTO>> result = this.billService.getListBillComboByBillAdmin(page, limit, idBill);
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);

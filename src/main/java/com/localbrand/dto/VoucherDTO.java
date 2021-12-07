@@ -20,14 +20,14 @@ public class VoucherDTO {
     @NotBlank(message = Notification.Voucher.Validate_Voucher.VALIDATE_NAME)
     private String nameVoucher;
 
+    @NotNull(message = Notification.Voucher.Validate_Voucher.VALIDATE_CONDITION)
+    @Min(value = 1, message = Notification.Voucher.Validate_Voucher.VALIDATE_CONDITION)
+    private Float condition;
+
     @NotNull(message = Notification.Voucher.Validate_Voucher.VALIDATE_DISCOUNT)
     @Min(value = 1, message = Notification.Voucher.Validate_Voucher.VALIDATE_DISCOUNT)
     @Max(value = 100, message = Notification.Voucher.Validate_Voucher.VALIDATE_DISCOUNT)
     private Float discount;
-
-    private Date dateStart;
-
-    private Date dateEnd;
 
     @NotNull(message = Notification.Voucher.Validate_Voucher.VALIDATE_STATUS)
     @Min(value = 1, message = Notification.Voucher.Validate_Voucher.VALIDATE_STATUS)

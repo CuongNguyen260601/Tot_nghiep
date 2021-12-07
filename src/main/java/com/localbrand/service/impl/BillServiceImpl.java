@@ -48,7 +48,6 @@ public class BillServiceImpl implements BillService {
     private final CartProductRepository cartProductRepository;
     private final VoucherRepository voucherRepository;
     private final VoucherUserRepository voucherUserRepository;
-    private final Role_Utils role_utils;
     private final BillComboMapping billComboMapping;
     private final CartComboRepository cartComboRepository;
     private final BillComboRepository billComboRepository;
@@ -86,13 +85,15 @@ public class BillServiceImpl implements BillService {
         if(Objects.nonNull(voucher)){
             VoucherUser voucherUser = this.voucherUserRepository.findByIdVoucherAndAndIdUser(voucher.getIdVoucher().intValue(), bill.getIdUser()).orElse(null);
 
-            if(Objects.isNull(voucherUser)){
+            if(Objects.isNull(voucherUser) || voucherUser.getQuantity().equals(0)){
                 return new ServiceResult<>(HttpStatus.BAD_REQUEST, "Voucher is not applicable", null);
             }
 
             bill.setIdVoucher(voucher.getIdVoucher().intValue());
 
-            this.voucherUserRepository.delete(voucherUser);
+            voucherUser.setQuantity(voucherUser.getQuantity()-1);
+
+            this.voucherUserRepository.save(voucherUser);
         }
         if(Objects.nonNull(billRequestDTO.getIdAddress())){
             bill.setIdAddress(billRequestDTO.getIdAddress());
@@ -131,10 +132,25 @@ public class BillServiceImpl implements BillService {
             this.cartComboRepository.delete(cartCombo);
         }
 
+        Voucher voucherDonate = this.voucherRepository.findFirstByCondition(Status_Enum.EXISTS.getCode(),total).orElse(null);
+
+        if(Objects.nonNull(voucherDonate) && bill.getIdStatus().equals(Status_Enum.PAID.getCode())){
+            VoucherUser voucherUser = this.voucherUserRepository.findByIdVoucherAndAndIdUser(voucherDonate.getIdVoucher().intValue(), bill.getIdUser()).orElse(null);
+            if(Objects.nonNull(voucherUser)){
+                voucherUser.setQuantity(voucherUser.getQuantity()+1);
+            }else{
+                VoucherUser voucherDonateUser = VoucherUser
+                        .builder()
+                        .idVoucher(voucherDonate.getIdVoucher().intValue())
+                        .idUser(bill.getIdUser())
+                        .quantity(1)
+                        .build();
+                this.voucherUserRepository.save(voucherDonateUser);
+            }
+        }
         if(Objects.nonNull(voucher))
         {
             total = total/100 * (100 - voucher.getDiscount());
-
         }
 
         bill.setTotal(total);
@@ -146,24 +162,14 @@ public class BillServiceImpl implements BillService {
         this.billProductRepository.saveAll(lstBillProduct);
         this.billComboRepository.saveAll(lstBillCombo);
 
+
         return new ServiceResult<>(HttpStatus.OK, Notification.Bill.SAVE_BILL_SUCCESS, this.billMapping.toDto(bill));
     }
 
     @Transactional(rollbackOn = Exception.class)
     @Override
-    public ServiceResult<BillResponseDTO> saveBillAdmin(HttpServletRequest request, BillRequestDTO billRequestDTO) {
+    public ServiceResult<BillResponseDTO> saveBillAdmin(BillRequestDTO billRequestDTO) {
         log.info("Save bill");
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.BILL.getModule(), Action_Enum.SAVE.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save bill", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save bill", null);
-        }
 
         Bill bill = this.billMapping.toEntitySave(billRequestDTO);
 
@@ -231,18 +237,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ServiceResult<BillResponseDTO> cancelBillAdmin(HttpServletRequest request, Optional<Long> idBill, String reason) {
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.BILL.getModule(), Action_Enum.CANCEL.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not cancel bill", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not cancel bill", null);
-        }
+    public ServiceResult<BillResponseDTO> cancelBillAdmin(Optional<Long> idBill, String reason) {
 
         if(idBill.isEmpty() || idBill.get()<1 || reason.isBlank()){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Bill.SAVE_BILL_FALSE, null);
@@ -341,14 +336,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ServiceResult<List<BillResponseDTO>> getAllListBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit) {
-
-        String email = request.getAttribute("USER_NAME").toString();
-
-        Boolean checkRole = role_utils.checkRole(email, Module_Enum.BILL.getModule(), Action_Enum.READ.getAction());
-        if(!checkRole){
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not see list bill", null);
-        }
+    public ServiceResult<List<BillResponseDTO>> getAllListBillAdmin(Optional<Integer> page, Optional<Integer> limit) {
 
         if(page.isEmpty() || page.get() < 0
                 || limit.isEmpty() || limit.get() <1
@@ -365,15 +353,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ServiceResult<List<BillResponseDTO>> getListBillAndSortAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Date> startDate, Optional<Date> endDate) {
-
-        String email = request.getAttribute("USER_NAME").toString();
-
-        Boolean checkRole = role_utils.checkRole(email, Module_Enum.BILL.getModule(), Action_Enum.READ.getAction());
-        if(!checkRole){
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not see list bill", null);
-        }
-
+    public ServiceResult<List<BillResponseDTO>> getListBillAndSortAdmin(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Date> startDate, Optional<Date> endDate) {
         log.error("Get list bill and filter");
 
         if(page.isEmpty() || page.get() < 0
@@ -404,18 +384,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ServiceResult<BillDetailResponseDTO> getBillDetailByBillAdmin(HttpServletRequest request, Optional<Integer> idBill) {
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.BILL.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get bill", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get bill", null);
-        }
+    public ServiceResult<BillDetailResponseDTO> getBillDetailByBillAdmin(Optional<Integer> idBill) {
 
         log.error("Get bill detail");
 
@@ -434,17 +403,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ServiceResult<List<BillProductResponseDTO>> getListBillProductByBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill) {
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.BILL.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get bill", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get bill", null);
-        }
+    public ServiceResult<List<BillProductResponseDTO>> getListBillProductByBillAdmin(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill) {
 
         log.error("Get list bill product and filter");
 
@@ -466,17 +425,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ServiceResult<List<BillComboResponseDTO>> getListBillComboByBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill) {
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.BILL.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get bill", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get bill", null);
-        }
+    public ServiceResult<List<BillComboResponseDTO>> getListBillComboByBillAdmin(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill) {
 
         log.error("Get list bill product and filter");
 

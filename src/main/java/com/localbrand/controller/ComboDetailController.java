@@ -21,20 +21,20 @@ public class ComboDetailController {
     private final ComboDetailService comboDetailService;
 
     @GetMapping(Interface_API.API.ComboDetail.COMBO_DETAIL_FIND_BY_ID_COMBO)
-    public ResponseEntity<ServiceResult<List<ComboDetailResponseDTO>>> findByIdCombo(HttpServletRequest request, @RequestParam Optional<Integer> idCombo, @RequestParam Optional<Integer> page){
-        ServiceResult<List<ComboDetailResponseDTO>> result = comboDetailService.findByIdCombo(request,idCombo,page);
+    public ResponseEntity<ServiceResult<List<ComboDetailResponseDTO>>> findByIdCombo(@RequestParam Optional<Integer> idCombo, @RequestParam Optional<Integer> page){
+        ServiceResult<List<ComboDetailResponseDTO>> result = comboDetailService.findByIdCombo(idCombo,page);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.ComboDetail.COMBO_DETAIL_FIND_ALL)
-    public ResponseEntity<ServiceResult<List<ComboDetailResponseDTO>>> findAll(HttpServletRequest request,@RequestParam Optional<Integer> page){
-        ServiceResult<List<ComboDetailResponseDTO>> result = comboDetailService.findAll(request,page);
+    public ResponseEntity<ServiceResult<List<ComboDetailResponseDTO>>> findAll(@RequestParam Optional<Integer> page){
+        ServiceResult<List<ComboDetailResponseDTO>> result = comboDetailService.findAll(page);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.ComboDetail.COMBO_DETAIL_FIND_BY_ID)
-    public ResponseEntity<ServiceResult<ComboDetailResponseDTO>> getById(HttpServletRequest request,@PathVariable Optional<Long> idComboDetail) {
-        ServiceResult<ComboDetailResponseDTO> result = this.comboDetailService.getById(request,idComboDetail);
+    public ResponseEntity<ServiceResult<ComboDetailResponseDTO>> getById(@PathVariable Optional<Long> idComboDetail) {
+        ServiceResult<ComboDetailResponseDTO> result = this.comboDetailService.getById(idComboDetail);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);

@@ -11,23 +11,21 @@ import java.util.Optional;
 
 public interface ComboService {
 
-    ServiceResult<ComboResponseDTO> addCombo(HttpServletRequest request, ComboRequestDTO comboRequestDTO);
+    ServiceResult<ComboResponseDTO> addCombo(ComboRequestDTO comboRequestDTO);
 
-    ServiceResult<List<ComboResponseDTO>> findAllCombo(HttpServletRequest request ,
-                                                    Optional<Integer> sort,
+    ServiceResult<List<ComboResponseDTO>> findAllCombo(Optional<Integer> sort,
                                                     Optional<Integer> idStatus,
                                                     Optional<Integer> page);
 
-    ServiceResult<List<ComboResponseDTO>> findAllComboUser(HttpServletRequest request ,
-                                                        Optional<Integer> limit,
+    ServiceResult<List<ComboResponseDTO>> findAllComboUser(Optional<Integer> limit,
                                                         Optional<Integer> page);
     ServiceResult<ComboResponseDTO> getById(Optional<Long> idCombo);
 
-    ServiceResult<ComboResponseDTO> delete(HttpServletRequest request,Optional<Long> idCombo);
+    ServiceResult<ComboResponseDTO> delete(Optional<Long> idCombo);
 
-    ServiceResult<List<ComboResponseDTO>> searchByName (HttpServletRequest request,String nameCombo, Optional<Integer> page);
+    ServiceResult<List<ComboResponseDTO>> searchByName (String nameCombo, Optional<Integer> page);
 
-    ServiceResult<List<ComboResponseDTO>> searchByNameUser(HttpServletRequest request,String nameCombo, Optional<Integer> page);
+    ServiceResult<List<ComboResponseDTO>> searchByNameUser(String nameCombo, Optional<Integer> page);
 
 
 }

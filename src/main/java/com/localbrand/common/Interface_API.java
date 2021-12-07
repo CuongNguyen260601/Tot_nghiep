@@ -193,5 +193,17 @@ public interface Interface_API {
             String NEWS_FIND_BY_ID_USER = "/user/news/findbyid/{idNews}";
             String NEWS_SEARCH_USER = "/user/news/search";
         }
+
+        interface ProductSale{
+            String PRODUCT_SALE_ADD = "/admin/productsale/addsaletoproduct";
+            String PRODUCT_SALE_CANCEL = "/admin/productsale/cancelsaletoproduct";
+            String PRODUCT_SALE_GET_LIST = "/admin/productsale/getlistsaleproduct";
+            String PRODUCT_SALE_GET_LIST_USER = "/user/productsale/getlistsaleproduct";
+        }
+
+        interface VoucherUser{
+            String VOUCHER_USER_GET_LIST = "/user/voucheruser/getlist";
+            String VOUCHER_USER_GET_DONATE = "/user/voucheruser/getdonate";
+        }
     }
 }

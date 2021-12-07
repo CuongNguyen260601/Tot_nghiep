@@ -39,9 +39,7 @@ public class ProductSaleServiceImpl implements ProductSaleService {
     private final SaleRepository saleRepository;
 
     @Override
-    public ServiceResult<ProductSaleResponseDTO> addSaleToProductDetail(HttpServletRequest request, ProductSaleRequestDTO productSaleRequestDTO) {
-
-        // todo check role user
+    public ServiceResult<ProductSaleResponseDTO> addSaleToProductDetail(ProductSaleRequestDTO productSaleRequestDTO) {
 
         Sale sale = this.saleMapping.toEntity(productSaleRequestDTO.getSale());
 
@@ -72,7 +70,7 @@ public class ProductSaleServiceImpl implements ProductSaleService {
     }
 
     @Override
-    public ServiceResult<List<ProductSaleListResponseDTO>> cancelSaleToProductDetail(HttpServletRequest request, List<ProductSaleCancelRequestDTO> productSaleCancelRequestDTOS) {
+    public ServiceResult<List<ProductSaleListResponseDTO>> cancelSaleToProductDetail(List<ProductSaleCancelRequestDTO> productSaleCancelRequestDTOS) {
         List<Integer> listProductDetailId = new ArrayList<>();
 
         for (ProductSaleCancelRequestDTO productSaleDetails: productSaleCancelRequestDTOS) {
@@ -94,7 +92,7 @@ public class ProductSaleServiceImpl implements ProductSaleService {
     }
 
     @Override
-    public ServiceResult<List<ProductSaleListResponseDTO>> getListProductSale(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit) {
+    public ServiceResult<List<ProductSaleListResponseDTO>> getListProductSale(Optional<Integer> page, Optional<Integer> limit) {
         Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(0));
 
         List<ProductSale> productSales = this.productSaleRepository.findAllByIdStatus(Status_Enum.EXISTS.getCode(), pageable).toList();

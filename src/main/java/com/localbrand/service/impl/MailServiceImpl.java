@@ -82,7 +82,7 @@ public class MailServiceImpl implements MailService {
         MailMessageDTO mailMessageDTO = new MailMessageDTO();
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("nameUser",user.getLastName());
+        variables.put("nameUser",user.getFirstName()+" "+user.getLastName());
         variables.put("newPassword",user.getPasswordUser());
         variables.put("linkShop",linkShop);
 

@@ -78,6 +78,7 @@ public interface Notification {
         interface Validate_Voucher {
             String VALIDATE_ID = "Invalid id voucher";
             String VALIDATE_NAME = "Invalid name voucher";
+            String VALIDATE_CONDITION = "Invalid condition voucher";
             String VALIDATE_DISCOUNT = "Invalid discount voucher";
             String VALIDATE_DATE_END = "Invalid date end";
             String VALIDATE_STATUS = "Invalid status voucher";

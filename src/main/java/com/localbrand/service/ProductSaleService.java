@@ -12,10 +12,10 @@ import java.util.Optional;
 
 public interface ProductSaleService {
 
-    ServiceResult<ProductSaleResponseDTO> addSaleToProductDetail(HttpServletRequest request, ProductSaleRequestDTO productSaleRequestDTO);
+    ServiceResult<ProductSaleResponseDTO> addSaleToProductDetail(ProductSaleRequestDTO productSaleRequestDTO);
 
-    ServiceResult<List<ProductSaleListResponseDTO>> cancelSaleToProductDetail(HttpServletRequest request, List<ProductSaleCancelRequestDTO> productSaleCancelRequestDTOS);
+    ServiceResult<List<ProductSaleListResponseDTO>> cancelSaleToProductDetail(List<ProductSaleCancelRequestDTO> productSaleCancelRequestDTOS);
 
-    ServiceResult<List<ProductSaleListResponseDTO>> getListProductSale(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit);
+    ServiceResult<List<ProductSaleListResponseDTO>> getListProductSale(Optional<Integer> page, Optional<Integer> limit);
 
 }

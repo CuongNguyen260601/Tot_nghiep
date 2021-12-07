@@ -32,4 +32,7 @@ public class VoucherUser implements Serializable {
     @Column(name = "idUser", nullable = false)
     private Integer idUser;
 
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
 }

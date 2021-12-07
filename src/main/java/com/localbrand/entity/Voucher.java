@@ -33,14 +33,11 @@ public class Voucher implements Serializable {
     @Column(name = "nameVoucher", nullable = false)
     private String nameVoucher;
 
+    @Column(name = "condition", nullable = false)
+    private Float condition;
+
     @Column(name = "discount", nullable = false)
     private Float discount;
-
-    @Column(name = "dateStart", nullable = false)
-    private Date dateStart;
-
-    @Column(name = "dateEnd", nullable = false)
-    private Date dateEnd;
 
     @Column(name = "idStatus", nullable = false)
     private Integer idStatus;

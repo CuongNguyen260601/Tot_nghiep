@@ -17,6 +17,7 @@ import com.localbrand.repository.ComboTagRepository;
 import com.localbrand.repository.ProductDetailRepository;
 import com.localbrand.service.ComboService;
 import com.localbrand.utils.Role_Utils;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +35,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ComboServiceImpl implements ComboService {
 
     private final Logger log = LoggerFactory.getLogger(ComboServiceImpl.class);
@@ -44,60 +46,60 @@ public class ComboServiceImpl implements ComboService {
     private final ComboDetailRepository comboDetailRepository;
     private final ComboTagRepository comboTagRepository;
     private final ProductDetailRepository productDetailRepository;
-    private final Role_Utils role_utils;
-
-    public ComboServiceImpl(ComboMapping comboMapping, ComboDetailMapping comboDetailMapping, ComboRepository comboRepository, ComboDetailRepository comboDetailRepository, ComboTagRepository comboTagRepository, ProductDetailRepository productDetailRepository, Role_Utils role_utils) {
-        this.comboMapping = comboMapping;
-        this.comboDetailMapping = comboDetailMapping;
-        this.comboRepository = comboRepository;
-        this.comboDetailRepository = comboDetailRepository;
-        this.comboTagRepository = comboTagRepository;
-        this.productDetailRepository = productDetailRepository;
-        this.role_utils = role_utils;
-    }
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<ComboResponseDTO> addCombo(HttpServletRequest request, ComboRequestDTO comboRequestDTO) {
+    public ServiceResult<ComboResponseDTO> addCombo(ComboRequestDTO comboRequestDTO) {
 
         this.log.info("Save combo: "+ comboRequestDTO);
 
         try {
-            Object email = request.getAttribute("USER_NAME");
-
-            if(Objects.nonNull(email)){
-                Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COMBO.getModule(), Action_Enum.SAVE.getAction());
-                if(!checkRole){
-                    return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save combo", null);
-                }
-            }else{
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save combo", null);
-            }
 
             Combo combo = this.comboMapping.toEntity(comboRequestDTO);
 
             List<ComboDetail> listComboDetails = new ArrayList<>();
 
-            for (ComboDetailRequestDTO dto: comboRequestDTO.getComboDetailRequestDTO()) {
+//            for (ComboDetailRequestDTO dto: comboRequestDTO.getComboDetailRequestDTO()) {
+//
+//                ProductDetail productDetail = productDetailRepository.findById(dto.getIdProductDetail().longValue()).orElse(null);
+//
+//                if(Objects.isNull(productDetail)){
+//                    return new ServiceResult<>(HttpStatus.BAD_REQUEST,Notification.Combo.SAVE_COMBO_FALSE, null);
+//                }else {
+//                    //check số lượng của sản phẩm còn lại đề tạo combo
+//                    if(comboRequestDTO.getQuantity() <= productDetail.getQuantity()){
+//                        listComboDetails.add(new ComboDetail(
+//                                dto.getIdComboDetail(),
+//                                null,
+//                                dto.getIdProductDetail()
+//                        ));
+//                    }else {
+//                        return new ServiceResult<>(HttpStatus.OK,"Số lượng tối đa bạn có thể tạo là : "+ productDetail.getQuantity() , null);
+//                    }
+//                }
+//            }
 
-                ProductDetail productDetail = productDetailRepository.findById(dto.getIdProductDetail().longValue()).orElse(null);
+            List<Long> listIdProductDetail = new ArrayList<>();
 
-                if(Objects.isNull(productDetail)){
-                    return new ServiceResult<>(HttpStatus.BAD_REQUEST,Notification.Combo.SAVE_COMBO_FALSE, null);
-                }else {
-                    //check số lượng của sản phẩm còn lại đề tạo combo
-                    if(comboRequestDTO.getQuantity() <= productDetail.getQuantity()){
-                        listComboDetails.add(new ComboDetail(
-                                dto.getIdComboDetail(),
-                                null,
-                                dto.getIdProductDetail()
-                        ));
-                    }else {
-                        return new ServiceResult<>(HttpStatus.OK,"Số lượng tối đa bạn có thể tạo là : "+ productDetail.getQuantity() , null);
-                    }
-                }
+            for (ComboDetailRequestDTO comboDetailRequestDTO : comboRequestDTO.getComboDetailRequestDTO()) {
+                Long longValue = comboDetailRequestDTO.getIdProductDetail().longValue();
+                listIdProductDetail.add(longValue);
             }
+
+            List<ProductDetail> productDetailsInCombo = this.productDetailRepository.findAllByListIdProductDetailAndSort(listIdProductDetail);
+
+            if(productDetailsInCombo.get(0).getQuantity()< comboRequestDTO.getQuantity()){
+                return new ServiceResult<>(HttpStatus.OK,"Số lượng tối đa bạn có thể tạo là : "+ productDetailsInCombo.get(0).getQuantity() , null);
+            }
+
+            productDetailsInCombo = productDetailsInCombo.stream().map(productDetail -> {
+                productDetail.setQuantity(productDetail.getQuantity()-comboRequestDTO.getQuantity());
+                return productDetail;
+            }).collect(Collectors.toList());
+
+            this.productDetailRepository.saveAll(productDetailsInCombo);
             Combo comboSaved = this.comboRepository.save(combo);
+
             listComboDetails = listComboDetails.stream().peek(
                     detail -> detail.setIdCombo(comboSaved.getIdCombo().intValue())
             ).collect(Collectors.toList());
@@ -114,19 +116,8 @@ public class ComboServiceImpl implements ComboService {
 
 
     @Override
-    public ServiceResult<List<ComboResponseDTO>> findAllCombo(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<ComboResponseDTO>> findAllCombo(Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
         this.log.info("Get list combo for admin" + page);
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COMBO.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get combo", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get combo", null);
-        }
 
         if (page.isEmpty() || page.get() < 0){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
@@ -155,7 +146,7 @@ public class ComboServiceImpl implements ComboService {
     }
 
     @Override
-    public ServiceResult<List<ComboResponseDTO>> findAllComboUser(HttpServletRequest request, Optional<Integer> limit, Optional<Integer> page) {
+    public ServiceResult<List<ComboResponseDTO>> findAllComboUser(Optional<Integer> limit, Optional<Integer> page) {
         this.log.info("Get list combo for user" + page);
 
         if (page.isEmpty() || page.get() < 0){
@@ -173,24 +164,13 @@ public class ComboServiceImpl implements ComboService {
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<ComboResponseDTO> delete(HttpServletRequest request,Optional<Long> idCombo) {
+    public ServiceResult<ComboResponseDTO> delete(Optional<Long> idCombo) {
 
         this.log.info("delete combo by id : " + idCombo);
 
         try {
 
-            Object email = request.getAttribute("USER_NAME");
-
-            if(Objects.nonNull(email)){
-                Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COMBO.getModule(), Action_Enum.READ.getAction());
-                if(!checkRole){
-                    return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete combo", null);
-                }
-            }else{
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete combo", null);
-            }
-
-            Combo combo =  this.comboRepository.findById(idCombo.orElse(1L)).orElse(null);
+            Combo combo =  this.comboRepository.findById(idCombo.orElse(0L)).orElse(null);
             if(Objects.isNull(combo)){
                 return new ServiceResult<>(HttpStatus.BAD_REQUEST,Notification.Combo.DELETE_COMBO_FALSE,null);
             }
@@ -199,6 +179,25 @@ public class ComboServiceImpl implements ComboService {
                 combo.setIdStatus(Status_Enum.EXISTS.getCode());
             else
                 combo.setIdStatus(Status_Enum.DELETE.getCode());
+
+
+            List<ComboDetail> comboDetails = this.comboDetailRepository.findAllByIdCombo(combo.getIdCombo().intValue());
+
+            List<Long> productDetailIds = new ArrayList<>();
+
+            comboDetails.forEach(comboDetail -> {
+                productDetailIds.add(comboDetail.getIdProductDetail().longValue());
+            });
+
+            List<ProductDetail> productDetailsInCombo = this.productDetailRepository.findAllByListIdProductDetailAndSort(productDetailIds);
+
+            for (ProductDetail productDetail : productDetailsInCombo){
+                productDetail.setQuantity(productDetail.getQuantity()+combo.getQuantity());
+            }
+
+            this.productDetailRepository.saveAll(productDetailsInCombo);
+
+            combo.setQuantity(0);
 
             combo = comboRepository.save(combo);
 
@@ -228,20 +227,9 @@ public class ComboServiceImpl implements ComboService {
     }
 
     @Override
-    public ServiceResult<List<ComboResponseDTO>> searchByName(HttpServletRequest request,String nameCombo, Optional<Integer> page) {
+    public ServiceResult<List<ComboResponseDTO>> searchByName(String nameCombo, Optional<Integer> page) {
 
         this.log.info("Search combo with name : " + nameCombo);
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.COMBO.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get combo", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get combo", null);
-        }
 
         if (page.isEmpty() || page.get() < 0){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
@@ -257,7 +245,7 @@ public class ComboServiceImpl implements ComboService {
     }
 
     @Override
-    public ServiceResult<List<ComboResponseDTO>> searchByNameUser(HttpServletRequest request,String nameCombo, Optional<Integer> page) {
+    public ServiceResult<List<ComboResponseDTO>> searchByNameUser(String nameCombo, Optional<Integer> page) {
 
         if (page.isEmpty() || page.get() < 0){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
@@ -271,6 +259,5 @@ public class ComboServiceImpl implements ComboService {
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Combo.SEARCH_COMBO_SUCCESS, listComboResponseDTO);
     }
-
 
 }
