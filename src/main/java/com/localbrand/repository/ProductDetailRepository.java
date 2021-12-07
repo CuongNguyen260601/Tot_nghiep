@@ -157,4 +157,10 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     Float maxPriceByIdProductAndIdColor(Integer idProduct, Integer idColor);
 
     ProductDetail findByIdProductAndAndIdColorAndIdSizeAndIdStatus(Integer idProduct, Integer idColor, Integer idSize, Integer idStatus);
+
+    @Query(
+            "select pd from ProductDetail pd " +
+                    " where pd.idProductDetail in :idProductDetail"
+    )
+    List<ProductDetail> findAllByListIdProductDetail(List<Long> idProductDetail);
 }

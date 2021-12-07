@@ -15,4 +15,6 @@ public class ErrorCodes {
     public static final String COLOR_IS_NULL = "Color is null";
     public static final String SIZE_IS_NULL = "Size is null";
     public static final String PRODUCT_IS_NULL = "Product is null";
+    public static final String GENDER_IS_NULL = "Gender is null";
+    public static final String SALE_IS_NULL = "Sale is null";
 }
