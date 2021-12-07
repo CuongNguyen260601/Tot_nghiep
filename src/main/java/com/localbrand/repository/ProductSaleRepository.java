@@ -38,5 +38,5 @@ public interface ProductSaleRepository extends JpaRepository<ProductSale, Long>,
     )
     void UpdateSaleByIdProductDetail(Integer prevStatus, Integer nextStatus, List<Integer> idProductDetail);
 
-    Page<ProductSale> findAllByIdStatus(Integer idStatus, Pageable pageable);
+    Page<ProductSale> findAllByIdStatusAndIdSale(Integer idStatus, Integer idSale, Pageable pageable);
 }

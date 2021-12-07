@@ -37,19 +37,21 @@ public class ProductSaleController {
 
     @GetMapping(Interface_API.API.ProductSale.PRODUCT_SALE_GET_LIST)
     public ResponseEntity<ServiceResult<List<ProductSaleListResponseDTO>>> getListSaleProductAdmin(
+            @RequestParam Optional<Integer> idSale,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
             ){
-        ServiceResult<List<ProductSaleListResponseDTO>> result = this.productSaleService.getListProductSale(page,limit);
+        ServiceResult<List<ProductSaleListResponseDTO>> result = this.productSaleService.getListProductSale(idSale,page,limit);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @GetMapping(Interface_API.API.ProductSale.PRODUCT_SALE_GET_LIST_USER)
     public ResponseEntity<ServiceResult<List<ProductSaleListResponseDTO>>> getListSaleProductUser(
+            @RequestParam Optional<Integer> idSale,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<ProductSaleListResponseDTO>> result = this.productSaleService.getListProductSale(page,limit);
+        ServiceResult<List<ProductSaleListResponseDTO>> result = this.productSaleService.getListProductSale(idSale,page,limit);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 }
