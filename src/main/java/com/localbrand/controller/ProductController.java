@@ -23,14 +23,13 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping(Interface_API.API.Product.PRODUCT_ADD)
-    public ResponseEntity<ServiceResult<ProductResponseDTO>> addAll(HttpServletRequest request, @Valid @RequestBody ProductRequestDTO productRequestDTO){
-        ServiceResult<ProductResponseDTO> result = this.productService.saveProduct(request, productRequestDTO);
+    public ResponseEntity<ServiceResult<ProductResponseDTO>> addAll(@Valid @RequestBody ProductRequestDTO productRequestDTO){
+        ServiceResult<ProductResponseDTO> result = this.productService.saveProduct(productRequestDTO);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_GET_LIST_PARENT)
     public ResponseEntity<ServiceResult<List<ProductParentResponseDTO>>> getAllParent(
-           HttpServletRequest request,
            @RequestParam Optional<Integer> sort,
            @RequestParam Optional<Integer> idStatus,
            @RequestParam Optional<Integer> idCategoryParent,
@@ -39,13 +38,12 @@ public class ProductController {
            @RequestParam Optional<Integer> page
     ){
         ServiceResult<List<ProductParentResponseDTO>> result =
-                this.productService.getAllParent(request, sort, idStatus, idCategoryParent, idCategoryChild, idGender, page);
+                this.productService.getAllParent(sort, idStatus, idCategoryParent, idCategoryChild, idGender, page);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_GET_LIST_CHILD)
     public ResponseEntity<ServiceResult<List<ProductChildResponseDTO>>> getAllParent(
-            HttpServletRequest request,
             @RequestParam Optional<Integer> sort,
             @RequestParam Optional<Integer> idProduct,
             @RequestParam Optional<Integer> idStatus,
@@ -55,7 +53,7 @@ public class ProductController {
             @RequestParam Optional<Integer> page
     ){
         ServiceResult<List<ProductChildResponseDTO>> result =
-                this.productService.getAllChild(request, sort,
+                this.productService.getAllChild(sort,
                         idProduct,
                         idStatus,
                         idColor,
@@ -66,26 +64,26 @@ public class ProductController {
     }
 
     @DeleteMapping(Interface_API.API.Product.PRODUCT_DELETE_PARENT)
-    public ResponseEntity<ServiceResult<ProductParentResponseDTO>> deleteParent(HttpServletRequest request, @RequestParam Optional<Long> idProduct){
-        ServiceResult<ProductParentResponseDTO> result = this.productService.deleteProductParent(request, idProduct);
+    public ResponseEntity<ServiceResult<ProductParentResponseDTO>> deleteParent(@RequestParam Optional<Long> idProduct){
+        ServiceResult<ProductParentResponseDTO> result = this.productService.deleteProductParent(idProduct);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @DeleteMapping(Interface_API.API.Product.PRODUCT_DELETE_CHILD)
-    public ResponseEntity<ServiceResult<ProductChildResponseDTO>> deleteChild(HttpServletRequest request, @RequestParam Optional<Long> idProductDetail){
-        ServiceResult<ProductChildResponseDTO> result = this.productService.deleteProductChild(request, idProductDetail);
+    public ResponseEntity<ServiceResult<ProductChildResponseDTO>> deleteChild(@RequestParam Optional<Long> idProductDetail){
+        ServiceResult<ProductChildResponseDTO> result = this.productService.deleteProductChild(idProductDetail);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SHOW)
-    public ResponseEntity<ServiceResult<ProductResponseShowAdminDTO>> showProduct(HttpServletRequest request, @RequestParam Optional<Long> idProduct){
-        ServiceResult<ProductResponseShowAdminDTO> result = this.productService.showProduct(request, idProduct);
+    public ResponseEntity<ServiceResult<ProductResponseShowAdminDTO>> showProduct(@RequestParam Optional<Long> idProduct){
+        ServiceResult<ProductResponseShowAdminDTO> result = this.productService.showProduct(idProduct);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 
     @GetMapping(Interface_API.API.Product.PRODUCT_SEARCH)
-    public ResponseEntity<ServiceResult<List<ProductParentResponseDTO>>> searchProduct(HttpServletRequest request, @RequestParam String name, @RequestParam Optional<Integer> page){
-        ServiceResult<List<ProductParentResponseDTO>> result = this.productService.searchByName(request, name, page);
+    public ResponseEntity<ServiceResult<List<ProductParentResponseDTO>>> searchProduct(@RequestParam String name, @RequestParam Optional<Integer> page){
+        ServiceResult<List<ProductParentResponseDTO>> result = this.productService.searchByName(name, page);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 

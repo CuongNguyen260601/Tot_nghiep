@@ -13,11 +13,11 @@ public interface BillService {
 
     ServiceResult<BillResponseDTO> saveBillUser(BillRequestDTO billRequestDTO);
 
-    ServiceResult<BillResponseDTO> saveBillAdmin(HttpServletRequest request, BillRequestDTO billRequestDTO);
+    ServiceResult<BillResponseDTO> saveBillAdmin(BillRequestDTO billRequestDTO);
 
     ServiceResult<BillResponseDTO> cancelBillUser(Optional<Long> idBill, String reason);
 
-    ServiceResult<BillResponseDTO> cancelBillAdmin(HttpServletRequest request, Optional<Long> idBill, String reason);
+    ServiceResult<BillResponseDTO> cancelBillAdmin(  Optional<Long> idBill, String reason);
 
     ServiceResult<List<BillResponseDTO>> getAllListBill(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idUser);
 
@@ -25,15 +25,15 @@ public interface BillService {
 
     ServiceResult<BillDetailResponseDTO> getBillDetailByBillUser(Optional<Integer> idBill);
 
-    ServiceResult<List<BillResponseDTO>> getAllListBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit);
+    ServiceResult<List<BillResponseDTO>> getAllListBillAdmin(Optional<Integer> page, Optional<Integer> limit);
 
-    ServiceResult<List<BillResponseDTO>> getListBillAndSortAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Date> startDate, Optional<Date> endDate);
+    ServiceResult<List<BillResponseDTO>> getListBillAndSortAdmin(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Date> startDate, Optional<Date> endDate);
 
-    ServiceResult<BillDetailResponseDTO> getBillDetailByBillAdmin(HttpServletRequest request, Optional<Integer> idBill);
+    ServiceResult<BillDetailResponseDTO> getBillDetailByBillAdmin(Optional<Integer> idBill);
 
-    ServiceResult<List<BillProductResponseDTO>> getListBillProductByBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill);
+    ServiceResult<List<BillProductResponseDTO>> getListBillProductByBillAdmin(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill);
 
-    ServiceResult<List<BillComboResponseDTO>> getListBillComboByBillAdmin(HttpServletRequest request, Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill);
+    ServiceResult<List<BillComboResponseDTO>> getListBillComboByBillAdmin(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idBill);
 
     ServiceResult<List<BillResponseUserDTO>> getAllListBillUserOther(Optional<Integer> page, Optional<Integer> limit, Optional<Integer> idUser);
 

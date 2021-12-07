@@ -9,18 +9,18 @@ import java.util.Optional;
 
 public interface SaleService {
 
-    ServiceResult<List<SaleDTO>> findAll(HttpServletRequest request, Optional<Integer> page);
+    ServiceResult<List<SaleDTO>> findAll(Optional<Integer> page);
 
-    ServiceResult<List<SaleDTO>> findAllAndSort(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page);
+    ServiceResult<List<SaleDTO>> findAllAndSort(Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page);
 
-    ServiceResult<SaleDTO> getById(HttpServletRequest request, Optional<Long> idSale);
+    ServiceResult<SaleDTO> getById(Optional<Long> idSale);
 
-    ServiceResult<SaleDTO> save(HttpServletRequest request, SaleDTO saleDTO);
+    ServiceResult<SaleDTO> save(SaleDTO saleDTO);
 
-    ServiceResult<SaleDTO> delete(HttpServletRequest request, SaleDTO saleDTO);
+    ServiceResult<SaleDTO> delete(SaleDTO saleDTO);
 
-    ServiceResult<List<SaleDTO>> searchByName (HttpServletRequest request, String nameSale, Optional<Integer> page);
+    ServiceResult<List<SaleDTO>> searchByName (String nameSale, Optional<Integer> page);
 
-    ServiceResult<List<SaleDTO>> findByStatus (HttpServletRequest request, Optional<Integer> idStatus, Optional<Integer> page);
+    ServiceResult<List<SaleDTO>> findByStatus (Optional<Integer> idStatus, Optional<Integer> page);
 
 }

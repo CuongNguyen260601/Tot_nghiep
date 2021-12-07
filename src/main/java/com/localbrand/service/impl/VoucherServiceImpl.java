@@ -7,7 +7,6 @@ import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.VoucherMapping;
 import com.localbrand.repository.VoucherRepository;
 import com.localbrand.service.VoucherService;
-import com.localbrand.utils.Role_Utils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,21 +28,9 @@ public class VoucherServiceImpl implements VoucherService{
 
     private final VoucherRepository voucherRepository;
     private final VoucherMapping voucherMapping;
-    private final Role_Utils role_utils;
 
     @Override
-    public ServiceResult<List<VoucherDTO>> findAll(HttpServletRequest request, Optional<Integer> page) {
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.VOUCHER.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get voucher", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get voucher", null);
-        }
+    public ServiceResult<List<VoucherDTO>> findAll(Optional<Integer> page) {
 
         this.log.info("Get list voucher with page");
 
@@ -60,18 +45,7 @@ public class VoucherServiceImpl implements VoucherService{
     }
 
     @Override
-    public ServiceResult<List<VoucherDTO>> findAllAndSort(HttpServletRequest request, Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.VOUCHER.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get voucher", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get voucher", null);
-        }
+    public ServiceResult<List<VoucherDTO>> findAllAndSort(Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
 
         this.log.info("Get list voucher with page and sort");
 
@@ -101,19 +75,7 @@ public class VoucherServiceImpl implements VoucherService{
     }
 
     @Override
-    public ServiceResult<VoucherDTO> getById(HttpServletRequest request, Optional<Long> idVoucher) {
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.VOUCHER.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get voucher", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get voucher", null);
-        }
-
+    public ServiceResult<VoucherDTO> getById(Optional<Long> idVoucher) {
         this.log.info("Get voucher by id");
 
         if (idVoucher.isEmpty() || idVoucher.get() < 1) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Voucher.Validate_Voucher.VALIDATE_ID, null);
@@ -128,18 +90,7 @@ public class VoucherServiceImpl implements VoucherService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<VoucherDTO> save(HttpServletRequest request, VoucherDTO voucherDTO) {
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.VOUCHER.getModule(), Action_Enum.SAVE.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save voucher", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save voucher", null);
-        }
+    public ServiceResult<VoucherDTO> save(VoucherDTO voucherDTO) {
 
         this.log.info("Save voucher: "+ voucherDTO);
 
@@ -167,26 +118,11 @@ public class VoucherServiceImpl implements VoucherService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<VoucherDTO> delete(HttpServletRequest request, VoucherDTO voucherDTO) {
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.VOUCHER.getModule(), Action_Enum.DELETE.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete voucher", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete voucher", null);
-        }
-
+    public ServiceResult<VoucherDTO> delete(VoucherDTO voucherDTO) {
         this.log.info("Delete voucher: "+ voucherDTO);
 
         try {
             voucherDTO.setIdStatus(Status_Enum.DELETE.getCode());
-
-            if(voucherDTO.getDateEnd().before(voucherDTO.getDateStart()))
-                return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.Voucher.Validate_Voucher.VALIDATE_DATE_END, null);
 
             Voucher voucher = this.voucherMapping.toEntity(voucherDTO);
 
@@ -202,18 +138,7 @@ public class VoucherServiceImpl implements VoucherService{
     }
 
     @Override
-    public ServiceResult<List<VoucherDTO>> searchByName(HttpServletRequest request, String nameVoucher, Optional<Integer> page) {
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.VOUCHER.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get voucher", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get voucher", null);
-        }
+    public ServiceResult<List<VoucherDTO>> searchByName(String nameVoucher, Optional<Integer> page) {
 
         this.log.info("Get list voucher by name and page");
 
@@ -227,17 +152,7 @@ public class VoucherServiceImpl implements VoucherService{
     }
 
     @Override
-    public ServiceResult<List<VoucherDTO>> findByStatus(HttpServletRequest request, Optional<Integer> idStatus, Optional<Integer> page) {
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.VOUCHER.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get voucher", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get voucher", null);
-        }
+    public ServiceResult<List<VoucherDTO>> findByStatus(Optional<Integer> idStatus, Optional<Integer> page) {
 
         this.log.info("Get list voucher by status and page");
 

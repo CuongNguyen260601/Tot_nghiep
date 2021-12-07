@@ -11,7 +11,7 @@ import com.localbrand.model_mapping.Impl.NewsMapping;
 import com.localbrand.repository.NewDetailRepository;
 import com.localbrand.repository.NewsRepository;
 import com.localbrand.service.NewsService;
-import com.localbrand.utils.Role_Utils;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class NewsServiceImpl implements NewsService {
 
     private final Logger log = LoggerFactory.getLogger(NewsServiceImpl.class);
@@ -35,32 +35,13 @@ public class NewsServiceImpl implements NewsService {
     private final NewsRepository newsRepository;
     private final NewDetailMapping newDetailMapping;
     private final NewsMapping newsMapping;
-    private final Role_Utils role_utils;
-
-    public NewsServiceImpl(NewDetailRepository newDetailRepository, NewsRepository newsRepository, NewDetailMapping newDetailMapping, NewsMapping newsMapping, Role_Utils role_utils) {
-        this.newDetailRepository = newDetailRepository;
-        this.newsRepository = newsRepository;
-        this.newDetailMapping = newDetailMapping;
-        this.newsMapping = newsMapping;
-        this.role_utils = role_utils;
-    }
 
     @Override
-    public ServiceResult<NewRequestDTO> saveNews(HttpServletRequest request, NewRequestDTO newsRequestDTO) {
+    public ServiceResult<NewRequestDTO> saveNews(NewRequestDTO newsRequestDTO) {
 
         this.log.info("Save news: "+ newsRequestDTO);
 
         try {
-            Object email = request.getAttribute("USER_NAME");
-
-            if(Objects.nonNull(email)){
-                Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.NEW.getModule(), Action_Enum.SAVE.getAction());
-                if(!checkRole){
-                    return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save new", null);
-                }
-            }else{
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not save new", null);
-            }
 
             News news = this.newsMapping.toEntity(newsRequestDTO);
 
@@ -92,17 +73,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public ServiceResult<NewRequestDTO> delete(HttpServletRequest request,Optional<Long> idNews) {
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.NEW.getModule(), Action_Enum.DELETE.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete new", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete new", null);
-        }
+    public ServiceResult<NewRequestDTO> delete(Optional<Long> idNews) {
 
         News news = this.newsRepository.findById(idNews.get()).orElse(null);
 
@@ -120,20 +91,9 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public ServiceResult<NewsResponseDTO> getById(HttpServletRequest request,Optional<Long> idNews) {
+    public ServiceResult<NewsResponseDTO> getById(Optional<Long> idNews) {
 
         this.log.info("Get news by id");
-
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.NEW.getModule(), Action_Enum.DELETE.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete new", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete new", null);
-        }
 
         if (idNews.isEmpty() || idNews.get() < 1) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.News.Validate_News.VALIDATE_ID, null);
 
@@ -161,20 +121,9 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public ServiceResult<List<NewsResponseDTO>> findAllNew(HttpServletRequest request,
-                                                           Optional<Integer> sort,
+    public ServiceResult<List<NewsResponseDTO>> findAllNew(Optional<Integer> sort,
                                                            Optional<Integer> idStatus,
                                                            Optional<Integer> page) {
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.NEW.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get new", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get new", null);
-        }
 
         if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
 
@@ -211,17 +160,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public ServiceResult<List<NewsResponseDTO>> searchByTitle(HttpServletRequest request,String titleNews, Optional<Integer> page) {
-        Object email = request.getAttribute("USER_NAME");
-
-        if(Objects.nonNull(email)){
-            Boolean checkRole = role_utils.checkRole(email.toString(), Module_Enum.NEW.getModule(), Action_Enum.READ.getAction());
-            if(!checkRole){
-                return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not get new by title", null);
-            }
-        }else{
-            return new ServiceResult<>(HttpStatus.UNAUTHORIZED, "You can not delete new by title", null);
-        }
+    public ServiceResult<List<NewsResponseDTO>> searchByTitle(String titleNews, Optional<Integer> page) {
 
         if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
 

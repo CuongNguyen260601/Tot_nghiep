@@ -11,18 +11,16 @@ import java.util.Optional;
 
 public interface ProductService {
 
-    ServiceResult<ProductResponseDTO> saveProduct (HttpServletRequest request, ProductRequestDTO productRequestDTO);
+    ServiceResult<ProductResponseDTO> saveProduct (ProductRequestDTO productRequestDTO);
 
-    ServiceResult<List<ProductParentResponseDTO>> getAllParent(HttpServletRequest request,
-                                                              Optional<Integer> sort,
+    ServiceResult<List<ProductParentResponseDTO>> getAllParent(Optional<Integer> sort,
                                                               Optional<Integer> idStatus,
                                                               Optional<Integer> idCategoryParent,
                                                               Optional<Integer> idCategoryChild,
                                                               Optional<Integer> idGender,
                                                               Optional<Integer> page);
 
-    ServiceResult<List<ProductChildResponseDTO>> getAllChild(HttpServletRequest request,
-                                                             Optional<Integer> sort,
+    ServiceResult<List<ProductChildResponseDTO>> getAllChild(Optional<Integer> sort,
                                                              Optional<Integer> idProduct,
                                                              Optional<Integer> idStatus,
                                                              Optional<Integer> idColor,
@@ -30,13 +28,13 @@ public interface ProductService {
                                                              Optional<Integer> idTag,
                                                              Optional<Integer> page);
 
-    ServiceResult<List<ProductParentResponseDTO>> searchByName(HttpServletRequest request, String name, Optional<Integer> page);
+    ServiceResult<List<ProductParentResponseDTO>> searchByName(String name, Optional<Integer> page);
 
-    ServiceResult<ProductResponseShowAdminDTO> showProduct(HttpServletRequest request, Optional<Long> idProduct);
+    ServiceResult<ProductResponseShowAdminDTO> showProduct(Optional<Long> idProduct);
 
-    ServiceResult<ProductParentResponseDTO> deleteProductParent(HttpServletRequest request, Optional<Long> idProduct);
+    ServiceResult<ProductParentResponseDTO> deleteProductParent(Optional<Long> idProduct);
 
-    ServiceResult<ProductChildResponseDTO> deleteProductChild(HttpServletRequest request, Optional<Long> idProductDetail);
+    ServiceResult<ProductChildResponseDTO> deleteProductChild(Optional<Long> idProductDetail);
 
     ServiceResult<List<ProductShowUserResponseDTO>> getAllProductOnUser(Optional<Integer> page, Optional<Integer> limit, Optional<Long> userId);
 

@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +21,8 @@ public class ColorController {
     private final ColorService colorService;
 
     @GetMapping(Interface_API.API.Color.COLOR_FIND_ALL)
-    public ResponseEntity<ServiceResult<List<ColorDTO>>> fillAll(HttpServletRequest request, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<ColorDTO>> result = this.colorService.findAll(request, page);
+    public ResponseEntity<ServiceResult<List<ColorDTO>>> fillAll(@RequestParam Optional<Integer> page) {
+        ServiceResult<List<ColorDTO>> result = this.colorService.findAll(page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
@@ -39,48 +38,48 @@ public class ColorController {
 
 
     @GetMapping(Interface_API.API.Color.COLOR_FIND_SORT)
-    public ResponseEntity<ServiceResult<List<ColorDTO>>> fillAllAndSort(HttpServletRequest request, @RequestParam Optional<Integer> sort, @RequestParam Optional<Integer> idStatus,@RequestParam Optional<Integer> page) {
-        ServiceResult<List<ColorDTO>> result = this.colorService.findAllAndSort(request, sort, idStatus,page);
+    public ResponseEntity<ServiceResult<List<ColorDTO>>> fillAllAndSort(@RequestParam Optional<Integer> sort, @RequestParam Optional<Integer> idStatus,@RequestParam Optional<Integer> page) {
+        ServiceResult<List<ColorDTO>> result = this.colorService.findAllAndSort(sort, idStatus,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Color.COLOR_FIND_BY_ID)
-    public ResponseEntity<ServiceResult<ColorDTO>> getById(HttpServletRequest request, @PathVariable Optional<Long> idColor) {
-        ServiceResult<ColorDTO> result = this.colorService.getById(request, idColor);
+    public ResponseEntity<ServiceResult<ColorDTO>> getById(@PathVariable Optional<Long> idColor) {
+        ServiceResult<ColorDTO> result = this.colorService.getById(idColor);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @PostMapping(Interface_API.API.Color.COLOR_SAVE)
-    public ResponseEntity<ServiceResult<ColorDTO>> save(HttpServletRequest request, @Valid @RequestBody ColorDTO colorDTO) {
-        ServiceResult<ColorDTO> result = this.colorService.save(request, colorDTO);
+    public ResponseEntity<ServiceResult<ColorDTO>> save(@Valid @RequestBody ColorDTO colorDTO) {
+        ServiceResult<ColorDTO> result = this.colorService.save(colorDTO);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @DeleteMapping(Interface_API.API.Color.COLOR_DELETE)
-    public ResponseEntity<ServiceResult<ColorDTO>> delete(HttpServletRequest request, @Valid @RequestBody ColorDTO colorDTO) {
-        ServiceResult<ColorDTO> result = this.colorService.delete(request, colorDTO);
+    public ResponseEntity<ServiceResult<ColorDTO>> delete(@Valid @RequestBody ColorDTO colorDTO) {
+        ServiceResult<ColorDTO> result = this.colorService.delete(colorDTO);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Color.COLOR_SEARCH)
-    public ResponseEntity<ServiceResult<List<ColorDTO>>> searchByName(HttpServletRequest request, @RequestParam String name, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<ColorDTO>> result = this.colorService.searchByName(request, name,page);
+    public ResponseEntity<ServiceResult<List<ColorDTO>>> searchByName(@RequestParam String name, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<ColorDTO>> result = this.colorService.searchByName(name,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Color.COLOR_FIND_BY_STATUS)
-    public ResponseEntity<ServiceResult<List<ColorDTO>>> findByStatus(HttpServletRequest request, @RequestParam Optional<Integer> idStatus, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<ColorDTO>> result = this.colorService.findByStatus(request, idStatus,page);
+    public ResponseEntity<ServiceResult<List<ColorDTO>>> findByStatus(@RequestParam Optional<Integer> idStatus, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<ColorDTO>> result = this.colorService.findByStatus(idStatus,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);

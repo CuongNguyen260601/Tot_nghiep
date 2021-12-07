@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -23,20 +22,18 @@ public class NewsController {
     private final NewsService newsService;
 
     @GetMapping(Interface_API.API.News.NEWS_FIND_ALL)
-    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> fillAllNew(HttpServletRequest request,
-                                                                        @RequestParam Optional<Integer> sort,
+    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> fillAllNew(@RequestParam Optional<Integer> sort,
                                                                         @RequestParam Optional<Integer> idStatus,
                                                                         @RequestParam Optional<Integer> page) {
 
-        ServiceResult<List<NewsResponseDTO>> result = this.newsService.findAllNew(request,sort,idStatus,page);
+        ServiceResult<List<NewsResponseDTO>> result = this.newsService.findAllNew(sort,idStatus,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.News.NEWS_FIND_ALL_USER)
-    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> fillAllNewUser(
-                                                                           @RequestParam Optional<Integer> limit,
+    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> fillAllNewUser(@RequestParam Optional<Integer> limit,
                                                                            @RequestParam Optional<Integer> page) {
         ServiceResult<List<NewsResponseDTO>> result = this.newsService.findAllNewUser(limit,page);
         return ResponseEntity
@@ -45,16 +42,16 @@ public class NewsController {
     }
 
     @GetMapping(Interface_API.API.News.NEWS_FIND_BY_ID)
-    public ResponseEntity<ServiceResult<NewsResponseDTO>> getById(HttpServletRequest request,@PathVariable Optional<Long> idNews) {
-        ServiceResult<NewsResponseDTO> result = this.newsService.getById(request,idNews);
+    public ResponseEntity<ServiceResult<NewsResponseDTO>> getById(@PathVariable Optional<Long> idNews) {
+        ServiceResult<NewsResponseDTO> result = this.newsService.getById(idNews);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.News.NEWS_SEARCH)
-    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> searchByTitle(HttpServletRequest request,@RequestParam String title, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<NewsResponseDTO>> result = this.newsService.searchByTitle(request,title,page);
+    public ResponseEntity<ServiceResult<List<NewsResponseDTO>>> searchByTitle(@RequestParam String title, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<NewsResponseDTO>> result = this.newsService.searchByTitle(title,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
@@ -77,16 +74,16 @@ public class NewsController {
     }
 
     @PostMapping(Interface_API.API.News.NEWS_SAVE)
-    public ResponseEntity<ServiceResult<NewRequestDTO>> save(HttpServletRequest request,@Valid @RequestBody NewRequestDTO newsDTO) {
-        ServiceResult<NewRequestDTO> result = this.newsService.saveNews(request,newsDTO);
+    public ResponseEntity<ServiceResult<NewRequestDTO>> save(@Valid @RequestBody NewRequestDTO newsDTO) {
+        ServiceResult<NewRequestDTO> result = this.newsService.saveNews(newsDTO);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @DeleteMapping(Interface_API.API.News.NEWS_DELETE)
-    public ResponseEntity<ServiceResult<NewRequestDTO>> delete(HttpServletRequest request,@RequestParam Optional<Long> idNews) {
-        ServiceResult<NewRequestDTO> result = this.newsService.delete(request,idNews);
+    public ResponseEntity<ServiceResult<NewRequestDTO>> delete(@RequestParam Optional<Long> idNews) {
+        ServiceResult<NewRequestDTO> result = this.newsService.delete(idNews);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);

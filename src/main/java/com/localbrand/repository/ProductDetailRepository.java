@@ -163,4 +163,11 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
                     " where pd.idProductDetail in :idProductDetail"
     )
     List<ProductDetail> findAllByListIdProductDetail(List<Long> idProductDetail);
+    @Query(
+            "select pd from ProductDetail pd " +
+                    " where pd.idProductDetail in :idProductDetail" +
+                    " order by pd.quantity asc"
+    )
+    List<ProductDetail> findAllByListIdProductDetailAndSort(List<Long> idProductDetail);
+
 }

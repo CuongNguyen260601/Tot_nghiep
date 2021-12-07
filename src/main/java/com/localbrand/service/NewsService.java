@@ -10,24 +10,22 @@ import java.util.Optional;
 
 public interface NewsService {
 
-    ServiceResult<NewRequestDTO> saveNews (HttpServletRequest request, NewRequestDTO newsDTO);
+    ServiceResult<NewRequestDTO> saveNews (NewRequestDTO newsDTO);
 
-    ServiceResult<List<NewsResponseDTO>> findAllNew(HttpServletRequest request ,
-                                                    Optional<Integer> sort,
+    ServiceResult<List<NewsResponseDTO>> findAllNew(Optional<Integer> sort,
                                                     Optional<Integer> idStatus,
                                                     Optional<Integer> page);
 
-    ServiceResult<List<NewsResponseDTO>> findAllNewUser(
-                                                        Optional<Integer> limit,
+    ServiceResult<List<NewsResponseDTO>> findAllNewUser(Optional<Integer> limit,
                                                         Optional<Integer> page);
 
-    ServiceResult<NewsResponseDTO> getById(HttpServletRequest request,Optional<Long> idNews);
+    ServiceResult<NewsResponseDTO> getById(Optional<Long> idNews);
 
     ServiceResult<NewsResponseDTO> getByIdUser(Optional<Long> idNews);
 
-    ServiceResult<NewRequestDTO> delete(HttpServletRequest request,Optional<Long> idNews);
+    ServiceResult<NewRequestDTO> delete(Optional<Long> idNews);
 
-    ServiceResult<List<NewsResponseDTO>> searchByTitle (HttpServletRequest request,String titleNews, Optional<Integer> page);
+    ServiceResult<List<NewsResponseDTO>> searchByTitle (String titleNews, Optional<Integer> page);
 
     ServiceResult<List<NewsResponseDTO>> searchByTitleUser (String titleNews, Optional<Integer> page);
 

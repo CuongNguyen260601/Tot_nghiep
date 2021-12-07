@@ -23,56 +23,56 @@ public class SizeController {
     private final SizeService sizeService;
 
     @GetMapping(Interface_API.API.Size.SIZE_FIND_ALL)
-    public ResponseEntity<ServiceResult<List<SizeResponseDTO>>> fillAll(HttpServletRequest request, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<SizeResponseDTO>> result = this.sizeService.findAll(request, page);
+    public ResponseEntity<ServiceResult<List<SizeResponseDTO>>> fillAll(@RequestParam Optional<Integer> page) {
+        ServiceResult<List<SizeResponseDTO>> result = this.sizeService.findAll(page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Size.SIZE_FIND_SORT)
-    public ResponseEntity<ServiceResult<List<SizeResponseDTO>>> fillAllAndSort(HttpServletRequest request, @RequestParam Optional<Integer> sort, @RequestParam Optional<Integer> idStatus, @RequestParam Optional<Integer> idCategory,@RequestParam Optional<Integer> page) {
-        ServiceResult<List<SizeResponseDTO>> result = this.sizeService.findAllAndSort(request, sort, idStatus, idCategory, page);
+    public ResponseEntity<ServiceResult<List<SizeResponseDTO>>> fillAllAndSort(@RequestParam Optional<Integer> sort, @RequestParam Optional<Integer> idStatus, @RequestParam Optional<Integer> idCategory,@RequestParam Optional<Integer> page) {
+        ServiceResult<List<SizeResponseDTO>> result = this.sizeService.findAllAndSort(sort, idStatus, idCategory, page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Size.SIZE_FIND_BY_ID)
-    public ResponseEntity<ServiceResult<SizeResponseDTO>> getById(HttpServletRequest request, @PathVariable Optional<Long> idSize) {
-        ServiceResult<SizeResponseDTO> result = this.sizeService.getById(request, idSize);
+    public ResponseEntity<ServiceResult<SizeResponseDTO>> getById(@PathVariable Optional<Long> idSize) {
+        ServiceResult<SizeResponseDTO> result = this.sizeService.getById(idSize);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @PostMapping(Interface_API.API.Size.SIZE_SAVE)
-    public ResponseEntity<ServiceResult<SizeResponseDTO>> save(HttpServletRequest request, @Valid @RequestBody SizeDTO sizeDTO) {
-        ServiceResult<SizeResponseDTO> result = this.sizeService.save(request, sizeDTO);
+    public ResponseEntity<ServiceResult<SizeResponseDTO>> save(@Valid @RequestBody SizeDTO sizeDTO) {
+        ServiceResult<SizeResponseDTO> result = this.sizeService.save(sizeDTO);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @DeleteMapping(Interface_API.API.Size.SIZE_DELETE)
-    public ResponseEntity<ServiceResult<SizeResponseDTO>> delete(HttpServletRequest request, @Valid @RequestBody SizeDTO sizeDTO) {
-        ServiceResult<SizeResponseDTO> result = this.sizeService.delete(request, sizeDTO);
+    public ResponseEntity<ServiceResult<SizeResponseDTO>> delete(@Valid @RequestBody SizeDTO sizeDTO) {
+        ServiceResult<SizeResponseDTO> result = this.sizeService.delete(sizeDTO);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Size.SIZE_SEARCH)
-    public ResponseEntity<ServiceResult<List<SizeResponseDTO>>> searchByName(HttpServletRequest request, @RequestParam String name, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<SizeResponseDTO>> result = this.sizeService.searchByName(request, name,page);
+    public ResponseEntity<ServiceResult<List<SizeResponseDTO>>> searchByName(@RequestParam String name, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<SizeResponseDTO>> result = this.sizeService.searchByName(name,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Size.SIZE_FIND_BY_STATUS)
-    public ResponseEntity<ServiceResult<List<SizeResponseDTO>>> findByStatus(HttpServletRequest request, @RequestParam Optional<Integer> idStatus, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<SizeResponseDTO>> result = this.sizeService.findByStatus(request, idStatus,page);
+    public ResponseEntity<ServiceResult<List<SizeResponseDTO>>> findByStatus(@RequestParam Optional<Integer> idStatus, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<SizeResponseDTO>> result = this.sizeService.findByStatus(idStatus,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);

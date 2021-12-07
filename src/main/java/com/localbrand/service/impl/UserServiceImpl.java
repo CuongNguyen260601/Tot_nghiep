@@ -347,10 +347,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user = this.userRepository.save(user);
 
+        User userEmail = User.builder()
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .passwordUser(generatedNewPassword)
+                .build();
+
         // todo send email to user với mật khẩu mới
         if(Objects.nonNull(user)){
-            user.setPasswordUser(generatedNewPassword);
-            mailService.sendEmailForgotPassword(user);
+            mailService.sendEmailForgotPassword(userEmail);
         }else {
             log.info(user.toString());
         }

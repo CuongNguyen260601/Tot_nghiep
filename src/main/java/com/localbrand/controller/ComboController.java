@@ -23,21 +23,19 @@ public class ComboController {
     private final ComboService comboService;
 
     @GetMapping(Interface_API.API.Combo.COMBO_FIND_ALL)
-    public ResponseEntity<ServiceResult<List<ComboResponseDTO>>> findAllCombo(HttpServletRequest request,
-                                                                            @RequestParam Optional<Integer> sort,
+    public ResponseEntity<ServiceResult<List<ComboResponseDTO>>> findAllCombo(@RequestParam Optional<Integer> sort,
                                                                             @RequestParam Optional<Integer> idStatus,
                                                                             @RequestParam Optional<Integer> page) {
-        ServiceResult<List<ComboResponseDTO>> result = this.comboService.findAllCombo(request,sort,idStatus,page);
+        ServiceResult<List<ComboResponseDTO>> result = this.comboService.findAllCombo(sort,idStatus,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Combo.COMBO_FIND_ALL_USER)
-    public ResponseEntity<ServiceResult<List<ComboResponseDTO>>> findAllComboUser(HttpServletRequest request,
-                                                                            @RequestParam Optional<Integer> limit,
+    public ResponseEntity<ServiceResult<List<ComboResponseDTO>>> findAllComboUser(@RequestParam Optional<Integer> limit,
                                                                             @RequestParam Optional<Integer> page) {
-        ServiceResult<List<ComboResponseDTO>> result = this.comboService.findAllComboUser(request,limit,page);
+        ServiceResult<List<ComboResponseDTO>> result = this.comboService.findAllComboUser(limit,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
@@ -60,32 +58,32 @@ public class ComboController {
     }
 
     @PostMapping(Interface_API.API.Combo.COMBO_SAVE)
-    public ResponseEntity<ServiceResult<ComboResponseDTO>> save(HttpServletRequest request,@Valid @RequestBody ComboRequestDTO comboDTO) {
-        ServiceResult<ComboResponseDTO> result = this.comboService.addCombo(request,comboDTO);
+    public ResponseEntity<ServiceResult<ComboResponseDTO>> save(@Valid @RequestBody ComboRequestDTO comboDTO) {
+        ServiceResult<ComboResponseDTO> result = this.comboService.addCombo(comboDTO);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @DeleteMapping(Interface_API.API.Combo.COMBO_DELETE)
-    public ResponseEntity<ServiceResult<ComboResponseDTO>> delete(HttpServletRequest request,@RequestParam Optional<Long> idCombo) {
-        ServiceResult<ComboResponseDTO> result = this.comboService.delete(request,idCombo);
+    public ResponseEntity<ServiceResult<ComboResponseDTO>> delete(@RequestParam Optional<Long> idCombo) {
+        ServiceResult<ComboResponseDTO> result = this.comboService.delete(idCombo);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Combo.COMBO_SEARCH)
-    public ResponseEntity<ServiceResult<List<ComboResponseDTO>>> searchByName(HttpServletRequest request,@RequestParam String name, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<ComboResponseDTO>> result = this.comboService.searchByName(request,name,page);
+    public ResponseEntity<ServiceResult<List<ComboResponseDTO>>> searchByName(@RequestParam String name, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<ComboResponseDTO>> result = this.comboService.searchByName(name,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
     }
 
     @GetMapping(Interface_API.API.Combo.COMBO_SEARCH_USER)
-    public ResponseEntity<ServiceResult<List<ComboResponseDTO>>> searchByNameUser(HttpServletRequest request,@RequestParam String name, @RequestParam Optional<Integer> page) {
-        ServiceResult<List<ComboResponseDTO>> result = this.comboService.searchByNameUser(request,name,page);
+    public ResponseEntity<ServiceResult<List<ComboResponseDTO>>> searchByNameUser(@RequestParam String name, @RequestParam Optional<Integer> page) {
+        ServiceResult<List<ComboResponseDTO>> result = this.comboService.searchByNameUser(name,page);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
