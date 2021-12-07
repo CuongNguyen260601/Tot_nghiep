@@ -1,5 +1,6 @@
 package com.localbrand.utils;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,10 +9,10 @@ import javax.servlet.ServletContext;
 import java.io.File;
 
 @Component
+@RequiredArgsConstructor
 public class TPF_Utils {
-    
-    @Autowired
-    ServletContext app;
+
+    private final ServletContext app;
 
     public String getFile(MultipartFile file){
         File file1 = new File(app.getRealPath("/Image/"));

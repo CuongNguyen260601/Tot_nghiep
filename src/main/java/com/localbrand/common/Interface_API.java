@@ -55,6 +55,9 @@ public interface Interface_API {
             String SALE_DELETE = "/admin/sales/delete";
             String SALE_SEARCH = "/admin/sales/search";
             String SALE_FIND_BY_STATUS = "/admin/sales/findbystatus";
+            String SALE_ADD_TO_LIST_PRODUCT_DETAIL = "/admin/sales/addtoproduct";
+            String SALE_CANCEL_TO_LIST_PRODUCT_DETAIL = "/admin/sales/canceltoproduct";
+            String SALE_GET_LIST_PRODUCT_SALE = "/admin/sales/getlistproductsale";
 
         }
 
