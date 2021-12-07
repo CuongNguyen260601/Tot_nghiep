@@ -35,6 +35,12 @@ public interface CartComboRepository extends JpaRepository<CartCombo, Long>, Jpa
 
     Optional<CartCombo> deleteByIdCartCombo(Long idCartCombo);
 
-    Integer countAllByIdCart(Integer idCart);
+    @Query(
+            " select cc from CartCombo cc " +
+                    " join Cart c on c.idCart = cc.idCart " +
+                    " where c.idUser = :idUser " +
+                    " and cc.idCombo = :idCombo"
+    )
+    CartCombo findFirstByIdComboAndIdUser(Integer idCombo, Integer idUser);
 
 }

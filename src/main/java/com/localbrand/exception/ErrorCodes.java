@@ -17,4 +17,5 @@ public class ErrorCodes {
     public static final String PRODUCT_IS_NULL = "Product is null";
     public static final String GENDER_IS_NULL = "Gender is null";
     public static final String SALE_IS_NULL = "Sale is null";
+    public static final String COMBO_IS_NULL = "Combo is null";
 }

@@ -1,7 +1,6 @@
 package com.localbrand.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,14 +9,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class CartComboResponseDTO {
+public class BillDetailResponseDTO{
 
-    private Long idCartCombo;
+    List<BillProductResponseDTO> listBillProductDetail;
 
-    private Integer idCart;
-
-    private ComboResponseDTO comboDTO;
-
-    private Integer quantity;
+    List<BillComboResponseDTO> listBillComboDetail;
 }
