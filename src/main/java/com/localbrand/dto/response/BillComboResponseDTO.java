@@ -5,19 +5,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartComboResponseDTO {
+public class BillComboResponseDTO {
 
-    private Long idCartCombo;
+    private Long idBillCombo;
 
-    private Integer idCart;
-
-    private ComboResponseDTO comboDTO;
+    private Integer idBill;
 
     private Integer quantity;
+
+    private Float price;
+
+    private Integer idStatus;
+
+    private ComboResponseDTO comboResponseDTO;
 }

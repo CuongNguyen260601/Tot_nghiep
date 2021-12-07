@@ -94,8 +94,8 @@ public class CartController {
     }
 
     @PutMapping(Interface_API.API.Cart.Cart_Combo.CART_COMBO_UPDATE_QUANTITY)
-    public ResponseEntity<ServiceResult<CartComboDTO>> updateQuantityCartCombo(@RequestBody  CartComboDTO cartComboDTO){
-        ServiceResult<CartComboDTO> result = this.cartService.updateQuantityCombo(cartComboDTO);
+    public ResponseEntity<ServiceResult<CartComboDTO>> updateQuantityCartCombo(@RequestParam Optional<Long> idCartCombo,@RequestParam Integer quantity){
+        ServiceResult<CartComboDTO> result = this.cartService.updateQuantityCombo(idCartCombo,quantity);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);

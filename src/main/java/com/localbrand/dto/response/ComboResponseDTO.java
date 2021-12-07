@@ -41,6 +41,4 @@ public class ComboResponseDTO {
 
     @JsonProperty("comboDetail")
     private List<ComboDetailResponseDTO> comboDetailResponseDTO;
-
-
 }

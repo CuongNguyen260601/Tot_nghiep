@@ -3,16 +3,14 @@ package com.localbrand.model_mapping.Impl;
 import com.localbrand.common.Name_Status_Enum;
 import com.localbrand.common.Status_Enum;
 import com.localbrand.dto.request.BillRequestDTO;
+import com.localbrand.dto.response.BillComboResponseDTO;
 import com.localbrand.dto.response.BillProductResponseDTO;
 import com.localbrand.dto.response.BillResponseDTO;
 import com.localbrand.dto.response.BillResponseUserDTO;
 import com.localbrand.entity.*;
 import com.localbrand.exception.ErrorCodes;
 import com.localbrand.model_mapping.Mapping;
-import com.localbrand.repository.AddressRepository;
-import com.localbrand.repository.BillProductRepository;
-import com.localbrand.repository.UserRepository;
-import com.localbrand.repository.VoucherRepository;
+import com.localbrand.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +30,8 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
     private final UserMapping userMapping;
     private final BillProductRepository billProductRepository;
     private final BillProductMapping billProductMapping;
+    private final BillComboRepository billComboRepository;
+    private final BillComboMapping billComboMapping;
 
     @Override
     public BillResponseDTO toDto(Bill bill) {
@@ -145,10 +145,13 @@ public class BillMapping implements Mapping<BillResponseDTO, Bill> {
         }
 
         List<BillProduct> billProducts = this.billProductRepository.findAllByIdBillAndIdStatus(bill.getIdBill().intValue(), Status_Enum.EXISTS.getCode());
+        List<BillCombo> billCombos = this.billComboRepository.findAllByIdBillAndIdStatus(bill.getIdBill().intValue(), Status_Enum.EXISTS.getCode());
 
         List<BillProductResponseDTO> billProductResponseDTOS = billProducts.stream().map(this.billProductMapping::toDto).collect(Collectors.toList());
+        List<BillComboResponseDTO> billComboResponseDTOS = billCombos.stream().map(this.billComboMapping::toDto).collect(Collectors.toList());
 
         billResponseUserDTO.setListBillProductDetail(billProductResponseDTOS);
+        billResponseUserDTO.setListBillComboDetail(billComboResponseDTOS);
 
         return billResponseUserDTO;
     }

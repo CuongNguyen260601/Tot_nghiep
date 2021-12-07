@@ -1,23 +1,17 @@
-package com.localbrand.dto.response;
+package com.localbrand.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartComboResponseDTO {
+public class ComboBillRequestDTO {
 
-    private Long idCartCombo;
-
-    private Integer idCart;
-
-    private ComboResponseDTO comboDTO;
-
+    private Long idCombo;
     private Integer quantity;
+    private Integer idStatus;
 }

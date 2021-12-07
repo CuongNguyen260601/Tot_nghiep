@@ -44,6 +44,8 @@ public class BillRequestDTO {
 
     private List<ProductDetailBillRequestDTO> listProductDetail;
 
+    private List<ComboBillRequestDTO> listCombo;
+
     private AddressRequestDTO addressRequestDTO;
 
     private Integer billType;
