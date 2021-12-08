@@ -30,28 +30,28 @@ public class ProductSaleController {
     }
 
     @PostMapping(Interface_API.API.ProductSale.PRODUCT_SALE_CANCEL)
-    public ResponseEntity<ServiceResult<List<ProductSaleListResponseDTO>>> cancelSaleToProduct(@RequestBody List<ProductSaleCancelRequestDTO> productSaleCancelRequestDTOS){
-        ServiceResult<List<ProductSaleListResponseDTO>> result = this.productSaleService.cancelSaleToProductDetail(productSaleCancelRequestDTOS);
+    public ResponseEntity<ServiceResult<ProductSaleResponseDTO>> cancelSaleToProduct(@RequestBody List<ProductSaleCancelRequestDTO> productSaleCancelRequestDTOS){
+        ServiceResult<ProductSaleResponseDTO> result = this.productSaleService.cancelSaleToProductDetail(productSaleCancelRequestDTOS);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @GetMapping(Interface_API.API.ProductSale.PRODUCT_SALE_GET_LIST)
-    public ResponseEntity<ServiceResult<List<ProductSaleListResponseDTO>>> getListSaleProductAdmin(
+    public ResponseEntity<ServiceResult<ProductSaleResponseDTO>> getListSaleProductAdmin(
             @RequestParam Optional<Integer> idSale,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
             ){
-        ServiceResult<List<ProductSaleListResponseDTO>> result = this.productSaleService.getListProductSale(idSale,page,limit);
+        ServiceResult<ProductSaleResponseDTO> result = this.productSaleService.getListProductSale(idSale,page,limit);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @GetMapping(Interface_API.API.ProductSale.PRODUCT_SALE_GET_LIST_USER)
-    public ResponseEntity<ServiceResult<List<ProductSaleListResponseDTO>>> getListSaleProductUser(
+    public ResponseEntity<ServiceResult<ProductSaleResponseDTO>> getListSaleProductUser(
             @RequestParam Optional<Integer> idSale,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<ProductSaleListResponseDTO>> result = this.productSaleService.getListProductSale(idSale,page,limit);
+        ServiceResult<ProductSaleResponseDTO> result = this.productSaleService.getListProductSale(idSale,page,limit);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 }
