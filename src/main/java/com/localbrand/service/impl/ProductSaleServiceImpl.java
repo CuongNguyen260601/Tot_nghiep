@@ -2,6 +2,7 @@ package com.localbrand.service.impl;
 
 import com.localbrand.common.ServiceResult;
 import com.localbrand.common.Status_Enum;
+import com.localbrand.dto.request.CancelSaleRequestDTO;
 import com.localbrand.dto.request.ProductSaleCancelRequestDTO;
 import com.localbrand.dto.request.ProductSaleDetail;
 import com.localbrand.dto.request.ProductSaleRequestDTO;
@@ -74,36 +75,41 @@ public class ProductSaleServiceImpl implements ProductSaleService {
     }
 
     @Override
-    public ServiceResult<ProductSaleResponseDTO> cancelSaleToProductDetail(List<ProductSaleCancelRequestDTO> productSaleCancelRequestDTOS) {
-        List<Long> listProductDetailId = new ArrayList<>();
+    public ServiceResult<ProductSaleResponseDTO> cancelSaleToProductDetail(CancelSaleRequestDTO cancelSaleRequestDTO) {
 
-        for (ProductSaleCancelRequestDTO productSaleDetails: productSaleCancelRequestDTOS) {
-            listProductDetailId.add(productSaleDetails.getIdProductSale());
+        Sale sale = this.saleRepository.findById(cancelSaleRequestDTO.getIdSale())
+                .orElseThrow(() -> new RuntimeException("Invalid sale"));
+
+
+        List<Integer> listProductDetailId = new ArrayList<>();
+
+        List<Long> lstIdProductDetail = new ArrayList<>();
+
+        for (ProductSaleCancelRequestDTO productSaleDetails: cancelSaleRequestDTO.getListProductDetail()) {
+            listProductDetailId.add(productSaleDetails.getIdProductDetail());
+            lstIdProductDetail.add(productSaleDetails.getIdProductDetail().longValue());
         }
-        List<ProductSale> productSales = this.productSaleRepository.findAllByListProductSaleId(listProductDetailId);
+
+        List<ProductSale> productSales = this.productSaleRepository.findAllByListProductSaleId(sale.getIdSale().intValue(), listProductDetailId);
 
         for (ProductSale productSale: productSales){
-            for (ProductSaleCancelRequestDTO productSaleDetails: productSaleCancelRequestDTOS) {
-                if(productSaleDetails.getIdProductSale().equals(productSale.getIdProductSale())){
+            for (ProductSaleCancelRequestDTO productSaleDetails: cancelSaleRequestDTO.getListProductDetail()) {
+                if(productSaleDetails.getIdProductDetail().equals(productSale.getIdProductDetail())){
                     productSale.setIdStatus(productSaleDetails.getIdStatus());
                 }
             }
         }
-        productSales = this.productSaleRepository.saveAll(productSales);
+        this.productSaleRepository.saveAll(productSales);
 
-        Sale sale = this.saleRepository.findById(productSales.get(0).getIdSale().longValue()).orElse(null);
-
-        List<ProductDetail> productDetails = this.productDetailRepository.findAllByListIdProductDetail(listProductDetailId);
+        List<ProductDetail> productDetails = this.productDetailRepository.findAllByListIdProductDetail(lstIdProductDetail);
 
         List<ProductDetailSaleResponseDTO> productDetailSaleResponseDTOList = productDetails.stream().map(this.productSaleMapping::toProductDetailSaleDTOByProductDetail).collect(Collectors.toList());
 
         ProductSaleResponseDTO productSaleResponseDTO = ProductSaleResponseDTO.builder()
                 .productDetailSaleResponseDTOS(productDetailSaleResponseDTOList)
+                .saleDTO(this.saleMapping.toDto(sale))
                 .build();
 
-        if(Objects.nonNull(sale)){
-            productSaleResponseDTO.setSaleDTO(this.saleMapping.toDto(sale));
-        }
         return new ServiceResult<>(HttpStatus.OK, "Cancel sale is success", productSaleResponseDTO);
     }
 

@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductSaleCancelRequestDTO {
+public class CancelSaleRequestDTO {
 
-    private Integer idProductDetail;
+    private Long idSale;
 
-    private Integer idStatus;
+    private List<ProductSaleCancelRequestDTO> listProductDetail;
 }

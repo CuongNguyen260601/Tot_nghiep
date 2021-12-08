@@ -2,6 +2,7 @@ package com.localbrand.controller;
 
 import com.localbrand.common.Interface_API;
 import com.localbrand.common.ServiceResult;
+import com.localbrand.dto.request.CancelSaleRequestDTO;
 import com.localbrand.dto.request.ProductSaleCancelRequestDTO;
 import com.localbrand.dto.request.ProductSaleRequestDTO;
 import com.localbrand.dto.response.ProductSaleListResponseDTO;
@@ -30,8 +31,8 @@ public class ProductSaleController {
     }
 
     @PostMapping(Interface_API.API.ProductSale.PRODUCT_SALE_CANCEL)
-    public ResponseEntity<ServiceResult<ProductSaleResponseDTO>> cancelSaleToProduct(@RequestBody List<ProductSaleCancelRequestDTO> productSaleCancelRequestDTOS){
-        ServiceResult<ProductSaleResponseDTO> result = this.productSaleService.cancelSaleToProductDetail(productSaleCancelRequestDTOS);
+    public ResponseEntity<ServiceResult<ProductSaleResponseDTO>> cancelSaleToProduct(@RequestBody CancelSaleRequestDTO cancelSaleRequestDTO){
+        ServiceResult<ProductSaleResponseDTO> result = this.productSaleService.cancelSaleToProductDetail(cancelSaleRequestDTO);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 

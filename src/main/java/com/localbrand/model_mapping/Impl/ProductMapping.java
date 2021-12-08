@@ -390,7 +390,6 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
                                 .idProductDetail(productDetail.getIdProductDetail())
                                 .idSize(productDetail.getIdSize().longValue())
                                 .quantity(productDetail.getQuantity())
-                                .idSale(sale.getIdSale().intValue())
                                 .price(productDetail.getPrice())
                                 .idStatus(productDetail.getIdStatus())
                                 .dateCreate(productDetail.getDateCreate())
