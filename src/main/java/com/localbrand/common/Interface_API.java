@@ -132,7 +132,6 @@ public interface Interface_API {
                 String CART_COMBO_UPDATE_QUANTITY = "/user/carts/updatecartcombo";
                 String CART_COMBO_ADD = "/user/carts/addcartcombo";
             }
-
         }
 
         interface Bill {
@@ -204,6 +203,10 @@ public interface Interface_API {
         interface VoucherUser{
             String VOUCHER_USER_GET_LIST = "/user/voucheruser/getlist";
             String VOUCHER_USER_GET_DONATE = "/user/voucheruser/getdonate";
+        }
+
+        interface Statistical{
+            String STATISTICAL_GET_ALL = "/admin/statistical/getall";
         }
     }
 }
