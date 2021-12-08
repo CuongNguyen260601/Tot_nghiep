@@ -27,7 +27,7 @@ public interface ProductSaleRepository extends JpaRepository<ProductSale, Long>,
             "select ps from ProductSale ps " +
                     " where ps.idProductSale in :listProductSaleId"
     )
-    List<ProductSale> findAllByListProductSaleId(List<Integer> listProductSaleId);
+    List<ProductSale> findAllByListProductSaleId(List<Long> listProductSaleId);
 
     @Transactional
     @Modifying
