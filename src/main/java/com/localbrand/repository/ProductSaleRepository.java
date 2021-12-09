@@ -40,4 +40,13 @@ public interface ProductSaleRepository extends JpaRepository<ProductSale, Long>,
     void UpdateSaleByIdProductDetail(Integer prevStatus, Integer nextStatus, List<Integer> idProductDetail);
 
     Page<ProductSale> findAllByIdStatusAndIdSale(Integer idStatus, Integer idSale, Pageable pageable);
+
+    List<ProductSale> findAllByIdStatus(Integer idStatus);
+
+    @Query(
+            value = "select * from _Product_Sale " +
+                    "where dateEnd <= (select GETDATE())",
+            nativeQuery = true
+    )
+    List<ProductSale> findAllByDateEndAndIdStatus();
 }

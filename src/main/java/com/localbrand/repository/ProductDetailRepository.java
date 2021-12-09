@@ -170,4 +170,22 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     )
     List<ProductDetail> findAllByListIdProductDetailAndSort(List<Long> idProductDetail);
 
+    @Query(
+            "select pd from ProductDetail pd" +
+                    " where pd.quantity = 0"
+    )
+    List<ProductDetail> findAllByQuantity();
+
+    @Query(
+            value = "select * from _Product_Detail pd "+
+            " where pd.idProductDetail in ( "+
+            " select distinct bp1.idProductDetail from _Bill_Product bp1 "+
+            " join _Bill b on b.idBill = bp1.idBill "+
+            " where bp1.idStatus = :idStatus "+
+            " and month(b.dateSuccess) = month(current_timestamp) "+
+            " group by bp1.idProductDetail "+
+            " having count(bp1.idProductDetail) >= :a)",
+            nativeQuery = true
+    )
+    List<ProductDetail> findAllProductDetailHot(Integer idStatus, Integer a);
 }

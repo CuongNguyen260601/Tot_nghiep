@@ -15,4 +15,13 @@ public interface ProductTagRepository extends JpaRepository<ProductTag, Long>, J
     )
     List<Integer> listTagByProduct(Integer idProductDetail);
 
+    @Query(
+            "select pt from ProductTag pt " +
+                    " where pt.idTag = :idTag " +
+                    " and pt.idProductDetail in :listProductDetailId"
+    )
+    List<ProductTag> findAllByIdProductDetailAndIdTag(List<Integer> listProductDetailId, Integer idTag);
+
+    List<ProductTag> findAllByIdTag(Integer idTag);
+
 }
