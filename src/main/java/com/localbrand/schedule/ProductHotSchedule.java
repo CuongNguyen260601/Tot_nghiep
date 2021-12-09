@@ -1,5 +1,6 @@
 package com.localbrand.schedule;
 
+import com.localbrand.common.Status_Enum;
 import com.localbrand.common.Tag_Enum;
 import com.localbrand.entity.ProductDetail;
 import com.localbrand.entity.ProductTag;
@@ -8,8 +9,6 @@ import com.localbrand.repository.ProductTagRepository;
 import com.localbrand.schedule.base.BaseSchedule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProductOutOfStockSchedule extends BaseSchedule<ProductDetail> {
+public class ProductHotSchedule extends BaseSchedule<ProductDetail> {
 
     private final ProductDetailRepository productDetailRepository;
     private final ProductTagRepository productTagRepository;
@@ -35,64 +34,58 @@ public class ProductOutOfStockSchedule extends BaseSchedule<ProductDetail> {
     @Override
     @Transactional(rollbackOn = {Exception.class})
     protected void processItems(List<ProductDetail> scheduleItems) {
-        List<Integer> lstProductDetailId = scheduleItems.stream().map(
-                productDetail -> {
-                    return productDetail.getIdProductDetail().intValue();
-                }
-        ).collect(Collectors.toList());
 
-        List<ProductTag> productTagList = this.productTagRepository.findAllByIdProductDetailAndIdTag(lstProductDetailId, Tag_Enum.OUT_OF_STOCK.getCode());
-
-        List<ProductTag> newProductTag = new ArrayList<>();
-
-        scheduleItems.forEach(productDetail -> {
-            boolean check = false;
-            for (ProductTag productTag:productTagList) {
-                if(productTag.getIdProductDetail().equals(productDetail.getIdProductDetail().intValue())){
-                    check = true;
-                    break;
-                }
-            }
-
-            if(!check){
-                ProductTag productTag = ProductTag.builder()
-                        .idProductDetail(productDetail.getIdProductDetail().intValue())
-                        .idTag(Tag_Enum.OUT_OF_STOCK.getCode())
-                        .build();
-                newProductTag.add(productTag);
-            }
-        });
-
-        if(!newProductTag.isEmpty()){
-            this.productTagRepository.saveAll(newProductTag);
-        }
-
-        List<ProductTag> presentProductTag = this.productTagRepository.findAllByIdTag(Tag_Enum.OUT_OF_STOCK.getCode());
+        List<ProductTag> presentProductTag = this.productTagRepository.findAllByIdTag(Tag_Enum.HOT.getCode());
 
         List<ProductTag> deleteProductTagList = new ArrayList<>();
+
         presentProductTag.forEach(productTag -> {
+
             boolean check = false;
-            for (ProductDetail productDetail: scheduleItems){
+
+            for (ProductDetail productDetail:scheduleItems) {
                 if(productTag.getIdProductDetail().equals(productDetail.getIdProductDetail().intValue())){
                     check = true;
                     break;
                 }
             }
+
             if(!check){
                 deleteProductTagList.add(productTag);
             }
         });
 
         this.productTagRepository.deleteAll(deleteProductTagList);
+
+        List<ProductTag> newProductTagList = new ArrayList<>();
+
+        scheduleItems.forEach(productDetail -> {
+            boolean check = false;
+
+            for (ProductTag productTag:presentProductTag) {
+                if(productTag.getIdProductDetail().equals(productDetail.getIdProductDetail().intValue())){
+                    check = true;
+                    break;
+                }
+            }
+            if(!check){
+                newProductTagList.add(ProductTag.builder()
+                                .idProductDetail(productDetail.getIdProductDetail().intValue())
+                                .idTag(Tag_Enum.HOT.getCode())
+                        .build());
+            }
+        });
+
+        this.productTagRepository.saveAll(newProductTagList);
     }
 
     @Override
     protected String name() {
-        return "Update tag product";
+        return "Update tag hot product";
     }
 
     @Override
     protected List<ProductDetail> fetchScheduleItem() {
-        return this.productDetailRepository.findAllByQuantity();
+        return this.productDetailRepository.findAllProductDetailHot(Status_Enum.EXISTS.getCode(), 10);
     }
 }

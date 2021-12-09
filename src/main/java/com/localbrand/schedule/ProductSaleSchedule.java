@@ -1,9 +1,12 @@
 package com.localbrand.schedule;
 
+import com.localbrand.common.Status_Enum;
 import com.localbrand.common.Tag_Enum;
 import com.localbrand.entity.ProductDetail;
+import com.localbrand.entity.ProductSale;
 import com.localbrand.entity.ProductTag;
 import com.localbrand.repository.ProductDetailRepository;
+import com.localbrand.repository.ProductSaleRepository;
 import com.localbrand.repository.ProductTagRepository;
 import com.localbrand.schedule.base.BaseSchedule;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +24,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProductOutOfStockSchedule extends BaseSchedule<ProductDetail> {
+public class ProductSaleSchedule extends BaseSchedule<ProductSale> {
 
-    private final ProductDetailRepository productDetailRepository;
     private final ProductTagRepository productTagRepository;
+    private final ProductSaleRepository productSaleRepository;
 
     @Override
     @Scheduled(cron = "0 */1 * * * ?")
@@ -34,67 +37,53 @@ public class ProductOutOfStockSchedule extends BaseSchedule<ProductDetail> {
 
     @Override
     @Transactional(rollbackOn = {Exception.class})
-    protected void processItems(List<ProductDetail> scheduleItems) {
-        List<Integer> lstProductDetailId = scheduleItems.stream().map(
-                productDetail -> {
-                    return productDetail.getIdProductDetail().intValue();
-                }
-        ).collect(Collectors.toList());
+    protected void processItems(List<ProductSale> scheduleItems) {
 
-        List<ProductTag> productTagList = this.productTagRepository.findAllByIdProductDetailAndIdTag(lstProductDetailId, Tag_Enum.OUT_OF_STOCK.getCode());
+        List<ProductTag> productTagList = this.productTagRepository.findAllByIdTag(Tag_Enum.SALE.getCode());
+        List<ProductTag> deleteTagList = new ArrayList<>();
+        productTagList.forEach(productTag -> {
+
+            boolean check = false;
+            for (ProductSale productSale:scheduleItems) {
+                if(productTag.getIdProductDetail().equals(productSale.getIdProductDetail())){
+                    check = true;
+                    break;
+                }
+            }
+            if(!check){
+                deleteTagList.add(productTag);
+            }
+        });
+
+        this.productTagRepository.deleteAll(deleteTagList);
 
         List<ProductTag> newProductTag = new ArrayList<>();
-
-        scheduleItems.forEach(productDetail -> {
+        scheduleItems.forEach(productSale -> {
             boolean check = false;
             for (ProductTag productTag:productTagList) {
-                if(productTag.getIdProductDetail().equals(productDetail.getIdProductDetail().intValue())){
+                if(productSale.getIdProductDetail().equals(productTag.getIdProductDetail())){
                     check = true;
                     break;
                 }
             }
 
             if(!check){
-                ProductTag productTag = ProductTag.builder()
-                        .idProductDetail(productDetail.getIdProductDetail().intValue())
-                        .idTag(Tag_Enum.OUT_OF_STOCK.getCode())
-                        .build();
-                newProductTag.add(productTag);
+                newProductTag.add(ProductTag.builder()
+                                .idProductDetail(productSale.getIdProductDetail())
+                                .idTag(Tag_Enum.SALE.getCode())
+                        .build());
             }
         });
-
-        if(!newProductTag.isEmpty()){
-            this.productTagRepository.saveAll(newProductTag);
-        }
-
-        List<ProductTag> presentProductTag = this.productTagRepository.findAllByIdTag(Tag_Enum.OUT_OF_STOCK.getCode());
-
-        List<ProductTag> deleteProductTagList = new ArrayList<>();
-        presentProductTag.forEach(productTag -> {
-            boolean check = false;
-            for (ProductDetail productDetail: scheduleItems){
-                if(productTag.getIdProductDetail().equals(productDetail.getIdProductDetail().intValue())){
-                    check = true;
-                    break;
-                }
-            }
-            if(!check){
-                deleteProductTagList.add(productTag);
-            }
-        });
-
-        this.productTagRepository.deleteAll(deleteProductTagList);
+        this.productTagRepository.saveAll(newProductTag);
     }
 
     @Override
     protected String name() {
-        return "Update tag product";
+        return "Update tag sale product";
     }
 
     @Override
-    protected List<ProductDetail> fetchScheduleItem() {
-        Pageable pageable = PageRequest.of(0, 15);
-
-        return this.productDetailRepository.findAllByQuantity(pageable).toList();
+    protected List<ProductSale> fetchScheduleItem() {
+       return this.productSaleRepository.findAllByIdStatus(Status_Enum.EXISTS.getCode());
     }
 }

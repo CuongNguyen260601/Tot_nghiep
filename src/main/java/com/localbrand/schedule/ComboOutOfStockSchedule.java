@@ -1,15 +1,17 @@
 package com.localbrand.schedule;
 
 import com.localbrand.common.Tag_Enum;
+import com.localbrand.entity.Combo;
+import com.localbrand.entity.ComboTag;
 import com.localbrand.entity.ProductDetail;
 import com.localbrand.entity.ProductTag;
+import com.localbrand.repository.ComboRepository;
+import com.localbrand.repository.ComboTagRepository;
 import com.localbrand.repository.ProductDetailRepository;
 import com.localbrand.repository.ProductTagRepository;
 import com.localbrand.schedule.base.BaseSchedule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +23,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProductOutOfStockSchedule extends BaseSchedule<ProductDetail> {
+public class ComboOutOfStockSchedule extends BaseSchedule<Combo> {
 
-    private final ProductDetailRepository productDetailRepository;
-    private final ProductTagRepository productTagRepository;
+    private final ComboRepository comboRepository;
+    private final ComboTagRepository comboTagRepository;
 
     @Override
     @Scheduled(cron = "0 */1 * * * ?")
@@ -34,65 +36,65 @@ public class ProductOutOfStockSchedule extends BaseSchedule<ProductDetail> {
 
     @Override
     @Transactional(rollbackOn = {Exception.class})
-    protected void processItems(List<ProductDetail> scheduleItems) {
-        List<Integer> lstProductDetailId = scheduleItems.stream().map(
-                productDetail -> {
-                    return productDetail.getIdProductDetail().intValue();
+    protected void processItems(List<Combo> scheduleItems) {
+        List<Integer> lstComboId = scheduleItems.stream().map(
+                combo -> {
+                    return combo.getIdCombo().intValue();
                 }
         ).collect(Collectors.toList());
 
-        List<ProductTag> productTagList = this.productTagRepository.findAllByIdProductDetailAndIdTag(lstProductDetailId, Tag_Enum.OUT_OF_STOCK.getCode());
+        List<ComboTag> comboTagList = this.comboTagRepository.findAllByIdTagCombo(lstComboId, Tag_Enum.OUT_OF_STOCK.getCode());
 
-        List<ProductTag> newProductTag = new ArrayList<>();
+        List<ComboTag> newComboTag = new ArrayList<>();
 
-        scheduleItems.forEach(productDetail -> {
+        scheduleItems.forEach(combo -> {
             boolean check = false;
-            for (ProductTag productTag:productTagList) {
-                if(productTag.getIdProductDetail().equals(productDetail.getIdProductDetail().intValue())){
+            for (ComboTag comboTag:comboTagList) {
+                if(comboTag.getIdCombo().equals(combo.getIdCombo().intValue())){
                     check = true;
                     break;
                 }
             }
 
             if(!check){
-                ProductTag productTag = ProductTag.builder()
-                        .idProductDetail(productDetail.getIdProductDetail().intValue())
+                ComboTag comboTag = ComboTag.builder()
+                        .idCombo(combo.getIdCombo().intValue())
                         .idTag(Tag_Enum.OUT_OF_STOCK.getCode())
                         .build();
-                newProductTag.add(productTag);
+                newComboTag.add(comboTag);
             }
         });
 
-        if(!newProductTag.isEmpty()){
-            this.productTagRepository.saveAll(newProductTag);
+        if(!newComboTag.isEmpty()){
+            this.comboTagRepository.saveAll(newComboTag);
         }
 
-        List<ProductTag> presentProductTag = this.productTagRepository.findAllByIdTag(Tag_Enum.OUT_OF_STOCK.getCode());
+        List<ComboTag> presentComboTag = this.comboTagRepository.findAllByIdTag(Tag_Enum.OUT_OF_STOCK.getCode());
 
-        List<ProductTag> deleteProductTagList = new ArrayList<>();
-        presentProductTag.forEach(productTag -> {
+        List<ComboTag> deleteComboTagList = new ArrayList<>();
+        presentComboTag.forEach(comboTag -> {
             boolean check = false;
-            for (ProductDetail productDetail: scheduleItems){
-                if(productTag.getIdProductDetail().equals(productDetail.getIdProductDetail().intValue())){
+            for (Combo combo: scheduleItems){
+                if(comboTag.getIdCombo().equals(combo.getIdCombo().intValue())){
                     check = true;
                     break;
                 }
             }
             if(!check){
-                deleteProductTagList.add(productTag);
+                deleteComboTagList.add(comboTag);
             }
         });
 
-        this.productTagRepository.deleteAll(deleteProductTagList);
+        this.comboTagRepository.deleteAll(deleteComboTagList);
     }
 
     @Override
     protected String name() {
-        return "Update tag product";
+        return "Update tag out of stock combo";
     }
 
     @Override
-    protected List<ProductDetail> fetchScheduleItem() {
-        return this.productDetailRepository.findAllByQuantity();
+    protected List<Combo> fetchScheduleItem() {
+        return this.comboRepository.findAllByQuantity();
     }
 }

@@ -2,8 +2,12 @@ package com.localbrand.schedule;
 
 import com.localbrand.common.Status_Enum;
 import com.localbrand.common.Tag_Enum;
+import com.localbrand.entity.Combo;
+import com.localbrand.entity.ComboTag;
 import com.localbrand.entity.ProductDetail;
 import com.localbrand.entity.ProductTag;
+import com.localbrand.repository.ComboRepository;
+import com.localbrand.repository.ComboTagRepository;
 import com.localbrand.repository.ProductDetailRepository;
 import com.localbrand.repository.ProductTagRepository;
 import com.localbrand.schedule.base.BaseSchedule;
@@ -15,15 +19,14 @@ import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProductHotSchedule extends BaseSchedule<ProductDetail> {
+public class ComboHotSchedule extends BaseSchedule<Combo> {
 
-    private final ProductDetailRepository productDetailRepository;
-    private final ProductTagRepository productTagRepository;
+    private final ComboRepository comboRepository;
+    private final ComboTagRepository comboTagRepository;
 
     @Override
     @Scheduled(cron = "0 */1 * * * ?")
@@ -33,59 +36,59 @@ public class ProductHotSchedule extends BaseSchedule<ProductDetail> {
 
     @Override
     @Transactional(rollbackOn = {Exception.class})
-    protected void processItems(List<ProductDetail> scheduleItems) {
+    protected void processItems(List<Combo> scheduleItems) {
 
-        List<ProductTag> presentProductTag = this.productTagRepository.findAllByIdTag(Tag_Enum.HOT.getCode());
+        List<ComboTag> presentComboTag = this.comboTagRepository.findAllByIdTag(Tag_Enum.HOT.getCode());
 
-        List<ProductTag> deleteProductTagList = new ArrayList<>();
+        List<ComboTag> deleteComboTagList = new ArrayList<>();
 
-        presentProductTag.forEach(productTag -> {
+        presentComboTag.forEach(comboTag -> {
 
             boolean check = false;
 
-            for (ProductDetail productDetail:scheduleItems) {
-                if(productTag.getIdProductDetail().equals(productDetail.getIdProductDetail().intValue())){
+            for (Combo combo:scheduleItems) {
+                if(comboTag.getIdCombo().equals(combo.getIdCombo().intValue())){
                     check = true;
                     break;
                 }
             }
 
             if(!check){
-                deleteProductTagList.add(productTag);
+                deleteComboTagList.add(comboTag);
             }
         });
 
-        this.productTagRepository.deleteAll(deleteProductTagList);
+        this.comboTagRepository.deleteAll(deleteComboTagList);
 
-        List<ProductTag> newProductTagList = new ArrayList<>();
+        List<ComboTag> newComboTagList = new ArrayList<>();
 
-        scheduleItems.forEach(productDetail -> {
+        scheduleItems.forEach(combo -> {
             boolean check = false;
 
-            for (ProductTag productTag:presentProductTag) {
-                if(productTag.getIdProductDetail().equals(productDetail.getIdProductDetail().intValue())){
+            for (ComboTag comboTag:presentComboTag) {
+                if(comboTag.getIdCombo().equals(combo.getIdCombo().intValue())){
                     check = true;
                     break;
                 }
             }
             if(!check){
-                newProductTagList.add(ProductTag.builder()
-                                .idProductDetail(productDetail.getIdProductDetail().intValue())
+                newComboTagList.add(ComboTag.builder()
+                                .idCombo(combo.getIdCombo().intValue())
                                 .idTag(Tag_Enum.HOT.getCode())
                         .build());
             }
         });
 
-        this.productTagRepository.saveAll(newProductTagList);
+        this.comboTagRepository.saveAll(newComboTagList);
     }
 
     @Override
     protected String name() {
-        return "Update tag product";
+        return "Update tag hot combo";
     }
 
     @Override
-    protected List<ProductDetail> fetchScheduleItem() {
-        return this.productDetailRepository.findAllProductDetailHot(Status_Enum.EXISTS.getCode(), 10);
+    protected List<Combo> fetchScheduleItem() {
+        return this.comboRepository.findAllComboHot(Status_Enum.EXISTS.getCode(), 10);
     }
 }
