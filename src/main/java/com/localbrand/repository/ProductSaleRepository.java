@@ -49,4 +49,6 @@ public interface ProductSaleRepository extends JpaRepository<ProductSale, Long>,
             nativeQuery = true
     )
     List<ProductSale> findAllByDateEndAndIdStatus();
+
+    List<ProductSale> findAllByIdSale(Integer idSale);
 }
