@@ -198,52 +198,20 @@
 
 <body>
 <table
-        style="width: 670px; margin: auto; padding-top: 0px; border-collapse: collapse; border: 1px solid #5D6169; border-bottom: none; background: #FAFAFA">
+        style="width: 670px; margin: auto; padding-top: 0px; border-collapse: collapse; border: 1px solid #5D6169; background: #FAFAFA">
     <tbody>
     <tr>
         <td>
-            <h3 class="login-title">Xin chào, <span th:text="${nameUser}" ></span></h3>
+            <h3 class="login-title">Xin chào <span th:text="${nameUser}" ></span></h3>
         </td>
     </tr>
-
     <tr>
         <td>
-            <p style="font-size: 16px; margin-bottom: 20px;">Shop thời trang TPF xin cảm ơn quý khách đã mua hàng</p>
-            <p style="font-size: 16px; font-weight: bold; margin-bottom: 20px;">Max late payment was reached <span th:text="${systemRisk}"></span> times</p>
-        </td>
-    </tr>
-
-    <tr>
-        <td>
-            <div class="table-email" style="margin-top: 10px">
-                <table>
-                    <thead>
-                    <tr>
-                        <th colspan="2" style="text-align: left; font-size: 16px; font-weight: 600;">Contract Information</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    <tr>
-                        <td>Contract ID:</td>
-                        <td>
-                            <a th:href="@{${linkViewContract}}" target="_blank" th:text="${contractId}"></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>System risk: </td>
-                        <td>
-                            Borrower can only make a late payment <span th:text="${systemRiskMinus}"></span> times. From the <span th:text="${systemRisk}"></span> time, the collateral will be liquidated.
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
             <div class="table-1" style="margin-top: 30px">
                 <table>
                     <thead>
                     <tr>
-                        <th colspan="2" style="text-align: left; font-size: 16px; font-weight: 600;">Liquidation Information</th>
+                        <th colspan="2" style="text-align: left; font-size: 16px; font-weight: 600;">Thống kê tình trạng hóa đơn ngày <span style="text-align: left; font-size: 16px; font-weight: 600;" th:text="${date}">11/12/2021</span></th>
                     </tr>
                     </thead>
 
@@ -253,69 +221,32 @@
                             <div class="table-child">
                                 <table>
                                     <tr class="table-child__header">
-                                        <td>Cycle</td>
-                                        <td>Due date (UTC)</td>
-                                        <td>Unpaid amount</td>
+                                        <td>STT</td>
+                                        <td>Trạng thái đơn hàng</td>
+                                        <td>Số lượng</td>
                                     </tr>
                                     <tr th:each="pr : ${prList}" class="table-child__item">
-                                        <td th:text="${pr.cycleNo}"></td>
-                                        <td th:text="${pr.dueDate}"></td>
-                                        <td>
-                                            <div>
-                                                Penalty: <img th:src="@{${symbolRepaymentCurrency}}" alt="" style="width: 25px; height: 25px; margin-right: 5px;">
-                                                <span th:text="${pr.penalty}"></span>
-                                            </div>
-                                            <div style="margin-top: 12px;">
-                                                Interest: <img th:src="@{${symbolRepaymentCurrency}}" alt="" style="width: 25px; height: 25px; margin-right: 5px;">
-                                                <span th:text="${pr.interest}"></span>
-                                            </div>
-                                        </td>
+                                        <td th:text="${pr.index}"></td>
+                                        <td th:text="${pr.nameStatus}"></td>
+                                        <td th:text="${pr.quantity}"></td>
                                     </tr>
                                 </table>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td>Default Date (UTC)</td>
-                        <td th:text="${defaultDate}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="table-2">
-                <table>
-                    <tbody>
-                    <tr>
-                        <td class="table-2__title">Collateral has been sent to lender</td>
-                        <td>
-                            <span th:text="${collateral}"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-2__title">TXN hash</td>
-                        <td>
-                            <a th:href="@{${linkViewContractBsc}}" target="_blank" th:text="${contractTxnHash}"></a>
-                        </td>
+                        <td>Chân thành cảm ơn !</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </td>
     </tr>
-
-    <tr>
-        <td>
-            <div class="note">
-                Please review your Lender to get 10 DFY as reward, click on the below button
-            </div>
-        </td>
-    </tr>
-
     <tr>
         <td style="text-align: center">
             <button class="btn-email" style="margin-top: 40px">
                 <a th:href="@{${linkViewContract}}"
-                   target="_blank">Review now</a>
+                   target="_blank">Xem thống kê</a>
             </button>
         </td>
     </tr>

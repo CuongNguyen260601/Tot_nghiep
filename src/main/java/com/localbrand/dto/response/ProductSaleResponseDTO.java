@@ -16,6 +16,6 @@ public class ProductSaleResponseDTO {
 
     private SaleDTO saleDTO;
 
-    private List<ProductDetailSaleResponseDTO> productDetailSaleResponseDTOS;
+    private List<ProductChildResponseDTO> lstProductChild;
 
 }

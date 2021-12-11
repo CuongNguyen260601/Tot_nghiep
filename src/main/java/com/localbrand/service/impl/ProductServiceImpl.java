@@ -565,14 +565,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductLikeByUser(Optional<Integer> idUser, Optional<Integer> page, Optional<Integer> limit, Optional<Long> userId) {
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductLikeByUser(Optional<Integer> idUser, Optional<Integer> page, Optional<Integer> limit) {
 
         User user;
 
-        if(userId.isEmpty() || userId.get() < 1){
+        if(idUser.isEmpty() || idUser.get() < 1){
             user = null;
         }else{
-            user = this.userRepository.findById(userId.get()).orElse(null);
+            user = this.userRepository.findById(idUser.get().longValue()).orElse(null);
         }
 
         if(idUser.isEmpty()
