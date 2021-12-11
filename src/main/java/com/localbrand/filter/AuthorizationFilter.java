@@ -58,6 +58,9 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Category.Category_Child.CATEGORY_CHILD_FIND_BY_PARENT_ID)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.UPLOAD_IMAGE)
             || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Auth.GET_NEW_PASSWORD)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Combo.COMBO_FIND_ALL_USER)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Combo.COMBO_FIND_BY_ID_USER)
+            || request.getServletPath().equals(Interface_API.MAIN+Interface_API.API.Combo.COMBO_SEARCH_USER)
 
         ){
             filterChain.doFilter(request, response);
