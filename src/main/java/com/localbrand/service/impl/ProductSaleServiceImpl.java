@@ -87,25 +87,20 @@ public class ProductSaleServiceImpl implements ProductSaleService {
                 .orElseThrow(() -> new RuntimeException("Invalid sale"));
 
 
-        List<Integer> listProductDetailId = new ArrayList<>();
+        List<ProductSale> productSales = this.productSaleRepository.findAllByIdSale(sale.getIdSale().intValue());
 
         List<Long> lstIdProductDetail = new ArrayList<>();
 
-        for (ProductSaleCancelRequestDTO productSaleDetails: cancelSaleRequestDTO.getListProductDetail()) {
-            listProductDetailId.add(productSaleDetails.getIdProductDetail());
-            lstIdProductDetail.add(productSaleDetails.getIdProductDetail().longValue());
-        }
+        productSales.forEach(productSale -> {
+            productSale.setIdStatus(cancelSaleRequestDTO.getIdStatus());
+            lstIdProductDetail.add(productSale.getIdProductDetail().longValue());
+        });
 
-        List<ProductSale> productSales = this.productSaleRepository.findAllByListProductSaleId(sale.getIdSale().intValue(), listProductDetailId);
-
-        for (ProductSale productSale: productSales){
-            for (ProductSaleCancelRequestDTO productSaleDetails: cancelSaleRequestDTO.getListProductDetail()) {
-                if(productSaleDetails.getIdProductDetail().equals(productSale.getIdProductDetail())){
-                    productSale.setIdStatus(productSaleDetails.getIdStatus());
-                }
-            }
-        }
         this.productSaleRepository.saveAll(productSales);
+
+        sale.setIdStatus(cancelSaleRequestDTO.getIdStatus());
+
+        sale = this.saleRepository.save(sale);
 
         List<ProductDetail> productDetails = this.productDetailRepository.findAllByListIdProductDetail(lstIdProductDetail);
 
@@ -114,6 +109,8 @@ public class ProductSaleServiceImpl implements ProductSaleService {
         ProductSaleResponseDTO productSaleResponseDTO = ProductSaleResponseDTO.builder()
                 .lstProductChild(productChildResponseDTOS)
                 .saleDTO(this.saleMapping.toDto(sale))
+                .dateStart(productSales.get(0).getDateStart())
+                .dateEnd(productSales.get(0).getDateEnd())
                 .build();
 
         return new ServiceResult<>(HttpStatus.OK, "Cancel sale is success", productSaleResponseDTO);
@@ -134,6 +131,8 @@ public class ProductSaleServiceImpl implements ProductSaleService {
         List<ProductChildResponseDTO> productChildResponseDTOS = productDetails.stream().map(this.productMapping::toProductChild).collect(Collectors.toList());
 
         ProductSaleResponseDTO productSaleResponseDTO = ProductSaleResponseDTO.builder()
+                .dateStart(productSales.get(0).getDateStart())
+                .dateEnd(productSales.get(0).getDateEnd())
                 .lstProductChild(productChildResponseDTOS)
                 .build();
 

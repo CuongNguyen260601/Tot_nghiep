@@ -59,6 +59,8 @@ public class ProductSaleMapping implements Mapping<ProductSaleResponseDTO, Produ
 
         return ProductSaleResponseDTO.builder()
                 .saleDTO(this.saleMapping.toDto(sale))
+                .dateStart(productSales.get(0).getDateStart())
+                .dateEnd(productSales.get(0).getDateEnd())
                 .lstProductChild(productChildResponseDTOS)
                 .build();
     }

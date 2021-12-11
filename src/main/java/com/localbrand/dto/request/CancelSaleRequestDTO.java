@@ -15,5 +15,5 @@ public class CancelSaleRequestDTO {
 
     private Long idSale;
 
-    private List<ProductSaleCancelRequestDTO> listProductDetail;
+    private Integer idStatus;
 }

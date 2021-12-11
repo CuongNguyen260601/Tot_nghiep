@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
 import java.util.List;
 
 @Data
@@ -17,5 +18,9 @@ public class ProductSaleResponseDTO {
     private SaleDTO saleDTO;
 
     private List<ProductChildResponseDTO> lstProductChild;
+
+    private Date dateStart;
+
+    private Date dateEnd;
 
 }
