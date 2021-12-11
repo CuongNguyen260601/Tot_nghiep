@@ -2,6 +2,7 @@ package com.localbrand.model_mapping.Impl;
 
 
 import com.localbrand.dto.GenderDTO;
+import com.localbrand.dto.response.ProductChildResponseDTO;
 import com.localbrand.dto.response.ProductDetailSaleResponseDTO;
 import com.localbrand.dto.response.ProductSaleListResponseDTO;
 import com.localbrand.dto.response.ProductSaleResponseDTO;
@@ -32,6 +33,7 @@ public class ProductSaleMapping implements Mapping<ProductSaleResponseDTO, Produ
     private final GenderRepository genderRepository;
     private final SaleMapping saleMapping;
     private final SaleRepository saleRepository;
+    private final ProductMapping productMapping;
 
     @Override
     public ProductSaleResponseDTO toDto(ProductSale productSale) {
@@ -53,11 +55,11 @@ public class ProductSaleMapping implements Mapping<ProductSaleResponseDTO, Produ
 
         List<ProductDetail> productDetails = this.productDetailRepository.findAllByListIdProductDetail(listIdProductDetail);
 
-        List<ProductDetailSaleResponseDTO> productDetailSaleResponseDTOList = productDetails.stream().map(this::toProductDetailSaleDTOByProductDetail).collect(Collectors.toList());
+        List<ProductChildResponseDTO> productChildResponseDTOS = productDetails.stream().map(this.productMapping::toProductChild).collect(Collectors.toList());
 
         return ProductSaleResponseDTO.builder()
                 .saleDTO(this.saleMapping.toDto(sale))
-                .productDetailSaleResponseDTOS(productDetailSaleResponseDTOList)
+                .lstProductChild(productChildResponseDTOS)
                 .build();
     }
 

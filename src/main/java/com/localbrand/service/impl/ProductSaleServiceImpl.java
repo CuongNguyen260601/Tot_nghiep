@@ -6,12 +6,14 @@ import com.localbrand.dto.request.CancelSaleRequestDTO;
 import com.localbrand.dto.request.ProductSaleCancelRequestDTO;
 import com.localbrand.dto.request.ProductSaleDetail;
 import com.localbrand.dto.request.ProductSaleRequestDTO;
+import com.localbrand.dto.response.ProductChildResponseDTO;
 import com.localbrand.dto.response.ProductDetailSaleResponseDTO;
 import com.localbrand.dto.response.ProductSaleListResponseDTO;
 import com.localbrand.dto.response.ProductSaleResponseDTO;
 import com.localbrand.entity.ProductDetail;
 import com.localbrand.entity.ProductSale;
 import com.localbrand.entity.Sale;
+import com.localbrand.model_mapping.Impl.ProductMapping;
 import com.localbrand.model_mapping.Impl.ProductSaleMapping;
 import com.localbrand.model_mapping.Impl.SaleMapping;
 import com.localbrand.repository.ProductDetailRepository;
@@ -42,6 +44,7 @@ public class ProductSaleServiceImpl implements ProductSaleService {
     private final ProductDetailRepository productDetailRepository;
     private final SaleMapping saleMapping;
     private final SaleRepository saleRepository;
+    private final ProductMapping productMapping;
 
     @Override
     public ServiceResult<ProductSaleResponseDTO> addSaleToProductDetail(ProductSaleRequestDTO productSaleRequestDTO) {
@@ -103,10 +106,10 @@ public class ProductSaleServiceImpl implements ProductSaleService {
 
         List<ProductDetail> productDetails = this.productDetailRepository.findAllByListIdProductDetail(lstIdProductDetail);
 
-        List<ProductDetailSaleResponseDTO> productDetailSaleResponseDTOList = productDetails.stream().map(this.productSaleMapping::toProductDetailSaleDTOByProductDetail).collect(Collectors.toList());
+        List<ProductChildResponseDTO> productChildResponseDTOS = productDetails.stream().map(this.productMapping::toProductChild).collect(Collectors.toList());
 
         ProductSaleResponseDTO productSaleResponseDTO = ProductSaleResponseDTO.builder()
-                .productDetailSaleResponseDTOS(productDetailSaleResponseDTOList)
+                .lstProductChild(productChildResponseDTOS)
                 .saleDTO(this.saleMapping.toDto(sale))
                 .build();
 
@@ -125,10 +128,10 @@ public class ProductSaleServiceImpl implements ProductSaleService {
 
         List<ProductDetail> productDetails = this.productDetailRepository.findAllByListIdProductDetail(listProductDetailId);
 
-        List<ProductDetailSaleResponseDTO> productDetailSaleResponseDTOList = productDetails.stream().map(this.productSaleMapping::toProductDetailSaleDTOByProductDetail).collect(Collectors.toList());
+        List<ProductChildResponseDTO> productChildResponseDTOS = productDetails.stream().map(this.productMapping::toProductChild).collect(Collectors.toList());
 
         ProductSaleResponseDTO productSaleResponseDTO = ProductSaleResponseDTO.builder()
-                .productDetailSaleResponseDTOS(productDetailSaleResponseDTOList)
+                .lstProductChild(productChildResponseDTOS)
                 .build();
 
         if(Objects.nonNull(sale)){

@@ -180,10 +180,9 @@ public class ProductController {
     public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getProductLike(
             @RequestParam Optional<Integer> idUser,
             @RequestParam Optional<Integer> page,
-            @RequestParam Optional<Integer> limit,
-            @RequestParam Optional<Long> userId
+            @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductLikeByUser(idUser,page,limit, userId);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productService.getListProductLikeByUser(idUser,page,limit);
         return ResponseEntity.status(result.getStatus().value()).body(result);
     }
 }
