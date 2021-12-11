@@ -66,6 +66,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Address.ADDRESS_FIND_ALL_PROVINCE).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Address.ADDRESS_FIND_ALL_DISTRICT).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Address.ADDRESS_FIND_ALL_COMMUNE).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Combo.COMBO_FIND_ALL_USER).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Combo.COMBO_FIND_BY_ID_USER).permitAll();
+        http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Combo.COMBO_SEARCH_USER).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Size.SIZE_FIND_EXISTS).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Color.COLOR_FIND_EXISTS).permitAll();
         http.authorizeRequests().antMatchers(Interface_API.MAIN+Interface_API.API.Category.CATEGORY_TO_SIZE).permitAll();
