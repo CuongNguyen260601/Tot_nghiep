@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.localbrand.common.JWT_Enum;
+import com.localbrand.common.Role_Enum;
 import com.localbrand.common.Security_Enum;
 import com.localbrand.dto.response.UserResponseSignupDTO;
 import com.localbrand.entity.Jwt;
@@ -63,6 +64,21 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
 
         User user = (User) authentication.getPrincipal();
+
+        if(request.getRequestURL().toString().contains("api/webtpf/login")){
+            user.getAuthorities().forEach(grantedAuthority -> {
+                if(grantedAuthority.getAuthority().equals(Role_Enum.ROLE_USER.getRole())) {
+                    try {
+                        response.setStatus(500);
+                        new ObjectMapper().writeValue(response.getOutputStream(), "you not admin");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                }
+            });
+        }
+
         Algorithm algorithm = Algorithm.HMAC256(Security_Enum.SECRET.getSecret().getBytes());
         String access_token = JWT.create()
                 .withSubject(user.getUsername())
