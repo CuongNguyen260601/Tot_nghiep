@@ -27,6 +27,9 @@ public class StatisticalDTO {
     private List<TopComboHotDTO> topComboHot;
 
     //tổng doanh thu , tổng bill
-    private TotalRevenueTodayDTO totalRevenueToday;
+//    private TotalRevenueTodayDTO totalRevenueToday;
+
+    //tổng doanh thu , tổng bill
+    private TotalRevenueTodayDTO totalRevenueMonth;
 
 }

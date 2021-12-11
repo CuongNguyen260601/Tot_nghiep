@@ -23,8 +23,8 @@ public class StatisticalController {
     private final StatisticalService statisticalService;
 
     @GetMapping(Interface_API.API.Statistical.STATISTICAL_GET_ALL)
-    public ResponseEntity<ServiceResult<StatisticalDTO>> findAll() {
-        ServiceResult<StatisticalDTO> result = this.statisticalService.findAll();
+    public ResponseEntity<ServiceResult<StatisticalDTO>> findAll(@RequestParam Integer month, @RequestParam Integer year ) {
+        ServiceResult<StatisticalDTO> result = this.statisticalService.findAll(month,year);
         return ResponseEntity
                 .status(result.getStatus().value())
                 .body(result);
