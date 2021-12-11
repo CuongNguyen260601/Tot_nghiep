@@ -10,6 +10,6 @@ import java.util.Optional;
 
 public interface StatisticalService {
 
-    ServiceResult<StatisticalDTO> findAll();
+    ServiceResult<StatisticalDTO> findAll(Integer month, Integer year);
 
 }
