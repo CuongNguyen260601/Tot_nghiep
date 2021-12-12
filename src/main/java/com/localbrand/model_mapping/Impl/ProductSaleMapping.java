@@ -57,12 +57,19 @@ public class ProductSaleMapping implements Mapping<ProductSaleResponseDTO, Produ
 
         List<ProductChildResponseDTO> productChildResponseDTOS = productDetails.stream().map(this.productMapping::toProductChild).collect(Collectors.toList());
 
-        return ProductSaleResponseDTO.builder()
+        ProductSaleResponseDTO productSaleResponseDTO = ProductSaleResponseDTO.builder()
                 .saleDTO(this.saleMapping.toDto(sale))
                 .dateStart(productSales.get(0).getDateStart())
                 .dateEnd(productSales.get(0).getDateEnd())
                 .lstProductChild(productChildResponseDTOS)
                 .build();
+
+        if(productSales.size() > 0){
+            productSaleResponseDTO.setDateStart(productSales.get(0).getDateStart());
+            productSaleResponseDTO.setDateEnd(productSales.get(0).getDateEnd());
+        }
+
+        return productSaleResponseDTO;
     }
 
     public ProductDetailSaleResponseDTO toProductDetailSaleDTOByProductDetail(ProductDetail productDetail){
