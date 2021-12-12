@@ -11,7 +11,7 @@ import java.sql.Date;
 
 public interface BillRepository extends JpaRepository<Bill, Long>, JpaSpecificationExecutor<Bill> {
 
-    Page<Bill> findAll(Pageable pageable);
+    Page<Bill> findAllByBillType(Integer billType,Pageable pageable);
 
     Page<Bill> findAllByIdUser(Integer idUser, Pageable pageable);
 
