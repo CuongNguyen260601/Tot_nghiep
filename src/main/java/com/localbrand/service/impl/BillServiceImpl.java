@@ -336,17 +336,18 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ServiceResult<List<BillResponseDTO>> getAllListBillAdmin(Optional<Integer> page, Optional<Integer> limit) {
+    public ServiceResult<List<BillResponseDTO>> getAllListBillAdmin(Optional<Integer> page, Optional<Integer> billType, Optional<Integer> limit) {
 
         if(page.isEmpty() || page.get() < 0
                 || limit.isEmpty() || limit.get() <1
+                || billType.isEmpty() || billType.get() < 0
         ){
             return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
         }
 
         Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
 
-        List<Bill> lstBill = this.billRepository.findAll(pageable).toList();
+        List<Bill> lstBill = this.billRepository.findAllByBillType(billType.get(),pageable).toList();
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Bill.GET_LIST_BILL_IS_SUCCESS, lstBill.stream().map(this.billMapping::toDto).collect(Collectors.toList()));
 

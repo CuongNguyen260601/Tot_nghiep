@@ -101,10 +101,11 @@ public class BillController {
 
     @GetMapping(Interface_API.API.Bill.BILL_GET_ALL_LIST_ADMIN)
     public ResponseEntity<ServiceResult<List<BillResponseDTO>>> getAllListBillAdmin(
+            @RequestParam Optional<Integer> billType,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<List<BillResponseDTO>> result = this.billService.getAllListBillAdmin(page,limit);
+        ServiceResult<List<BillResponseDTO>> result = this.billService.getAllListBillAdmin(page,billType,limit);
         return ResponseEntity
                 .status(result.getStatus())
                 .body(result);
