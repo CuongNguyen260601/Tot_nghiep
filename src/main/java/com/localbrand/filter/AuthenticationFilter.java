@@ -79,6 +79,20 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             });
         }
 
+
+        if(request.getRequestURL().toString().contains("api/webtpf/login")){
+            user.getAuthorities().forEach(grantedAuthority -> {
+                if(grantedAuthority.getAuthority().equals(Role_Enum.ROLE_USER.getRole())) {
+                    try {
+                        response.setStatus(500);
+                        new ObjectMapper().writeValue(response.getOutputStream(), "you not admin");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                }
+            });
+        }
         Algorithm algorithm = Algorithm.HMAC256(Security_Enum.SECRET.getSecret().getBytes());
         String access_token = JWT.create()
                 .withSubject(user.getUsername())
