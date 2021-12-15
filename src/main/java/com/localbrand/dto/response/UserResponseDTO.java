@@ -23,7 +23,7 @@ public class UserResponseDTO {
 
     private String lastName;
 
-    private Date dateOfBirth;
+    private String dateOfBirth;
 
     private String email;
 
@@ -38,5 +38,7 @@ public class UserResponseDTO {
     private String imageUser;
 
     private Integer idCart;
+
+    private Integer idRole;
 
 }

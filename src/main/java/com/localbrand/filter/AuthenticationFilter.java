@@ -65,19 +65,19 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         User user = (User) authentication.getPrincipal();
 
-        if(request.getRequestURL().toString().contains("api/webtpf/login")){
-            user.getAuthorities().forEach(grantedAuthority -> {
-                if(grantedAuthority.getAuthority().equals(Role_Enum.ROLE_USER.getRole())) {
-                    try {
-                        response.setStatus(500);
-                        new ObjectMapper().writeValue(response.getOutputStream(), "you not admin");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return;
-                }
-            });
-        }
+//        if(request.getRequestURL().toString().contains("api/webtpf/login")){
+//            user.getAuthorities().forEach(grantedAuthority -> {
+//                if(grantedAuthority.getAuthority().equals(Role_Enum.ROLE_USER.getRole())) {
+//                    try {
+//                        response.setStatus(500);
+//                        new ObjectMapper().writeValue(response.getOutputStream(), "you not admin");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    return;
+//                }
+//            });
+//        }
 
 
         if(request.getRequestURL().toString().contains("api/webtpf/login")){

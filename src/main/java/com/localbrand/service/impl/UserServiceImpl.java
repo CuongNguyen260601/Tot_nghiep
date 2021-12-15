@@ -141,7 +141,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setIdGender(userUpdateRequestDTO.getIdGender());
         user.setImageUser(userUpdateRequestDTO.getImageUser());
 
-        if(Objects.isNull(userUpdateRequestDTO.getIdUser())){
+        if(Objects.isNull(userUpdateRequestDTO.getIdAddress())){
             Address address = this.addressMapping.toEntitySave(userUpdateRequestDTO.getAddressRequestDTO());
             address = this.addressRepository.save(address);
             user.setIdAddress(address.getIdAddress().intValue());
