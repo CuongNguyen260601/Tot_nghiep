@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+
 @Component
 @RequiredArgsConstructor
 public class UserMapping implements Mapping<UserResponseDTO, User> {
@@ -33,13 +35,14 @@ public class UserMapping implements Mapping<UserResponseDTO, User> {
         Address address = this.addressRepository.findById(user.getIdAddress().longValue()).orElse(null);
         Gender gender = this.genderRepository.findById(user.getIdGender().longValue()).orElse(null);
         Cart cart = this.cartRepository.findFirstByIdUserAndIdStatus(user.getIdUser().intValue(), Status_Enum.EXISTS.getCode());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return UserResponseDTO
                 .builder()
                 .idUser(user.getIdUser())
                 .idChat(user.getIdChat())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .dateOfBirth(user.getDateOfBirth())
+                .dateOfBirth(sdf.format(user.getDateOfBirth()))
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .genderDTO(
@@ -99,7 +102,8 @@ public class UserMapping implements Mapping<UserResponseDTO, User> {
         userResponseSignupDTO.setIdChat(user.getIdChat());
         userResponseSignupDTO.setFirstName(user.getFirstName());
         userResponseSignupDTO.setLastName(user.getLastName());
-        userResponseSignupDTO.setDateOfBirth(user.getDateOfBirth());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        userResponseSignupDTO.setDateOfBirth(sdf.format(user.getDateOfBirth()));
         userResponseSignupDTO.setEmail(user.getEmail());
         userResponseSignupDTO.setPhoneNumber(user.getPhoneNumber());
         userResponseSignupDTO.setGenderDTO(
@@ -118,6 +122,7 @@ public class UserMapping implements Mapping<UserResponseDTO, User> {
         userResponseSignupDTO.setIdStatus(user.getIdStatus());
         userResponseSignupDTO.setImageUser(user.getImageUser());
         userResponseSignupDTO.setIdCart(cart.getIdCart().intValue());
+        userResponseSignupDTO.setIdRole(user.getIdRole());
         return userResponseSignupDTO;
     }
 }

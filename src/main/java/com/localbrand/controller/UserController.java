@@ -49,8 +49,8 @@ public class UserController {
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
-    @PutMapping(Interface_API.API.Auth.UPDATE_PROFILE)
-    public ResponseEntity<ServiceResult<UserResponseDTO>> updateProfile(HttpServletRequest request, UserUpdateRequestDTO userUpdateRequestDTO){
+    @PostMapping(Interface_API.API.Auth.UPDATE_PROFILE)
+    public ResponseEntity<ServiceResult<UserResponseDTO>> updateProfile(HttpServletRequest request,@Valid @RequestBody UserUpdateRequestDTO userUpdateRequestDTO){
         ServiceResult<UserResponseDTO> result = this.userService.updateProfile(request, userUpdateRequestDTO);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
