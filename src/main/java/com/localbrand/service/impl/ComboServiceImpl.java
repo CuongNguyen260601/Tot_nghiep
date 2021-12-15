@@ -59,25 +59,27 @@ public class ComboServiceImpl implements ComboService {
 
             List<ComboDetail> listComboDetails = new ArrayList<>();
 
-//            for (ComboDetailRequestDTO dto: comboRequestDTO.getComboDetailRequestDTO()) {
-//
-//                ProductDetail productDetail = productDetailRepository.findById(dto.getIdProductDetail().longValue()).orElse(null);
-//
-//                if(Objects.isNull(productDetail)){
-//                    return new ServiceResult<>(HttpStatus.BAD_REQUEST,Notification.Combo.SAVE_COMBO_FALSE, null);
-//                }else {
-//                    //check số lượng của sản phẩm còn lại đề tạo combo
-//                    if(comboRequestDTO.getQuantity() <= productDetail.getQuantity()){
-//                        listComboDetails.add(new ComboDetail(
-//                                dto.getIdComboDetail(),
-//                                null,
-//                                dto.getIdProductDetail()
-//                        ));
-//                    }else {
-//                        return new ServiceResult<>(HttpStatus.OK,"Số lượng tối đa bạn có thể tạo là : "+ productDetail.getQuantity() , null);
-//                    }
-//                }
-//            }
+            List<ProductDetail> productDetailsInCombo = new ArrayList<>();
+
+            for (ComboDetailRequestDTO dto: comboRequestDTO.getComboDetailRequestDTO()) {
+
+                ProductDetail productDetail = productDetailRepository.findById(dto.getIdProductDetail().longValue()).orElse(null);
+
+                if(Objects.isNull(productDetail)){
+                    return new ServiceResult<>(HttpStatus.BAD_REQUEST,Notification.Combo.SAVE_COMBO_FALSE, null);
+                }else {
+                    //check số lượng của sản phẩm còn lại đề tạo combo
+                    if(comboRequestDTO.getQuantity() <= productDetail.getQuantity()){
+                        listComboDetails.add(new ComboDetail(
+                                dto.getIdComboDetail(),
+                                null,
+                                dto.getIdProductDetail()
+                        ));
+                    }else {
+                        return new ServiceResult<>(HttpStatus.OK,"Số lượng tối đa bạn có thể tạo là : "+ productDetail.getQuantity() , null);
+                    }
+                }
+            }
 
             List<Long> listIdProductDetail = new ArrayList<>();
 
@@ -86,18 +88,14 @@ public class ComboServiceImpl implements ComboService {
                 listIdProductDetail.add(longValue);
             }
 
-            List<ProductDetail> productDetailsInCombo = this.productDetailRepository.findAllByListIdProductDetailAndSort(listIdProductDetail);
-
-            if(productDetailsInCombo.get(0).getQuantity()< comboRequestDTO.getQuantity()){
-                return new ServiceResult<>(HttpStatus.OK,"Số lượng tối đa bạn có thể tạo là : "+ productDetailsInCombo.get(0).getQuantity() , null);
+            if(Objects.nonNull(comboRequestDTO.getIdCombo())){
+                productDetailsInCombo = productDetailsInCombo.stream().map(productDetail -> {
+                    productDetail.setQuantity(productDetail.getQuantity()-comboRequestDTO.getQuantity());
+                    return productDetail;
+                }).collect(Collectors.toList());
+                this.productDetailRepository.saveAll(productDetailsInCombo);
             }
 
-            productDetailsInCombo = productDetailsInCombo.stream().map(productDetail -> {
-                productDetail.setQuantity(productDetail.getQuantity()-comboRequestDTO.getQuantity());
-                return productDetail;
-            }).collect(Collectors.toList());
-
-            this.productDetailRepository.saveAll(productDetailsInCombo);
             Combo comboSaved = this.comboRepository.save(combo);
 
             listComboDetails = listComboDetails.stream().peek(
