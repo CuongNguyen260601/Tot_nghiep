@@ -31,7 +31,7 @@ public class StatisticalServiceImpl implements StatisticalService {
 
         Query queryStatus = em.createQuery("select new SummaryStatusBillDTO(b.idStatus,  s.nameStatus, count(b.idBill)) " +
                        "from Bill b join Status s on b.idStatus = s.idStatus " +
-                       "where month(b.dateCreate) = :month and year(b.dateSuccess) = :year " +
+                       "where month(b.dateCreate) = :month and year(b.dateCreate) = :year " +
                        "group by b.idStatus,s.nameStatus",  SummaryStatusBillDTO.class);
         queryStatus.setParameter("month", month);
         queryStatus.setParameter("year", year);
