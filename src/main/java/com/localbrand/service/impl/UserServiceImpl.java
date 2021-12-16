@@ -137,7 +137,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setLastName(userUpdateRequestDTO.getLastName());
         user.setDateOfBirth(userUpdateRequestDTO.getDateOfBirth());
         user.setPhoneNumber(userUpdateRequestDTO.getPhoneNumber());
-        user.setPasswordUser(passwordEncoder.encode(userUpdateRequestDTO.getPasswordUser()));
         user.setIdGender(userUpdateRequestDTO.getIdGender());
         user.setImageUser(userUpdateRequestDTO.getImageUser());
 

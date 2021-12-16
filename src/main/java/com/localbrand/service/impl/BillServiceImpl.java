@@ -207,6 +207,23 @@ public class BillServiceImpl implements BillService {
 
         bill = this.billRepository.save(bill);
 
+        Voucher voucherDonate = this.voucherRepository.findFirstByCondition(Status_Enum.EXISTS.getCode(),total).orElse(null);
+
+        if(Objects.nonNull(voucherDonate) && bill.getIdStatus().equals(Status_Enum.PAID.getCode())){
+            VoucherUser voucherUser = this.voucherUserRepository.findByIdVoucherAndAndIdUser(voucherDonate.getIdVoucher().intValue(), bill.getIdUser()).orElse(null);
+            if(Objects.nonNull(voucherUser)){
+                voucherUser.setQuantity(voucherUser.getQuantity()+1);
+            }else{
+                VoucherUser voucherDonateUser = VoucherUser
+                        .builder()
+                        .idVoucher(voucherDonate.getIdVoucher().intValue())
+                        .idUser(bill.getIdUser())
+                        .quantity(1)
+                        .build();
+                this.voucherUserRepository.save(voucherDonateUser);
+            }
+        }
+
         this.billProductRepository.saveAll(lstBillProduct);
         this.billComboRepository.saveAll(lstBillCombo);
 
