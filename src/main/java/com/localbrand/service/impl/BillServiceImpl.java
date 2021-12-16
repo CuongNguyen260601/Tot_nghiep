@@ -205,9 +205,14 @@ public class BillServiceImpl implements BillService {
 
         bill.setPayment(total-bill.getDeposit());
 
+        if(bill.getIdStatus().equals(Status_Enum.PAID.getCode())){
+            bill.setDateSuccess(Date.valueOf(java.time.LocalDate.now()));
+        }
+
         bill = this.billRepository.save(bill);
 
         Voucher voucherDonate = this.voucherRepository.findFirstByCondition(Status_Enum.EXISTS.getCode(),total).orElse(null);
+
 
         if(Objects.nonNull(voucherDonate) && bill.getIdStatus().equals(Status_Enum.PAID.getCode())){
             VoucherUser voucherUser = this.voucherUserRepository.findByIdVoucherAndAndIdUser(voucherDonate.getIdVoucher().intValue(), bill.getIdUser()).orElse(null);
