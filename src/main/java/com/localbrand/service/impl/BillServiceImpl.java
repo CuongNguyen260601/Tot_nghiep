@@ -1,9 +1,6 @@
 package com.localbrand.service.impl;
 
-import com.localbrand.common.Action_Enum;
-import com.localbrand.common.Module_Enum;
-import com.localbrand.common.ServiceResult;
-import com.localbrand.common.Status_Enum;
+import com.localbrand.common.*;
 import com.localbrand.dto.request.BillRequestDTO;
 import com.localbrand.dto.response.*;
 import com.localbrand.entity.*;
@@ -15,6 +12,7 @@ import com.localbrand.model_mapping.Impl.BillMapping;
 import com.localbrand.model_mapping.Impl.BillProductMapping;
 import com.localbrand.repository.*;
 import com.localbrand.service.BillService;
+import com.localbrand.service.MailService;
 import com.localbrand.utils.Role_Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +49,8 @@ public class BillServiceImpl implements BillService {
     private final BillComboMapping billComboMapping;
     private final CartComboRepository cartComboRepository;
     private final BillComboRepository billComboRepository;
+    private final MailService mailService;
+    private final UserRepository userRepository;
 
 
     @Transactional(rollbackOn = Exception.class)
@@ -211,21 +211,26 @@ public class BillServiceImpl implements BillService {
 
         bill = this.billRepository.save(bill);
 
-        Voucher voucherDonate = this.voucherRepository.findFirstByCondition(Status_Enum.EXISTS.getCode(),total).orElse(null);
 
+        User user = this.userRepository.findById(bill.getIdUser().longValue()).orElse(null);
 
-        if(Objects.nonNull(voucherDonate) && bill.getIdStatus().equals(Status_Enum.PAID.getCode())){
-            VoucherUser voucherUser = this.voucherUserRepository.findByIdVoucherAndAndIdUser(voucherDonate.getIdVoucher().intValue(), bill.getIdUser()).orElse(null);
-            if(Objects.nonNull(voucherUser)){
-                voucherUser.setQuantity(voucherUser.getQuantity()+1);
-            }else{
-                VoucherUser voucherDonateUser = VoucherUser
+        if(Objects.nonNull(user) && user.getIdRole().equals(Role_Id_Enum.ROLE_USER.getId())){
+            Voucher voucherDonate = this.voucherRepository.findFirstByCondition(Status_Enum.EXISTS.getCode(),total).orElse(null);
+
+            if(Objects.nonNull(voucherDonate) && bill.getIdStatus().equals(Status_Enum.PAID.getCode())){
+                VoucherUser voucherUser = this.voucherUserRepository.findByIdVoucherAndAndIdUser(voucherDonate.getIdVoucher().intValue(), bill.getIdUser()).orElse(null);
+                if(Objects.nonNull(voucherUser)){
+                    voucherUser.setQuantity(voucherUser.getQuantity()+1);
+                }else{
+                    VoucherUser voucherDonateUser = VoucherUser
                         .builder()
                         .idVoucher(voucherDonate.getIdVoucher().intValue())
                         .idUser(bill.getIdUser())
                         .quantity(1)
                         .build();
-                this.voucherUserRepository.save(voucherDonateUser);
+                    this.voucherUserRepository.save(voucherDonateUser);
+                }
+                mailService.sendEmailBillSuccess(user,voucherDonate);
             }
         }
 

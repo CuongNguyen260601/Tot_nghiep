@@ -202,7 +202,7 @@
     <tbody>
     <tr>
         <td>
-            <h3 class="login-title">Xin chào <span th:text="${nameUser}" ></span></h3>
+            <h3 class="login-title">Xin chào admin!</h3>
         </td>
     </tr>
     <tr>
@@ -228,7 +228,7 @@
                                     <tr th:each="pr : ${prList}" class="table-child__item">
                                         <td th:text="${pr.index}"></td>
                                         <td th:text="${pr.nameStatus}"></td>
-                                        <td th:text="${pr.quantity}"></td>
+                                        <td th:text="${pr.totalBill}"></td>
                                     </tr>
                                 </table>
                             </div>
@@ -245,7 +245,7 @@
     <tr>
         <td style="text-align: center">
             <button class="btn-email" style="margin-top: 40px">
-                <a th:href="@{${linkViewContract}}"
+                <a th:href="@{${linkShop}}"
                    target="_blank">Xem thống kê</a>
             </button>
         </td>
