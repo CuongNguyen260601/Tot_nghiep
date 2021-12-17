@@ -163,6 +163,22 @@ public class BillServiceImpl implements BillService {
         this.billComboRepository.saveAll(lstBillCombo);
 
 
+        if(bill.getIdStatus().equals(Status_Enum.CANCEL.getCode())){
+            List<BillProduct> billProducts = this.billProductRepository.findAllByIdBillAndIdStatus(bill.getIdBill().intValue(), Status_Enum.EXISTS.getCode());
+            List<BillCombo> billCombos = this.billComboRepository.findAllByIdBillAndIdStatus(bill.getIdBill().intValue(), Status_Enum.EXISTS.getCode());
+            billProducts.forEach(billProduct -> {
+                billProduct.setIdStatus(Status_Enum.DELETE.getCode());
+            });
+
+            billCombos.forEach(billCombo -> {
+                billCombo.setIdStatus(Status_Enum.DELETE.getCode());
+            });
+
+
+            this.billProductRepository.saveAll(billProducts);
+            this.billComboRepository.saveAll(billCombos);
+        }
+
         return new ServiceResult<>(HttpStatus.OK, Notification.Bill.SAVE_BILL_SUCCESS, this.billMapping.toDto(bill));
     }
 
@@ -236,6 +252,22 @@ public class BillServiceImpl implements BillService {
 
         this.billProductRepository.saveAll(lstBillProduct);
         this.billComboRepository.saveAll(lstBillCombo);
+
+        if(bill.getIdStatus().equals(Status_Enum.CANCEL.getCode())){
+            List<BillProduct> billProducts = this.billProductRepository.findAllByIdBillAndIdStatus(bill.getIdBill().intValue(), Status_Enum.EXISTS.getCode());
+            List<BillCombo> billCombos = this.billComboRepository.findAllByIdBillAndIdStatus(bill.getIdBill().intValue(), Status_Enum.EXISTS.getCode());
+            billProducts.forEach(billProduct -> {
+                billProduct.setIdStatus(Status_Enum.DELETE.getCode());
+            });
+
+            billCombos.forEach(billCombo -> {
+                billCombo.setIdStatus(Status_Enum.DELETE.getCode());
+            });
+
+
+            this.billProductRepository.saveAll(billProducts);
+            this.billComboRepository.saveAll(billCombos);
+        }
 
         return new ServiceResult<>(HttpStatus.OK, Notification.Bill.SAVE_BILL_SUCCESS, this.billMapping.toDto(bill));
     }
