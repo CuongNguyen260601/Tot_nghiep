@@ -1,8 +1,12 @@
 package com.localbrand.service.impl;
 
 import com.localbrand.dto.MailMessageDTO;
+import com.localbrand.dto.response.statistical.SummaryStatusBillDTO;
 import com.localbrand.entity.User;
+import com.localbrand.entity.Voucher;
 import com.localbrand.service.MailService;
+import com.localbrand.service.StatisticalService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,26 +18,20 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
+@RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
 
     private final JavaMailSender emailSender;
     private final TemplateServiceImpl templateService;
     public static String linkShop = "http://localhost:8080/";
     private final Logger log = LoggerFactory.getLogger(MailServiceImpl.class);
+    private final StatisticalService statisticalService;
 
     List<MailMessageDTO> list = new ArrayList<>();
-
-    public MailServiceImpl(JavaMailSender emailSender, TemplateServiceImpl templateService) {
-        this.emailSender = emailSender;
-        this.templateService = templateService;
-    }
 
     @Override
     public String sendEmail(MailMessageDTO mailMessageDTO) throws MessagingException,IOException {
@@ -71,7 +69,36 @@ public class MailServiceImpl implements MailService {
         this.log.info("send email for : " + mailMessageDTO.getTo() + " okee");
 
         emailSender.send(message);
-        return "okee";
+        return "oke";
+    }
+
+    @Override
+    public String sendEmailBillByDate(List<SummaryStatusBillDTO> list11) {
+
+        this.log.info("send email report by date");
+
+        List<SummaryStatusBillDTO> lisTSendMail = new ArrayList<>();
+        list11.forEach(summaryStatusBillDTO -> {
+            if(summaryStatusBillDTO.getTotalBill() > 0){
+                lisTSendMail.add(summaryStatusBillDTO);
+            }
+        });
+
+        Date date1 = new Date();
+
+
+        MailMessageDTO mailMessageDTO = new MailMessageDTO();
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("date",date1.toString());
+        variables.put("prList",lisTSendMail);
+        variables.put("linkShop",linkShop);
+
+        mailMessageDTO.setTo("cuongnt2001.06.26@gmail.com");
+        mailMessageDTO.setSubject("Report bill of "+date1.toString());
+        mailMessageDTO.setVariables(variables);
+        list.add(mailMessageDTO);
+        return "oke";
     }
 
     @Override
@@ -89,6 +116,23 @@ public class MailServiceImpl implements MailService {
         mailMessageDTO.setTo(user.getEmail());
         mailMessageDTO.setSubject("Reset Password");
         mailMessageDTO.setContent("ResetPassword");
+        mailMessageDTO.setVariables(variables);
+        list.add(mailMessageDTO);
+        return "oke";
+    }
+
+    @Override
+    public String sendEmailBillSuccess(User user, Voucher voucher) {
+        this.log.info("send email bill success : " + voucher.getIdVoucher());
+
+        MailMessageDTO mailMessageDTO = new MailMessageDTO();
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("discount",voucher.getDiscount());
+        variables.put("code",voucher.getCodeVoucher());
+        variables.put("linkShop",linkShop);
+        mailMessageDTO.setTo(user.getEmail());
+        mailMessageDTO.setSubject("Bill success");
         mailMessageDTO.setVariables(variables);
         list.add(mailMessageDTO);
         return "oke";
