@@ -53,7 +53,7 @@ public interface ProductSaleRepository extends JpaRepository<ProductSale, Long>,
     List<ProductSale> findAllByIdSale(Integer idSale);
 
     @Query(
-            value = "select ps from _Product_Sale ps " +
+            value = "select * from _Product_Sale ps " +
                     " where idSale = :idSale " +
                     "    and   idStatus = :idStatus " +
                     "    and ps.dateEnd <= getdate()",
