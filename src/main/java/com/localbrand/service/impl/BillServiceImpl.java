@@ -80,6 +80,17 @@ public class BillServiceImpl implements BillService {
             }
         }
 
+        if(Objects.nonNull(billRequestDTO.getIdBill())){
+            List<BillProduct> billProducts = this.billProductRepository.findAllByIdBill(billRequestDTO.getIdBill().intValue());
+            List<BillCombo> billCombos = this.billComboRepository.findAllByIdBill(billRequestDTO.getIdBill().intValue());
+
+            if(billProducts.size()>0){
+                this.billProductRepository.deleteAll(billProducts);
+            }
+            if(billCombos.size()>0){
+                this.billComboRepository.deleteAll(billCombos);
+            }
+        }
         Bill bill = this.billMapping.toEntitySave(billRequestDTO);
 
         if(Objects.nonNull(voucher)){
@@ -106,6 +117,7 @@ public class BillServiceImpl implements BillService {
         }
 
         bill = this.billRepository.save(bill);
+        
 
         List<BillProduct> lstBillProduct = this.billProductMapping.toListProduct(bill, billRequestDTO);
         List<BillCombo> lstBillCombo = this.billComboMapping.toListCombo(bill, billRequestDTO);
@@ -186,6 +198,18 @@ public class BillServiceImpl implements BillService {
     @Override
     public ServiceResult<BillResponseDTO> saveBillAdmin(BillRequestDTO billRequestDTO) {
         log.info("Save bill");
+
+        if(Objects.nonNull(billRequestDTO.getIdBill())){
+            List<BillProduct> billProducts = this.billProductRepository.findAllByIdBill(billRequestDTO.getIdBill().intValue());
+            List<BillCombo> billCombos = this.billComboRepository.findAllByIdBill(billRequestDTO.getIdBill().intValue());
+
+            if(billProducts.size()>0){
+                this.billProductRepository.deleteAll(billProducts);
+            }
+            if(billCombos.size()>0){
+                this.billComboRepository.deleteAll(billCombos);
+            }
+        }
 
         Bill bill = this.billMapping.toEntitySave(billRequestDTO);
 
