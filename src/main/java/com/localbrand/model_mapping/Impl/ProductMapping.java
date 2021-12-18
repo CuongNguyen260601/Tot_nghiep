@@ -306,7 +306,7 @@ public class ProductMapping implements Mapping<ProductRequestDTO, Product> {
         productShowUserResponseDTO.setCategoryChildDTO(this.categoryChildMapping.toDto(this.categoryRepository.findCategoryChildByIdProduct(product.getIdProduct())));
         productShowUserResponseDTO.setCategoryParentDTO(this.categoryParentMapping.toDto(this.categoryRepository.findCategoryParentByIdProduct(product.getIdProduct())));
         productShowUserResponseDTO.setIsLike(false);
-        List<ProductDetail> productDetails = this.productDetailRepository.findAllByIdProduct(product.getIdProduct().intValue());
+        List<ProductDetail> productDetails = this.productDetailRepository.findAllByIdProductSale(product.getIdProduct().intValue(), Status_Enum.EXISTS.getCode(), Status_Enum.EXISTS.getCode());
 
         List<ProductChildResponseDTO> productChildResponseDTOS = new ArrayList<>();
 

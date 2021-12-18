@@ -13,6 +13,18 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
 
     List<ProductDetail> findAllByIdProduct(Integer idProduct);
 
+    @Query(
+            value = "select pd from _Product_Detail pd " +
+                    " join _Product p on p.idProduct = pd.idProduct " +
+                    " join _Product_Sale ps on pd.idProductDetail = ps.idProductDetail " +
+                    " where p.idProduct = :idProduct " +
+                    "    and pd.idStatus = :idStatusPD " +
+                    "    and ps.idStatus = :idStatusPS " +
+                    "    and ps.dateEnd <= getdate()",
+            nativeQuery = true
+    )
+    List<ProductDetail> findAllByIdProductSale(Integer idProduct, Integer idStatusPD, Integer idStatusPS);
+
     Page<ProductDetail> findAllByIdProduct(Integer idProduct, Pageable pageable);
 
     @Query(
