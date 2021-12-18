@@ -20,7 +20,7 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
                     " where p.idProduct = :idProduct " +
                     "    and pd.idStatus = :idStatusPD " +
                     "    and ps.idStatus = :idStatusPS " +
-                    "    and ps.dateEnd <= getdate()",
+                    "    and ps.dateEnd >= getdate()",
             nativeQuery = true
     )
     List<ProductDetail> findAllByIdProductSale(Integer idProduct, Integer idStatusPD, Integer idStatusPS);

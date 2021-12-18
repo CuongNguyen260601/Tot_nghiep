@@ -56,7 +56,7 @@ public interface ProductSaleRepository extends JpaRepository<ProductSale, Long>,
             value = "select * from _Product_Sale ps " +
                     " where idSale = :idSale " +
                     "    and   idStatus = :idStatus " +
-                    "    and ps.dateEnd <= getdate()",
+                    "    and ps.dateEnd >= getdate()",
             nativeQuery = true
     )
     List<ProductSale> findAllByIdSaleExists(Integer idSale, Integer idStatus);
