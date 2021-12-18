@@ -65,48 +65,49 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         User user = (User) authentication.getPrincipal();
 
-//        if(request.getRequestURL().toString().contains("api/webtpf/login")){
-//            user.getAuthorities().forEach(grantedAuthority -> {
-//                if(grantedAuthority.getAuthority().equals(Role_Enum.ROLE_USER.getRole())) {
-//                    try {
-//                        response.setStatus(500);
-//                        new ObjectMapper().writeValue(response.getOutputStream(), "you not admin");
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    return;
-//                }
-//            });
-//        }
+        if(request.getRequestURL().toString().contains("api/webtpf/login")){
+            user.getAuthorities().forEach(grantedAuthority -> {
+                if(grantedAuthority.getAuthority().equals(Role_Enum.ROLE_USER.getRole())) {
+                    try {
+                        response.setStatus(500);
+                        new ObjectMapper().writeValue(response.getOutputStream(), "you not admin");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                }
+            });
+        }else{
 
-        Algorithm algorithm = Algorithm.HMAC256(Security_Enum.SECRET.getSecret().getBytes());
-        String access_token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + JWT_Enum.ACCESS_MINUTE.getValue()*60*1000))
-                .withIssuer(request.getRequestURL().toString())
-                .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .sign(algorithm);
-        String refresh_token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + JWT_Enum.REFRESH_MINUTE.getValue()*60*1000))
-                .withIssuer(request.getRequestURL().toString())
-                .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .sign(algorithm);
-        com.localbrand.entity.User userEntity = userRepository.findFirstByEmailEqualsIgnoreCase(user.getUsername()).orElse(null);
-        Jwt jwtFind  = this.jwtRepository.findByIdUser(userEntity.getIdUser().intValue()).orElse(null);
-        if(Objects.nonNull(jwtFind)){
-            this.jwtRepository.delete(jwtFind);
+            Algorithm algorithm = Algorithm.HMAC256(Security_Enum.SECRET.getSecret().getBytes());
+            String access_token = JWT.create()
+                    .withSubject(user.getUsername())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + JWT_Enum.ACCESS_MINUTE.getValue()*60*1000))
+                    .withIssuer(request.getRequestURL().toString())
+                    .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                    .sign(algorithm);
+            String refresh_token = JWT.create()
+                    .withSubject(user.getUsername())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + JWT_Enum.REFRESH_MINUTE.getValue()*60*1000))
+                    .withIssuer(request.getRequestURL().toString())
+                    .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                    .sign(algorithm);
+            com.localbrand.entity.User userEntity = userRepository.findFirstByEmailEqualsIgnoreCase(user.getUsername()).orElse(null);
+            Jwt jwtFind  = this.jwtRepository.findByIdUser(userEntity.getIdUser().intValue()).orElse(null);
+            if(Objects.nonNull(jwtFind)){
+                this.jwtRepository.delete(jwtFind);
+            }
+            Jwt jwt = Jwt
+                    .builder()
+                    .idUser(userEntity.getIdUser().intValue())
+                    .jwtToken(refresh_token)
+                    .endTime(Timestamp.from(Instant.now().plusMillis(JWT_Enum.REFRESH_MINUTE.getValue()*60*1000)))
+                    .isActive(true)
+                    .build();
+            this.jwtRepository.save(jwt);
+            UserResponseSignupDTO userResponseSignupDTO = this.userMapping.toDtoSignup(userEntity, access_token, refresh_token);
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), userResponseSignupDTO);
         }
-        Jwt jwt = Jwt
-                .builder()
-                .idUser(userEntity.getIdUser().intValue())
-                .jwtToken(refresh_token)
-                .endTime(Timestamp.from(Instant.now().plusMillis(JWT_Enum.REFRESH_MINUTE.getValue()*60*1000)))
-                .isActive(true)
-                .build();
-        this.jwtRepository.save(jwt);
-        UserResponseSignupDTO userResponseSignupDTO = this.userMapping.toDtoSignup(userEntity, access_token, refresh_token);
-        response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), userResponseSignupDTO);
     }
 }
