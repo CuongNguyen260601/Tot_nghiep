@@ -79,7 +79,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             " where p.idStatus = :idStatusP "+
             " and pd.idStatus = :idStatusPd "+
             " and ps.idStatus = :idStatusPs "+
-            " and ps.dateEnd <= (getdate()) ",
+            " and ps.dateEnd >= (getdate()) ",
             nativeQuery = true
     )
     Page<Product> findAllByIsSale(Integer idStatusP, Integer idStatusPd, Integer idStatusPs, Pageable pageable);
