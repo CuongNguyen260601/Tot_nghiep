@@ -39,7 +39,7 @@ public interface ProductSaleRepository extends JpaRepository<ProductSale, Long>,
     )
     void UpdateSaleByIdProductDetail(Integer prevStatus, Integer nextStatus, List<Integer> idProductDetail);
 
-    Page<ProductSale> findAllByIdStatusAndIdSale(Integer idStatus, Integer idSale, Pageable pageable);
+    Page<ProductSale> findAllByIdSale(Integer idSale, Pageable pageable);
 
     List<ProductSale> findAllByIdStatus(Integer idStatus);
 
@@ -51,4 +51,13 @@ public interface ProductSaleRepository extends JpaRepository<ProductSale, Long>,
     List<ProductSale> findAllByDateEndAndIdStatus();
 
     List<ProductSale> findAllByIdSale(Integer idSale);
+
+    @Query(
+            value = "select ps from _Product_Sale ps " +
+                    " where idSale = :idSale " +
+                    "    and   idStatus = :idStatus " +
+                    "    and ps.dateEnd <= getdate()",
+            nativeQuery = true
+    )
+    List<ProductSale> findAllByIdSaleExists(Integer idSale, Integer idStatus);
 }

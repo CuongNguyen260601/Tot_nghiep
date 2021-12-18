@@ -2,6 +2,7 @@ package com.localbrand.service.impl;
 
 import com.localbrand.common.*;
 import com.localbrand.dto.SaleDTO;
+import com.localbrand.dto.SaleResponseDTO;
 import com.localbrand.entity.Sale;
 import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.SaleMapping;
@@ -32,7 +33,7 @@ public class SaleServiceImpl implements SaleService{
     private final SaleMapping saleMapping;
 
     @Override
-    public ServiceResult<List<SaleDTO>> findAll(Optional<Integer> page) {
+    public ServiceResult<List<SaleResponseDTO>> findAll(Optional<Integer> page) {
 
         this.log.info("Get list sale with page");
 
@@ -42,12 +43,12 @@ public class SaleServiceImpl implements SaleService{
 
         List<Sale> listSale = this.saleRepository.findAll(pageable).toList();
 
-        return new ServiceResult<>(HttpStatus.OK, Notification.Sale.GET_LIST_SALE_SUCCESS, listSale.stream().map(this.saleMapping::toDto).collect(Collectors.toList()));
+        return new ServiceResult<>(HttpStatus.OK, Notification.Sale.GET_LIST_SALE_SUCCESS, listSale.stream().map(this.saleMapping::toResponseDto).collect(Collectors.toList()));
 
     }
 
     @Override
-    public ServiceResult<List<SaleDTO>> findAllAndSort(Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<SaleResponseDTO>> findAllAndSort(Optional<Integer> sort, Optional<Integer> idStatus, Optional<Integer> page) {
 
         this.log.info("Get list sale with page and sort");
 
@@ -70,12 +71,12 @@ public class SaleServiceImpl implements SaleService{
         else
             listSale = this.saleRepository.findAllByIdStatus(idStatus.get(), pageable).toList();
 
-        return new ServiceResult<>(HttpStatus.OK, Notification.Sale.GET_SALE_AND_SORT_SUCESS, listSale.stream().map(this.saleMapping::toDto).collect(Collectors.toList()));
+        return new ServiceResult<>(HttpStatus.OK, Notification.Sale.GET_SALE_AND_SORT_SUCESS, listSale.stream().map(this.saleMapping::toResponseDto).collect(Collectors.toList()));
 
     }
 
     @Override
-    public ServiceResult<SaleDTO> getById(Optional<Long> idSale) {
+    public ServiceResult<SaleResponseDTO> getById(Optional<Long> idSale) {
 
         this.log.info("Get sale by id");
 
@@ -86,12 +87,12 @@ public class SaleServiceImpl implements SaleService{
         if (Objects.isNull(sale))
             return new ServiceResult<>(HttpStatus.NOT_FOUND, Notification.Sale.GET_SALE_BY_ID_FALSE, null);
 
-        return new ServiceResult<>(HttpStatus.OK, Notification.Sale.GET_SALE_BY_ID_SUCCESS,this.saleMapping.toDto(sale));
+        return new ServiceResult<>(HttpStatus.OK, Notification.Sale.GET_SALE_BY_ID_SUCCESS,this.saleMapping.toResponseDto(sale));
     }
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<SaleDTO> save(SaleDTO saleDTO) {
+    public ServiceResult<SaleResponseDTO> save(SaleDTO saleDTO) {
         this.log.info("Save sale: "+ saleDTO);
 
         try {
@@ -99,7 +100,7 @@ public class SaleServiceImpl implements SaleService{
 
             Sale saleSaved = this.saleRepository.save(sale);
 
-            return new ServiceResult<>(HttpStatus.OK, Notification.Sale.SAVE_SALE_SUCCESS, this.saleMapping.toDto(saleSaved));
+            return new ServiceResult<>(HttpStatus.OK, Notification.Sale.SAVE_SALE_SUCCESS, this.saleMapping.toResponseDto(saleSaved));
         }catch (Exception ex){
 
             this.log.error(ex.getMessage(), ex);
@@ -111,7 +112,7 @@ public class SaleServiceImpl implements SaleService{
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public ServiceResult<SaleDTO> delete(SaleDTO saleDTO) {
+    public ServiceResult<SaleResponseDTO> delete(SaleDTO saleDTO) {
 
         this.log.info("Delete sale: "+ saleDTO);
 
@@ -122,7 +123,7 @@ public class SaleServiceImpl implements SaleService{
 
             Sale saleDelete = this.saleRepository.save(sale);
 
-            return new ServiceResult<>(HttpStatus.OK, Notification.Sale.DELETE_SALE_SUCCESS, this.saleMapping.toDto(saleDelete));
+            return new ServiceResult<>(HttpStatus.OK, Notification.Sale.DELETE_SALE_SUCCESS, this.saleMapping.toResponseDto(saleDelete));
         }catch (Exception ex){
 
             this.log.error(ex.getMessage(), ex);
@@ -132,7 +133,7 @@ public class SaleServiceImpl implements SaleService{
     }
 
     @Override
-    public ServiceResult<List<SaleDTO>> searchByName(String nameSale, Optional<Integer> page) {
+    public ServiceResult<List<SaleResponseDTO>> searchByName(String nameSale, Optional<Integer> page) {
 
         this.log.info("Get list sale by name and page");
 
@@ -142,11 +143,11 @@ public class SaleServiceImpl implements SaleService{
 
         List<Sale> listSale = this.saleRepository.findAllByNameSaleLike("%"+nameSale+"%",pageable).toList();
 
-        return new ServiceResult<>(HttpStatus.OK, Notification.Sale.SEARCH_SALE_SUCCESS, listSale.stream().map(this.saleMapping::toDto).collect(Collectors.toList()));
+        return new ServiceResult<>(HttpStatus.OK, Notification.Sale.SEARCH_SALE_SUCCESS, listSale.stream().map(this.saleMapping::toResponseDto).collect(Collectors.toList()));
     }
 
     @Override
-    public ServiceResult<List<SaleDTO>> findByStatus(Optional<Integer> idStatus, Optional<Integer> page) {
+    public ServiceResult<List<SaleResponseDTO>> findByStatus(Optional<Integer> idStatus, Optional<Integer> page) {
 
         this.log.info("Get list sale by status and page");
 
@@ -163,6 +164,6 @@ public class SaleServiceImpl implements SaleService{
 
         List<Sale> listSale = this.saleRepository.findAllByIdStatus(idStatus.orElse(2),pageable).toList();
 
-        return new ServiceResult<>(HttpStatus.OK, Notification.Sale.FIND_SALE_BY_STATUS_SUCCESS, listSale.stream().map(this.saleMapping::toDto).collect(Collectors.toList()));
+        return new ServiceResult<>(HttpStatus.OK, Notification.Sale.FIND_SALE_BY_STATUS_SUCCESS, listSale.stream().map(this.saleMapping::toResponseDto).collect(Collectors.toList()));
     }
 }
