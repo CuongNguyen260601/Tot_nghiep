@@ -73,7 +73,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Page<Product> findAllByIdStatus(Integer idStatus, Pageable pageable);
 
     @Query(
-            value = "select p from _Product p "+
+            value = "select * from _Product p "+
             " join _Product_Detail pd on p.idProduct = pd.idProduct "+
             " join _Product_Sale ps on ps.idProductDetail = ps.idProductDetail "+
             " where p.idStatus = :idStatusP "+

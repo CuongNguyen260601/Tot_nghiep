@@ -14,7 +14,7 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     List<ProductDetail> findAllByIdProduct(Integer idProduct);
 
     @Query(
-            value = "select pd from _Product_Detail pd " +
+            value = "select * from _Product_Detail pd " +
                     " join _Product p on p.idProduct = pd.idProduct " +
                     " join _Product_Sale ps on pd.idProductDetail = ps.idProductDetail " +
                     " where p.idProduct = :idProduct " +
