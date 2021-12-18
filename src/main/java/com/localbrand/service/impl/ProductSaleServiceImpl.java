@@ -6,19 +6,13 @@ import com.localbrand.dto.request.CancelSaleRequestDTO;
 import com.localbrand.dto.request.ProductSaleCancelRequestDTO;
 import com.localbrand.dto.request.ProductSaleDetail;
 import com.localbrand.dto.request.ProductSaleRequestDTO;
-import com.localbrand.dto.response.ProductChildResponseDTO;
-import com.localbrand.dto.response.ProductDetailSaleResponseDTO;
-import com.localbrand.dto.response.ProductSaleListResponseDTO;
-import com.localbrand.dto.response.ProductSaleResponseDTO;
-import com.localbrand.entity.ProductDetail;
-import com.localbrand.entity.ProductSale;
-import com.localbrand.entity.Sale;
+import com.localbrand.dto.response.*;
+import com.localbrand.entity.*;
+import com.localbrand.exception.Notification;
 import com.localbrand.model_mapping.Impl.ProductMapping;
 import com.localbrand.model_mapping.Impl.ProductSaleMapping;
 import com.localbrand.model_mapping.Impl.SaleMapping;
-import com.localbrand.repository.ProductDetailRepository;
-import com.localbrand.repository.ProductSaleRepository;
-import com.localbrand.repository.SaleRepository;
+import com.localbrand.repository.*;
 import com.localbrand.service.ProductSaleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +39,8 @@ public class ProductSaleServiceImpl implements ProductSaleService {
     private final SaleMapping saleMapping;
     private final SaleRepository saleRepository;
     private final ProductMapping productMapping;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public ServiceResult<ProductSaleResponseDTO> addSaleToProductDetail(ProductSaleRequestDTO productSaleRequestDTO) {
@@ -124,7 +120,7 @@ public class ProductSaleServiceImpl implements ProductSaleService {
 
         Sale sale = this.saleRepository.findById(idSale.get().longValue()).orElse(null);
 
-        List<ProductSale> productSales = this.productSaleRepository.findAllByIdStatusAndIdSale(Status_Enum.EXISTS.getCode(), idSale.get(),pageable).toList();
+        List<ProductSale> productSales = this.productSaleRepository.findAllByIdSale(idSale.get(),pageable).toList();
 
         List<Long> listProductDetailId = productSales.stream().map(productSale -> productSale.getIdProductDetail().longValue()).collect(Collectors.toList());
 
@@ -146,6 +142,33 @@ public class ProductSaleServiceImpl implements ProductSaleService {
             productSaleResponseDTO.setSaleDTO(this.saleMapping.toDto(sale));
         }
         return new ServiceResult<>(HttpStatus.OK, "get list product sale is success", productSaleResponseDTO);
+    }
+
+
+    @Override
+    public ServiceResult<List<ProductShowUserResponseDTO>> getListProductSaleUser(Optional<Integer> page, Optional<Integer> limit, Optional<Long> userId) {
+
+        User user;
+
+        if(userId.isEmpty() || userId.get() < 1){
+            user = null;
+        }else{
+            user = this.userRepository.findById(userId.get()).orElse(null);
+        }
+
+        if (page.isEmpty() || page.get() < 0) return new ServiceResult<>(HttpStatus.BAD_REQUEST, Notification.PAGE_INVALID, null);
+
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.get());
+        List<Product> listProduct = this.productRepository.findAllByIsSale(Status_Enum.EXISTS.getCode(), Status_Enum.EXISTS.getCode(), Status_Enum.EXISTS.getCode(), pageable).toList();
+
+        List<ProductShowUserResponseDTO> listProductShowUserResponseDTOS;
+
+        if(Objects.isNull(user)){
+            listProductShowUserResponseDTOS = listProduct.stream().map(this.productMapping::toProductShowUser).collect(Collectors.toList());
+        }else {
+            listProductShowUserResponseDTOS = listProduct.stream().map(product -> this.productMapping.toProductShowUserAndLike(product, user)).collect(Collectors.toList());
+        }
+        return new ServiceResult<>(HttpStatus.OK, Notification.Product.GET_LIST_PRODUCT_ON_USER_SUCCESS, listProductShowUserResponseDTOS);
 
     }
 }

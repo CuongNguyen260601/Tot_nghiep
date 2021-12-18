@@ -73,6 +73,18 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Page<Product> findAllByIdStatus(Integer idStatus, Pageable pageable);
 
     @Query(
+            value = "select p from _Product p "+
+            " join _Product_Detail pd on p.idProduct = pd.idProduct "+
+            " join _Product_Sale ps on ps.idProductDetail = ps.idProductDetail "+
+            " where p.idStatus = :idStatusP "+
+            " and pd.idStatus = :idStatusPd "+
+            " and ps.idStatus = :idStatusPs "+
+            " and ps.dateEnd <= (getdate()) ",
+            nativeQuery = true
+    )
+    Page<Product> findAllByIsSale(Integer idStatusP, Integer idStatusPd, Integer idStatusPs, Pageable pageable);
+
+    @Query(
             "select p from Product p " +
                     " where p.idProduct in "+
             "(select distinct(p1.idProduct) from Product p1 " +

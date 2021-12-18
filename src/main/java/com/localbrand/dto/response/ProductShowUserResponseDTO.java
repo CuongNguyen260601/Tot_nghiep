@@ -23,4 +23,6 @@ public class ProductShowUserResponseDTO extends ProductParentResponseDTO{
     private Integer like;
 
     private Boolean isLike;
+
+    private List<ProductChildResponseDTO> listProductSale;
 }

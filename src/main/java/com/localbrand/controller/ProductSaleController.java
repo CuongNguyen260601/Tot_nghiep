@@ -7,6 +7,7 @@ import com.localbrand.dto.request.ProductSaleCancelRequestDTO;
 import com.localbrand.dto.request.ProductSaleRequestDTO;
 import com.localbrand.dto.response.ProductSaleListResponseDTO;
 import com.localbrand.dto.response.ProductSaleResponseDTO;
+import com.localbrand.dto.response.ProductShowUserResponseDTO;
 import com.localbrand.service.ProductSaleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -47,12 +48,12 @@ public class ProductSaleController {
     }
 
     @GetMapping(Interface_API.API.ProductSale.PRODUCT_SALE_GET_LIST_USER)
-    public ResponseEntity<ServiceResult<ProductSaleResponseDTO>> getListSaleProductUser(
-            @RequestParam Optional<Integer> idSale,
+    public ResponseEntity<ServiceResult<List<ProductShowUserResponseDTO>>> getListSaleProductUser(
+            @RequestParam Optional<Long> userId,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit
     ){
-        ServiceResult<ProductSaleResponseDTO> result = this.productSaleService.getListProductSale(idSale,page,limit);
+        ServiceResult<List<ProductShowUserResponseDTO>> result = this.productSaleService.getListProductSaleUser(page,limit,userId);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 }
