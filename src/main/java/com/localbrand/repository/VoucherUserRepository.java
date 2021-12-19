@@ -16,7 +16,7 @@ public interface VoucherUserRepository extends JpaRepository<VoucherUser, Long>,
 
     @Query(
             "select new VoucherUserResponseDTO (vu.idVoucherUser, v.idVoucher, v.nameVoucher, v.condition, v.discount, v.descriptionVoucher, v.codeVoucher, vu.idUser, vu.quantity) from VoucherUser vu " +
-                    " join Voucher v on v.idVoucher = vu.idUser " +
+                    " join Voucher v on v.idVoucher = vu.idVoucher " +
                     " where vu.idUser = :idUser and vu.quantity > 0"
     )
     Page<VoucherUserResponseDTO> findAllByIdUser(Integer idUser, Pageable pageable);
