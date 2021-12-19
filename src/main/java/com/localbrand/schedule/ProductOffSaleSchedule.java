@@ -35,13 +35,15 @@ public class ProductOffSaleSchedule extends BaseSchedule<ProductSale> {
     @Transactional(rollbackOn = {Exception.class})
     protected void processItems(List<ProductSale> scheduleItems) {
 
+        List<ProductSale> updateProductSaleList = new ArrayList<>();
         List<Integer> idProductDetails = new ArrayList<>();
         scheduleItems.forEach(productSale -> {
             productSale.setIdStatus(Status_Enum.DELETE.getCode());
+            updateProductSaleList.add(productSale);
             idProductDetails.add(productSale.getIdProductDetail());
         });
 
-        this.productSaleRepository.deleteAll(scheduleItems);
+        this.productSaleRepository.saveAll(updateProductSaleList);
 
         List<ProductTag> productTagList = this.productTagRepository.findAllByIdProductDetailAndIdTag(idProductDetails, Tag_Enum.SALE.getCode());
 
