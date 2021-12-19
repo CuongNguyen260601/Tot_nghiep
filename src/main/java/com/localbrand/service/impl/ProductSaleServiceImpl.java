@@ -50,6 +50,7 @@ public class ProductSaleServiceImpl implements ProductSaleService {
         if(Objects.isNull(sale.getIdSale())){
             sale = this.saleRepository.save(sale);
         }else{
+            sale = this.saleRepository.save(sale);
             List<ProductSale> deleteListProductSale = this.productSaleRepository.findAllByIdSale(sale.getIdSale().intValue());
             this.productSaleRepository.deleteAll(deleteListProductSale);
         }
