@@ -9,6 +9,7 @@ import com.localbrand.service.StatisticalService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,11 +26,14 @@ import java.util.*;
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
 
+    @Value("${server.port}")
+    static Integer port;
     private final JavaMailSender emailSender;
     private final TemplateServiceImpl templateService;
-    public static String linkShop = "http://localhost:8080/";
+    public static String linkShop = "http://localhost:" + port ;
     private final Logger log = LoggerFactory.getLogger(MailServiceImpl.class);
     private final StatisticalService statisticalService;
+
 
     List<MailMessageDTO> list = new ArrayList<>();
 
@@ -96,6 +100,7 @@ public class MailServiceImpl implements MailService {
 
         mailMessageDTO.setTo("cuongnt2001.06.26@gmail.com");
         mailMessageDTO.setSubject("Report bill of "+date1.toString());
+        mailMessageDTO.setContent("ReportBill");
         mailMessageDTO.setVariables(variables);
         list.add(mailMessageDTO);
         return "oke";
@@ -128,11 +133,12 @@ public class MailServiceImpl implements MailService {
         MailMessageDTO mailMessageDTO = new MailMessageDTO();
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("discount",voucher.getDiscount());
+        variables.put("discount",voucher.getDiscount().toString()+"%");
         variables.put("code",voucher.getCodeVoucher());
         variables.put("linkShop",linkShop);
         mailMessageDTO.setTo(user.getEmail());
         mailMessageDTO.setSubject("Bill success");
+        mailMessageDTO.setContent("Bill_Success");
         mailMessageDTO.setVariables(variables);
         list.add(mailMessageDTO);
         return "oke";
