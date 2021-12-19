@@ -45,7 +45,7 @@ public interface ProductSaleRepository extends JpaRepository<ProductSale, Long>,
 
     @Query(
             value = "select * from _Product_Sale " +
-                    "where dateEnd <= (select GETDATE())",
+                    "where dateEnd < (select GETDATE())",
             nativeQuery = true
     )
     List<ProductSale> findAllByDateEndAndIdStatus();
